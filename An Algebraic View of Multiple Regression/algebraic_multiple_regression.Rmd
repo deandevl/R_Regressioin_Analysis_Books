@@ -1,0 +1,84 @@
+---
+title: "An Algebraic View of Multiple Regression - scripts/notes"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(dplyr)
+library(RregressPkg)
+library(RplotterPkg)
+```
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+  The following R scripts/plots were inspired by the article [An Algebraic View of Multiple Regression](https://dasilvaa10.github.io/b1/)  by Alex daSilva
+</div>  
+
+## The data
+
+ 1. Will be using *mtcars* with *mpg* as the dependent variable; *hp* and *disp* as the independent variables.:
+```{r}
+data("mtcars")
+data_df <- mtcars %>% 
+  select(mpg, hp, disp)
+head(data_df,5)
+```
+
+## Create a linear regression model  
+```{r}
+mpg_lm <- lm(formula = mpg ~ hp + disp, data = data_df)
+summary(mpg_lm)
+```
+  
+## Estimate the OLS parameters using matrix calculations
+```{r}
+ols_data_df <- data.frame(
+  mpg = mtcars$mpg,
+  hp = mtcars$hp,
+  disp = mtcars$disp
+)
+
+mpg_ols_lst <- RregressPkg::ols_regress_calc(
+  data_df = ols_data_df,
+  dep_str = "mpg"
+)
+```
+
+## Plot the two fitted estimates
+```{r}
+fitted_df <- data.frame (
+  lm_fitted = mpg_lm$fitted.values,
+  ols_fitted = mpg_ols_lst$fitted_val
+)
+```
+
+```{r, fig.height=10, fig.width=10}
+RplotterPkg::create_scatter_plot(
+  df = fitted_df,
+  aes_x = "ols_fitted",
+  aes_y = "lm_fitted",
+  title = "Matrix-based vs lm-based Linear Regression",
+  subtitle = "Fitted estimates for mpg ~ hp + disp",
+  rot_y_tic_label = T,
+  x_limits = c(10,30),
+  y_limits = c(10,30),
+  x_major_breaks = seq(10,30,2),
+  y_major_breaks = seq(10,30,2)
+)
+```
+  <div class="note">Note: They appear to be identical</div>

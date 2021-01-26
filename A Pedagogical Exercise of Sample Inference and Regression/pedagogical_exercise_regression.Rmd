@@ -1,0 +1,208 @@
+---
+title: "A Pedagogical Exercise in Regression"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()
+---
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(here)
+library(data.table)
+library(magrittr)
+library(broom)
+library(kableExtra)
+library(RplotterPkg)
+```
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9)
+```
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+  The following are notes and R scripts inspired by the article [What Do We Know About British Attitudes Toward Immigration? A Pedagogical Exercise of Sample Inference and Regression](http://svmiller.com/blog/2020/03/what-explains-british-attitudes-toward-immigration-a-pedagogical-example/) by Steve Miller.
+</div>
+
+## Prepare the data
+Read the data frame from the European Social Survey of about 2,000 residents of the United Kingdom and convert to a `data.table`:
+```{r}
+current_dir <- here::here()
+data_path <- file.path(current_dir, "A Pedagogical Exercise of Sample Inference and Regression/data/ESS9GB.rda")
+load(data_path)
+data_dt <- data.table::setDT(ESS9GB)
+```
+Filter for just British respondents born in the UK:
+```{r}
+data_dt <- data_dt[cntry == "GB" & brncntr == 1]
+```
+
+Select and rename a subset of the available variables for later regression:
+```{r}
+data_dt <- data_dt[, .(
+  ImmigSentiment = immigsent,
+  Age = agea,
+  Female =female,
+  YrsEdu =eduyrs,
+  UnEmploy = uempla,
+  HouseIncome = hinctnta,
+  Ideology = lrscale,
+  Region = as.factor(region)
+)]
+head(data_dt)
+```
+
+## Look at the data
+
+1. Complete a statistical summary of the dependent variable *ImmigSentiment*:
+```{r}
+summary_dt <- data_dt[, .(
+    mean = round(mean(ImmigSentiment, na.rm = T), 3),
+    median = round(median(ImmigSentiment, na.rm = T), 3),
+    sd = round(sd(ImmigSentiment, na.rm = T), 3),
+    min = round(min(ImmigSentiment, na.rm = T), 3),
+    max = round(max(ImmigSentiment, na.rm = T), 3),
+    n = sum(!is.na(ImmigSentiment)),
+    missing = sum(is.na(ImmigSentiment))
+)]
+RplotterPkg::create_table( 
+  x = summary_dt,
+  col_names = c("Mean", "Median", "SD", "Minimum", "Maximum", "N", "Miss Responses"),
+  caption = "Summary of dependent variable ImmigSentiment",
+  position = "center",
+  head_bkgd = "purple",
+  head_col = "white",
+  align_v = rep("c",7)
+)
+```
+
+
+2. Plot a histogram of the dependent variable *ImmigSentiment*:
+```{r, fig.width=14}
+RplotterPkg::create_histogram_plot(
+  df = data_dt,
+  aes_x = "ImmigSentiment",
+  title = "A Bar Chart of Pro-Immigration Sentiment",
+  subtitle = "Data: European Social Survey, Round 9 in the United Kingdom",
+  x_title = "Pro-Immigration Sentiment Value",
+  y_title = "Number of Respondents",
+  binwidth = 1,
+  x_major_breaks = seq(0,30,1),
+  bar_fill = "blue",
+  bar_color = "white",
+  bar_labels = T,
+  show_minor_grids = F
+)
+```
+
+<div class="note">Note: There appears to be a heaping of 0's and 30's.</div>
+
+## The true population mean
+
+<blockquote class="quo">
+...central limit theorem says that infinite random samples of any size of a population will produce sample means that follow a normal distribution. 
+
+...the inferences we make are less about saying what the “true” population mean is -- it’s more about “ruling out” other alternatives as highly unlikely, given what we know from central limit theorem and the properties of a normal distribution.
+</blockquote>
+
+Take smaller samples of the population (i.e. group by region) and compare their means to the overall estimate of the population mean of 16.891:
+
+```{r}
+region_sentiment_dt <- data_dt[, .(sent_mean = round(mean(ImmigSentiment, na.rm = T), 3)), by = Region][order(-sent_mean)]
+RplotterPkg::create_table(
+  x = region_sentiment_dt,
+  col_names = c("Region","Average Pro-Immigration Sentiment"),
+  caption = "Average Pro-Immigratioin Sentiment in the United Kingdom, by Region, in the ESS (2018-19)",
+  head_bkgd = "purple",
+  head_col = "white",
+  position = "center",
+  align_v = c("l","c")
+)
+```
+
+To compare the above regional means, compute the standard error of the estimated overall population mean and its 95% confidence interval.
+
+<blockquote>This is the interval through which 95% of all possible sample means would fall by chance, given what we know about the normal distribution</blockquote>
+
+```{r}
+sent_mean <- round(mean(data_dt$ImmigSentiment, na.rm=T), 3)
+sent_sd <- round(sd(data_dt$ImmigSentiment, na.rm=T), 3)
+sent_se <- round(sent_sd/sqrt(nrow(data_dt)), 3)
+sent_se_dt <- data.table(
+  mean = sent_mean,
+  se = sent_se,
+  lb95 = round(sent_mean - 1.96 * sent_se, 3),
+  ub95 = round(sent_mean + 1.96 * sent_se, 3)
+)
+RplotterPkg::create_table(
+  x = sent_se_dt,
+  col_names = c("Sample Mean", "SE Sample Mean", "95% Lower CI", "95% Upper CI"),
+  caption = "Average Pro-Immigration Sentiment and Its 95% Confidence Interval",
+  head_bkgd = "purple",
+  head_col = "white",
+  position = "center",
+  align_v = rep("c",3)
+)
+```
+
+<div class="note">Note: ...if we took 100 samples of this size (n = 1,850), 95 of those random samples would, on average, have sample means between about 16.572 and 17.210.</div>
+
+If we have a proposed population mean of 14.65, compute the number of standard deviations the proposed mean is from our estimated population mean of 16.891. We can answer this question by computing the z-score which is the difference between the proposed and sample means divided by the standard error of the sample mean.
+
+```{r}
+z_sent_dt <- data.table(
+  mean = sent_mean,
+  proposed_mean = 14.65,
+  se = sent_se,
+  zscore = round((sent_mean - 14.65)/sent_se, 3)
+)
+RplotterPkg::create_table(
+  x = z_sent_dt,
+  col_names = c("Sample Mean", "Proposed Mean", "SE of Sample Mean", "z-score"),
+  caption = "How Unlikely Was the Proposed Mean",
+  head_bkgd = "purple",
+  head_col = "white",
+  position = "center",
+  align_v = rep("c",4)
+)
+```
+
+<div class="note">Note: The proposed mean of 14.65 is about 14 standard errors away from the sample mean.</div>
+
+<blockquote>...we are not saying the true population mean is actually our sample mean. The true population mean in this context is ultimately unknowable, but inference in this context comes not in saying what “is” but in ruling out things as highly unlikely to be true. </blockquote>
+
+# Regression as more inference by "Ruling Things Out"
+Set up a regression of immigration sentiment with the following linear model:
+
+$$ImmSentiment_{i} = \beta_{0}+\beta_{1}*Age_{i}+\beta_{2}*Female_{i}+\beta_{3}*Years Ed_{i}+\beta_{4}*Unemployed_{i}+\beta_{5}*HouseholdInc_{i}+\beta_{6}*Ideology_{i}+\epsilon_{i}$$
+```{r}
+model_1 <- stats::lm(formula = ImmigSentiment ~ Age + Female + YrsEdu + UnEmploy + HouseIncome + Ideology, data = data_dt)
+model_1_df <- broom::tidy(model_1)[2:7,]
+
+RplotterPkg::create_table(
+  x = model_1_df,
+  col_names = c("Variable", "Coefficient", "SE", "t-Statistic", "p Value"),
+  caption = "Basic Statistics for the Pro-Immigration model",
+  head_bkgd = "purple",
+  head_col = "white",
+  position = "center",
+  align_v = c("l", rep("c",4))
+)
+```
+
+<div class="note">Note: Higher levels of education coincide with an increase in pro-immigration sentiment -- a positive coefficient and relationship.  Those with an ideology closer to the right have lower levels of pro-immigration sentiment -- a negative coefficient and relationship</div>
+
+<div class="note">Note: The standard error is the estimate of the standard deviation of the coefficient.</div>
+
+```{r}
+summary(model_1)
+```
+
+
