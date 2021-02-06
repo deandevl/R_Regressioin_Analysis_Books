@@ -9,22 +9,20 @@ output:
     css: ../style.css
 ---
 
-```{r}
-suppressWarnings(library(knitr))
-suppressWarnings(library(ggplot2))
-suppressWarnings(library(magrittr))
-suppressWarnings(library(dplyr))
-library(RplotterPkg)
-set.seed(123)
-```
-
-
 ```{r,setup, include=FALSE, eval=TRUE}
 options(knitr.table.format = "html")
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 8)
 ```
 
-The article by Joshua Cook titled Riddler: [Can You Beat MLB Recods?](https://joshuacook.netlify.app/post/riddler-beat-mlb-records/) inspired the content in this R markdown.
+The article by Joshua Cook titled Riddler: [Can You Beat MLB Recods?](https://joshuacook.netlify.app/post/riddler-beat-mlb-records/) inspired the content in this R markdown document.
+
+```{r}
+library(knitr)
+library(ggplot2)
+library(data.table)
+library(RplotterPkg)
+set.seed(123)
+```
 
 # 1 First question
 <div class="task">If you have four at-bats per game, what are your chances of batting at least .400 over the course of the *60-game* season?</div> 
@@ -136,11 +134,11 @@ The simulated average batting across 10000 seasons: `r batting_average_10000` wh
 ### 3.2.1 Plot the density of batting averages across 1000 seasons
 ```{r, fig.width=12}
 target_batting_average <- 0.400
-batting_averages_df <- data.frame(
+batting_averages_dt <- data.table(
   x = batting_averages
 )
 RplotterPkg::create_density_plot(
-  df = batting_averages_df,
+  df = batting_averages_dt,
   aes_x = "x",
   title = "Simulated Batting Averages Across 10000 Seasons",
   subtitle = "Real batting average = 0.350; target average = 0.400",
@@ -171,20 +169,17 @@ The function `stats::rbinom()` generates a vector of binomial distributed random
 4 "at-bats" per game over 60 game season with a batting average of 0.350
 ```{r}
 sampled_season_hits <- stats::rbinom(n = 60*4, size = 1, prob = 0.350)
-season_hits_df <- data.frame(
-  hits = sampled_season_hits
+season_hits_dt <- data.table(
+  hits = sampled_season_hits,
+  at_bat = 1:length(sampled_season_hits),
+  cum_hits = cumsum(sampled_season_hits),
+  batting_avg = cumsum(sampled_season_hits)/1:length(sampled_season_hits)
 )
-season_hits_df <- season_hits_df %>% 
-  mutate(
-    at_bat = row_number(),
-    cum_hits = cumsum(hits),
-    batting_avg = cum_hits/at_bat
-  )
 ```
 ## 4.2 Plot the running batting average over a single simulated season
 ```{r, fig.width=12}
 RplotterPkg::create_scatter_plot(
-  df = season_hits_df,
+  df = season_hits_dt,
   aes_x = "at_bat",
   aes_y = "cum_hits",
   aes_color = "batting_avg",

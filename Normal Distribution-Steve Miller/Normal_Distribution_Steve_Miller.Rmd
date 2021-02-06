@@ -9,16 +9,6 @@ params:
   date: !r Sys.Date()    
 ---
 
-```{r, warning=FALSE, message=FALSE}
-library(knitr)
-library(kableExtra)
-library(data.table)
-library(forcats)
-library(ggplot2)
-library(RplotterPkg)
-library(here)
-```
-
 ```{r,setup, include=FALSE, eval=TRUE}
 options(knitr.table.format = "html", width = 140)
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
@@ -31,6 +21,17 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
   <p class="abstract">Abstract</p>
   The following are notes and R scripts inspired by the article [The Normal Distribution, Central Limit Theorem, and Inference from a Sample](http://svmiller.com/blog/2020/03/normal-distribution-central-limit-theorem-inference/) by Steve Miller.
 </div>  
+
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(forcats)
+library(ggplot2)
+library(RplotterPkg)
+library(here)
+```
 
 ## The Normal Distribution
 ### The equation
@@ -257,10 +258,11 @@ RplotterPkg::create_histogram_plot(
 
 7. Get a 100000 samples of size 10 from the above simulated population and compute their means:
 ```{r}
+set.seed(8675309)
 get_sample_means <- function(samples, sample_size, data_pop){
   means <- c()
   for(i in 1:samples){
-    means <- c(means, mean(base::sample(x = data_pop, size = sample_size)))
+    means <- c(means, mean(base::sample(x = data_pop, size = sample_size, replace = F)))
   }
   return(means)
 }
@@ -299,11 +301,12 @@ for(samp_sz in samp_sizes) {
   samples_lst[[paste0("samp size ", samp_sz)]] = data.table(
     samp_num = as.factor(1:10),
     samp_sz = samp_sz, 
-    samp_means = lapply(1:10, function(i){x <- mean(sample(therms_pop$df_scaled$data, samp_sz, replace = T))})
+    samp_means = unlist(lapply(1:10, function(i){x <- mean(sample(therms_pop$df_scaled$data, samp_sz, replace = F))}))
   )
 }
 samples_dt <- data.table::rbindlist(samples_lst, use.names = T)
-samples_dt[, `:=` (samp_sz_factor = as.factor(samp_sz), samp_means = as.numeric(samp_means), samp_sz_label = forcats::fct_inorder(paste0("Sample Size: ", samp_sz)))]
+
+samples_dt[, `:=` (samp_sz_factor = as.factor(samp_sz), samp_sz_label = forcats::fct_inorder(paste0("Sample Size: ", samp_sz)))]
 ```
 
 2. Plot the replicated means across the different sizes:

@@ -436,15 +436,11 @@ summary {
 </ul>
 </div>
 
-<pre class="r"><code>library(knitr)
-library(dplyr)
-library(RregressPkg)
-library(RplotterPkg)</code></pre>
 <div>
 Author: Rick Dean
 </div>
 <div>
-Article date: 2021-01-22
+Article date: 2021-02-01
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -452,6 +448,10 @@ Abstract
 </p>
 <p>The following R scripts/plots were inspired by the article <a href="https://dasilvaa10.github.io/b1/">An Algebraic View of Multiple Regression</a> by Alex daSilva</p>
 </div>
+<pre class="r"><code>library(knitr)
+library(dplyr)
+library(RregressPkg)
+library(RplotterPkg)</code></pre>
 <div id="the-data" class="section level2">
 <h2>The data</h2>
 <ol style="list-style-type: decimal">
@@ -494,6 +494,9 @@ summary(mpg_lm)</code></pre>
 </div>
 <div id="estimate-the-ols-parameters-using-matrix-calculations" class="section level2">
 <h2>Estimate the OLS parameters using matrix calculations</h2>
+<div class="note">
+Note: See <a href="https://github.com/deandevl/RregressPkg">RegressPkg::ols_regress_calc()</a> for the derivation of the OLS via matrix calculations.
+</div>
 <pre class="r"><code>ols_data_df &lt;- data.frame(
   mpg = mtcars$mpg,
   hp = mtcars$hp,
@@ -507,6 +510,7 @@ mpg_ols_lst &lt;- RregressPkg::ols_regress_calc(
 </div>
 <div id="plot-the-two-fitted-estimates" class="section level2">
 <h2>Plot the two fitted estimates</h2>
+<p>The <code>lm()</code> vs the <code>RregressPkg::ols_regress_calc()</code> versions:</p>
 <pre class="r"><code>fitted_df &lt;- data.frame (
   lm_fitted = mpg_lm$fitted.values,
   ols_fitted = mpg_ols_lst$fitted_val

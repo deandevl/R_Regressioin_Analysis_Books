@@ -660,18 +660,11 @@ summary {
 </ul>
 </div>
 
-<pre class="r"><code>library(knitr)
-library(here)
-library(data.table)
-library(magrittr)
-library(broom)
-library(kableExtra)
-library(RplotterPkg)</code></pre>
 <div>
 Author: Rick Dean
 </div>
 <div>
-Article date: 2021-01-25
+Article date: 2021-02-01
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -679,6 +672,13 @@ Abstract
 </p>
 <p>The following are notes and R scripts inspired by the article <a href="http://svmiller.com/blog/2020/03/what-explains-british-attitudes-toward-immigration-a-pedagogical-example/">What Do We Know About British Attitudes Toward Immigration? A Pedagogical Exercise of Sample Inference and Regression</a> by Steve Miller.</p>
 </div>
+<pre class="r"><code>library(knitr)
+library(here)
+library(data.table)
+library(magrittr)
+library(broom)
+library(kableExtra)
+library(RplotterPkg)</code></pre>
 <div id="prepare-the-data" class="section level2">
 <h2>Prepare the data</h2>
 <p>Read the data frame from the European Social Survey of about 2,000 residents of the United Kingdom and convert to a <code>data.table</code>:</p>
@@ -741,25 +741,25 @@ Summary of dependent variable ImmigSentiment
 </caption>
 <thead>
 <tr>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Mean
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Median
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 SD
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Minimum
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Maximum
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 N
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Miss Responses
 </th>
 </tr>
@@ -839,10 +839,10 @@ Average Pro-Immigratioin Sentiment in the United Kingdom, by Region, in the ESS 
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Region
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Average Pro-Immigration Sentiment
 </th>
 </tr>
@@ -978,16 +978,16 @@ Average Pro-Immigration Sentiment and Its 95% Confidence Interval
 </caption>
 <thead>
 <tr>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Sample Mean
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 SE Sample Mean
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 95% Lower CI
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 95% Upper CI
 </th>
 </tr>
@@ -1038,16 +1038,16 @@ How Unlikely Was the Proposed Mean
 </caption>
 <thead>
 <tr>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Sample Mean
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Proposed Mean
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 SE of Sample Mean
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 z-score
 </th>
 </tr>
@@ -1102,19 +1102,19 @@ Basic Statistics for the Pro-Immigration model
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Variable
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Coefficient
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 SE
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 t-Statistic
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: purple !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 p Value
 </th>
 </tr>

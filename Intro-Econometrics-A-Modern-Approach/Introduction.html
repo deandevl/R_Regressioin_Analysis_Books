@@ -682,17 +682,11 @@ summary {
 </ul>
 </div>
 
-<pre class="r"><code>library(knitr)
-library(data.table)
-library(magrittr)
-library(ggplot2)
-library(RplotterPkg)
-library(wooldridge)</code></pre>
 <div>
 Author: Rick Dean
 </div>
 <div>
-Article date: 2021-01-22
+Article date: 2021-02-01
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -705,6 +699,12 @@ Abstract
 <div class="note">
 I will follow the section numbers from <code>(Heiss)</code> with references to <code>(Wooldridge)</code>. Be aware that some sections will be skipped from either <code>(Wooldridge)</code> or <code>(Heiss)</code>.
 </div>
+<pre class="r"><code>library(knitr)
+library(data.table)
+library(magrittr)
+library(ggplot2)
+library(RplotterPkg)
+library(wooldridge)</code></pre>
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <div id="descriptive-statistics" class="section level2">
@@ -777,7 +777,7 @@ contingency_table</code></pre>
 ##   happy         40 154
 ##   very happy    96 136</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Contingency table shoWing proportions of <em>has_kids</em> within levels of <em>marriage</em> (within a row, margin = 1):</li>
+<li>Contingency table showing proportions of <em>has_kids</em> within levels of <em>marriage</em> (within a row, margin = 1):</li>
 </ol>
 <pre class="r"><code>prop.table(contingency_table, margin = 1)</code></pre>
 <pre><code>##               has_kids
@@ -802,7 +802,7 @@ contingency_table</code></pre>
 <div id="continuous-distributions-histograms-and-density" class="section level3">
 <h3>1.5.2 Continuous Distributions: Histograms and Density</h3>
 <div class="task">
-Task: Using the <em>ceosal1</em> data set Create a histogram of <em>ROE</em> variable (return on equity in percent).
+Task: Using the <em>ceosal1</em> data set create a histogram of <em>ROE</em> variable (return on equity in percent).
 </div>
 <ol style="list-style-type: decimal">
 <li>Set up the data set and the <em>ROE</em> variable:</li>
@@ -882,7 +882,7 @@ str((ROE_ecdf_dt))</code></pre>
 <div id="fundamental-statistics" class="section level3">
 <h3>1.5.4 Fundamental Statistics</h3>
 <div class="task">
-Task: Using <code>base::mean(), base::median(), stats::sd(), stats::cor(), base::summary()</code> functions to compute summary statistics for the <em>salary</em> variable from the <em>ceosal1</em> data set.
+Task: Using <code>base::mean(), base::median(), stats::sd(), stats::cor()</code> functions to compute summary statistics for the <em>salary</em> variable from the <em>ceosal1</em> data set.
 </div>
 <ol style="list-style-type: decimal">
 <li>Show the summary statistics:</li>
@@ -891,7 +891,7 @@ Task: Using <code>base::mean(), base::median(), stats::sd(), stats::cor(), base:
   Mean = mean(ceosal1$salary),
   Median = median(ceosal1$salary),
   SD = stats::sd(ceosal1$salary),
-  Salary_ROE = stats::cor(ceosal1$salary, ceosal1$roe)
+  Salary_ROE_Cor = stats::cor(ceosal1$salary, ceosal1$roe)
 )
 
 RplotterPkg::create_table(
@@ -911,17 +911,17 @@ Summary Stats for Salary
 </caption>
 <thead>
 <tr>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Mean
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Median
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 SD
 </th>
-<th style="text-align:center;font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);">
-Salary_ROE
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Salary_ROE_Cor
 </th>
 </tr>
 </thead>

@@ -9,16 +9,6 @@ params:
   date: !r Sys.Date()      
 ---
 
-```{r, warning=FALSE, message=FALSE}
-library(knitr)
-library(data.table)
-library(wooldridge)
-library(ggplot2)
-library(RregressPkg)
-library(RplotterPkg)
-library(car)
-```
-
 ```{r,setup, include=FALSE, eval=TRUE}
 options(knitr.table.format = "html")
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 8)
@@ -34,6 +24,16 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
  
 The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 3** of `(Heiss)`.
 </div> 
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(data.table)
+library(wooldridge)
+library(ggplot2)
+library(RregressPkg)
+library(RplotterPkg)
+library(car)
+```
 
 # 3 Multiple Regression Analysis: Estimation
 

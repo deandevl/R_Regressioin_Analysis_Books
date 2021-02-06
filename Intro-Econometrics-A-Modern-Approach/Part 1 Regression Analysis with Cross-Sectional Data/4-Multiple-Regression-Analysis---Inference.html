@@ -667,18 +667,11 @@ summary {
 </ul>
 </div>
 
-<pre class="r"><code>library(knitr)
-library(data.table)
-library(kableExtra)
-library(wooldridge)
-library(ggplot2)
-library(RregressPkg)
-library(RplotterPkg)</code></pre>
 <div>
 Author: Rick Dean
 </div>
 <div>
-Article date: 2021-01-22
+Article date: 2021-02-01
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -687,6 +680,13 @@ Abstract
 <p>The following notes and scripts are based on the following sources: <a href="https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&amp;keywords=Introductory+Econometrics%3A+A+Modern+Approach&amp;qid=1597005903&amp;s=books&amp;sr=1-2">Introductory Econometrics - A Modern Approach</a> by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as <code>(Wooldridge)</code>.</p>
 <p>The companion text <a href="http://www.urfie.net/index.html">Using R for Introductory Econometrics</a> by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as <code>(Heiss)</code>. The following is from <strong>Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 4</strong> of <code>(Heiss)</code>.</p>
 </div>
+<pre class="r"><code>library(knitr)
+library(data.table)
+library(kableExtra)
+library(wooldridge)
+library(ggplot2)
+library(RregressPkg)
+library(RplotterPkg)</code></pre>
 <div id="multiple-regression-analysis-inference" class="section level1">
 <h1>4 Multiple Regression Analysis: Inference</h1>
 In <code>(Wooldridge, section 4.1, page 106)</code> is added assumption <strong>MLR.6 Normality of the error term</strong> to the previous assumptions <strong>MLR.1</strong> through <strong>MLR.5</strong>. Together these assumptions constitute the classical linear model (CLM). Under the CLM, <code>(Wooldridge, page 107)</code> presents Theorem 4.1 where: <span class="math display">\[\hat{\beta}_{j} \sim Normal[\beta_{j}, Var(\hat{\beta}_{j})]\]</span>
@@ -745,46 +745,54 @@ t_critical = qt(p = (1 - prob/2), df = df)</code></pre>
   t = t_critical,
   normal = normal_critical
 )
-critical_df %&gt;% 
-  kbl(caption = &quot;Table 4.1 Critical $t$ Values&quot;) %&gt;% 
-  kable_paper(full_width = FALSE, position = &quot;left&quot;)</code></pre>
+RplotterPkg::create_table(
+  x = critical_df,
+  caption = &quot;Table 4.1 Critical $t$ Values&quot;,
+  head_bkgd = &quot;blue&quot;,
+  head_col = &quot;white&quot;,
+  position = &quot;left&quot;
+)</code></pre>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
 <caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
 Table 4.1 Critical <span class="math inline">\(t\)</span> Values
+</div>
+</center>
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 probability
 </th>
-<th style="text-align:right;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 t
 </th>
-<th style="text-align:right;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 normal
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 5%
 </td>
-<td style="text-align:right;">
+<td>
 1.977431
 </td>
-<td style="text-align:right;">
+<td>
 1.959964
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 1%
 </td>
-<td style="text-align:right;">
+<td>
 2.612192
 </td>
-<td style="text-align:right;">
+<td>
 2.575829
 </td>
 </tr>
@@ -830,53 +838,67 @@ summary(gpa_model)</code></pre>
 <li>Extract the <span class="math inline">\(\hat{\beta}_{j}\)</span> coefficients from the model <em>gpa_model</em>:</li>
 </ol>
 <pre class="r"><code>coefficients_gpa &lt;- coef(gpa_model)
-coefficients_gpa %&gt;% 
-  kbl(col.names = &quot;$\\hat{\\beta}_{j}$&quot;, digits = 4, caption = &quot;OLS Coefficients&quot;) %&gt;% 
-  kable_paper(full_width = FALSE, position = &quot;left&quot;)</code></pre>
+dt &lt;- data.table(
+  B = names(coefficients_gpa),
+  v = coefficients_gpa
+)
+RplotterPkg::create_table(
+  x = dt,
+  caption = &quot;OLS Coefficients&quot;,
+  col_names = c(&quot;Predictor&quot;, &quot;$\\hat{\\beta}_{j}$&quot;),
+  head_bkgd = &quot;blue&quot;,
+  head_col = &quot;white&quot;,
+  position = &quot;left&quot;
+)</code></pre>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
 <caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
 OLS Coefficients
+</div>
+</center>
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Predictor
 </th>
-<th style="text-align:right;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 <span class="math inline">\(\hat{\beta}_{j}\)</span>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 (Intercept)
 </td>
-<td style="text-align:right;">
-1.3896
+<td>
+1.3895538
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 hsGPA
 </td>
-<td style="text-align:right;">
-0.4118
+<td>
+0.4118162
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 ACT
 </td>
-<td style="text-align:right;">
-0.0147
+<td>
+0.0147202
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 skipped
 </td>
-<td style="text-align:right;">
--0.0831
+<td>
+-0.0831131
 </td>
 </tr>
 </tbody>
@@ -885,53 +907,67 @@ skipped
 <li>Compute the standard errors <span class="math inline">\(se(\hat{\beta}_{j})\)</span> manually from the model <em>gpa_model</em> using <code>stats::vcov()</code>:</li>
 </ol>
 <pre class="r"><code>standard_errors_gpa &lt;- sqrt(diag(vcov(gpa_model)))
-standard_errors_gpa %&gt;% 
-  kbl(col.names = &quot;$se(\\hat{\\beta}_{j})$&quot;, caption = &quot;Standard Errors&quot;, digits = 4) %&gt;% 
-  kable_paper(full_width = FALSE, position = &quot;left&quot;)</code></pre>
+dt &lt;- data.table(
+  B = names(standard_errors_gpa),
+  V = standard_errors_gpa
+)
+RplotterPkg::create_table(
+  x = dt,
+  caption = &quot;Standard Errors&quot;,
+  col_names = c(&quot;Predictor&quot;, &quot;$se(\\hat{\\beta}_{j})$&quot;),
+  head_bkgd = &quot;blue&quot;,
+  head_col = &quot;white&quot;,
+  position = &quot;left&quot;
+)</code></pre>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
 <caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
 Standard Errors
+</div>
+</center>
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Predictor
 </th>
-<th style="text-align:right;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 <span class="math inline">\(se(\hat{\beta}_{j})\)</span>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 (Intercept)
 </td>
-<td style="text-align:right;">
-0.3316
+<td>
+0.3315535
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 hsGPA
 </td>
-<td style="text-align:right;">
-0.0937
+<td>
+0.0936742
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 ACT
 </td>
-<td style="text-align:right;">
-0.0106
+<td>
+0.0105649
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 skipped
 </td>
-<td style="text-align:right;">
-0.0260
+<td>
+0.0259985
 </td>
 </tr>
 </tbody>
@@ -940,59 +976,73 @@ skipped
 <li>With the coefficients and their standard errors compute their <span class="math inline">\(t\)</span> statistics using equation [Heiss, 4.4] where the hypothetical value of the coefficient <span class="math inline">\(a_{j} = 0\)</span> is being tested ([Heiss, 4.1]):</li>
 </ol>
 <pre class="r"><code>t_coefficients_gpa &lt;- coefficients_gpa/standard_errors_gpa
-t_coefficients_gpa %&gt;% 
-  kbl(col.names = &quot;$t(\\hat{\\beta}_{j})$&quot;, caption = &quot;$t$ statistic&quot;, digits = 4) %&gt;% 
-  kable_paper(full_width=FALSE, position=&quot;left&quot;)</code></pre>
+dt &lt;- data.table(
+  B = names(t_coefficients_gpa),
+  V = t_coefficients_gpa
+)
+RplotterPkg::create_table(
+  x = dt,
+  caption = &quot;$t$ statistic&quot;,
+  col_names = c(&quot;Predictor&quot;, &quot;$t(\\hat{\\beta}_{j})$&quot;),
+  head_bkgd = &quot;blue&quot;,
+  head_col = &quot;white&quot;,
+  position = &quot;left&quot;
+)</code></pre>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
 <caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
 <span class="math inline">\(t\)</span> statistic
+</div>
+</center>
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Predictor
 </th>
-<th style="text-align:right;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 <span class="math inline">\(t(\hat{\beta}_{j})\)</span>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 (Intercept)
 </td>
-<td style="text-align:right;">
-4.1910
+<td>
+4.191039
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 hsGPA
 </td>
-<td style="text-align:right;">
-4.3963
+<td>
+4.396260
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 ACT
 </td>
-<td style="text-align:right;">
-1.3933
+<td>
+1.393319
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 skipped
 </td>
-<td style="text-align:right;">
--3.1968
+<td>
+-3.196840
 </td>
 </tr>
 </tbody>
 </table>
 <div class="note">
-Note: The <span class="math inline">\(t\)</span> values for all the coefficients except <span class="math inline">\(\hat{\beta}_{act}\)</span> are larger in absolute value than the critical <span class="math inline">\(t\)</span> values in Table 4.1 above. So we would reject <span class="math inline">\(H_{0}\)</span> for all the usual significance levels.
+Note: The <span class="math inline">\(t\)</span> values for all the coefficients except <span class="math inline">\(\hat{\beta}_{act}\)</span> are larger in absolute value than the critical <span class="math inline">\(t\)</span> values in Table 4.1 <strong>Critical <span class="math inline">\(t\)</span> Values</strong> above. So we would reject <span class="math inline">\(H_{0}\)</span> for all the usual significance levels.
 </div>
 <p><br></p>
 <ol start="6" style="list-style-type: decimal">
@@ -1000,55 +1050,69 @@ Note: The <span class="math inline">\(t\)</span> values for all the coefficients
 </ol>
 <pre class="r"><code>n &lt;-  nrow(gpa_1)
 k &lt;-  3
-df &lt;- n - k - 1
-p_coeficients_gpa &lt;- 2 * pt(-abs(t_coefficients_gpa), df = df)
-p_coeficients_gpa %&gt;%
-  kbl(col.names = &quot;$p(\\hat{\\beta}_{j})$&quot;, caption = &quot;$p$ values&quot;, digits = 6) %&gt;%
-  kable_paper(full_width = FALSE, position = &quot;left&quot;)</code></pre>
+degFree &lt;- n - k - 1
+p_coeficients_gpa &lt;- 2 * pt(-abs(t_coefficients_gpa), df = degFree)
+dt &lt;- data.table(
+  B = names(p_coeficients_gpa),
+  V = p_coeficients_gpa
+)
+RplotterPkg::create_table(
+  x = dt,
+  caption = &quot;$p$ values&quot;,
+  col_names = c(&quot;Predictor&quot;, &quot;$p(\\hat{\\beta}_{j})$&quot;),
+  head_bkgd = &quot;blue&quot;,
+  head_col = &quot;white&quot;,
+  position = &quot;left&quot;
+)</code></pre>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
 <caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
 <span class="math inline">\(p\)</span> values
+</div>
+</center>
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Predictor
 </th>
-<th style="text-align:right;">
+<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 <span class="math inline">\(p(\hat{\beta}_{j})\)</span>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td>
 (Intercept)
 </td>
-<td style="text-align:right;">
-0.000050
+<td>
+0.0000495
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 hsGPA
 </td>
-<td style="text-align:right;">
-0.000022
+<td>
+0.0000219
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 ACT
 </td>
-<td style="text-align:right;">
-0.165780
+<td>
+0.1657799
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 skipped
 </td>
-<td style="text-align:right;">
-0.001725
+<td>
+0.0017254
 </td>
 </tr>
 </tbody>
@@ -1056,11 +1120,10 @@ skipped
 <div class="note">
 Note: Compare the manual values to those computed from the above <code>stats::summary()</code>.
 </div>
-<p><br></p>
 </div>
 <div id="other-hypotheses" class="section level3">
 <h3>4.1.3 Other hypotheses</h3>
-<p>Although <span class="math inline">\(H_{0}: \beta_{j} = 0\)</span> is the most common null hypothesis, we sometimes want to test whether <span class="math inline">\(\beta_{j}\)</span> is equal to some other given constant. Two common examples are <span class="math inline">\(\beta_{i} = 1\)</span> and <span class="math inline">\(\beta_{j} = -1\)</span>. `(Wooldride, Example 4.4, page 116) considers a simple model of campus crime regressed on student enrollment. The hypothesis is <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span>. This means that a 1% increase in enrollment results in a 1% increase in campus crime. The alternative hypothesis is <span class="math inline">\(H_{1}: \beta_{enroll} &gt; 1\)</span>, which implies that a 1% increase in enrollment increases crime by MORE than 1%.</p>
+<p>Although <span class="math inline">\(H_{0}: \beta_{j} = 0\)</span> is the most common null hypothesis, we sometimes want to test whether <span class="math inline">\(\beta_{j}\)</span> is equal to some other given constant. Two common examples are <span class="math inline">\(\beta_{i} = 1\)</span> and <span class="math inline">\(\beta_{j} = -1\)</span>. <code>(Wooldride, Example 4.4, page 116)</code> considers a simple model of campus crime regressed on student enrollment. The hypothesis is <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span>. This means that a 1% increase in enrollment results in a 1% increase in campus crime. The alternative hypothesis is <span class="math inline">\(H_{1}: \beta_{enroll} &gt; 1\)</span>, which implies that a 1% increase in enrollment increases crime by MORE than 1%.</p>
 <div class="task">
 Task: Perform a <span class="math inline">\(t\)</span> test on the enrollment parameter and investigate the alternative hypothesis that <span class="math inline">\(\beta_{enroll} &gt; 1\)</span>.
 </div>

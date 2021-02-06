@@ -9,6 +9,19 @@ params:
   date: !r Sys.Date()
 ---
 
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+  The following are notes and R scripts inspired by the article [What Do We Know About British Attitudes Toward Immigration? A Pedagogical Exercise of Sample Inference and Regression](http://svmiller.com/blog/2020/03/what-explains-british-attitudes-toward-immigration-a-pedagogical-example/) by Steve Miller.
+</div>
+
 ```{r, warning=FALSE, message=FALSE}
 library(knitr)
 library(here)
@@ -18,18 +31,6 @@ library(broom)
 library(kableExtra)
 library(RplotterPkg)
 ```
-
-```{r,setup, include=FALSE, eval=TRUE}
-options(knitr.table.format = "html", width = 140)
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9)
-```
-<div>Author: Rick Dean</div>
-<div>Article date: `r params$date`</div>
-
-<div class="abstract">
-  <p class="abstract">Abstract</p>
-  The following are notes and R scripts inspired by the article [What Do We Know About British Attitudes Toward Immigration? A Pedagogical Exercise of Sample Inference and Regression](http://svmiller.com/blog/2020/03/what-explains-british-attitudes-toward-immigration-a-pedagogical-example/) by Steve Miller.
-</div>
 
 ## Prepare the data
 Read the data frame from the European Social Survey of about 2,000 residents of the United Kingdom and convert to a `data.table`:

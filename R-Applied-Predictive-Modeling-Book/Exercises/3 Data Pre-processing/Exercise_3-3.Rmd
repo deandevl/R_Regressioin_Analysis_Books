@@ -8,16 +8,6 @@ output:
 params:
   date: !r Sys.Date()        
 ---
-```{r, message = FALSE, warning = FALSE}
-library(knitr)
-library(data.table)
-library(ggplot2)
-library(caret)
-library(grid)
-library(gtable)
-library(RregressPkg)
-library(RplotterPkg)
-```
 
 ```{r,setup, include=FALSE, eval=TRUE}
 options(knitr.table.format = "html")
@@ -31,6 +21,17 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
   <p class="abstract">Abstract</p>
 The following notes/scripts/plots are inspired by Chapter 3 Data Pre-processing Exercises 3-3 of [Applied Predictive Modeling](http://appliedpredictivemodeling.com/) by Max Kuhn and Kjell Johnson.
 </div>
+
+```{r, message = FALSE, warning = FALSE}
+library(knitr)
+library(data.table)
+library(ggplot2)
+library(caret)
+library(grid)
+library(gtable)
+library(RregressPkg)
+library(RplotterPkg)
+```
 
 ## The BloodBrain Dataset
 

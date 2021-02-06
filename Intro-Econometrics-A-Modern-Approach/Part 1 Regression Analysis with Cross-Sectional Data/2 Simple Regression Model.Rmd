@@ -9,15 +9,6 @@ params:
   date: !r Sys.Date()    
 ---
 
-```{r, warning=FALSE, message=FALSE}
-library(knitr)
-library(data.table)
-library(wooldridge)
-library(ggplot2)
-library(RregressPkg)
-library(RplotterPkg)
-```
-
 ```{r,setup, include=FALSE, eval=TRUE}
 options(knitr.table.format = "html")
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 8)
@@ -33,6 +24,15 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
  
 The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 2** of `(Heiss)`.
 </div> 
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(data.table)
+library(wooldridge)
+library(ggplot2)
+library(RregressPkg)
+library(RplotterPkg)
+```
 
 # 2 The Simple Regression Model
 
@@ -82,7 +82,8 @@ Coefficients from `stats::lm()`: `r coef(roe_salary_lm)`
 ```{r}
 df <- data.frame(
   roe = ceosal1$roe,
-  salary = roe_salary_lm$model$salary
+  salary = roe_salary_lm$model$salary,
+  fit = roe_salary_lm$fitted.values
 )
 RplotterPkg::create_scatter_plot(
   df = df,
@@ -93,7 +94,7 @@ RplotterPkg::create_scatter_plot(
   x_title = "Return on Equity",
   y_title = "Salary",
   rot_y_tic_label = TRUE
-)
+) + geom_line(aes(y = fit), color = "red", linetype = "twodash")
 ```
 
 <div class="task">Task: Find the relationship between wage and education `(Wooldridge, Example 2.4, page 30)` from the data set *wooldridge::wage1*.</div>  
@@ -116,7 +117,8 @@ The estimated $\hat{\beta}_0$ and $\hat{\beta}_1$ of the linear model are `r coe
 ```{r}
 df <- data.frame(
   educ = wage1$educ,
-  wage = wage_educ_lm$model$wage
+  wage = wage_educ_lm$model$wage,
+  fit = wage_educ_lm$fitted.values
 )
 RplotterPkg::create_scatter_plot(
   df = df,
@@ -129,7 +131,7 @@ RplotterPkg::create_scatter_plot(
   rot_y_tic_label = TRUE,
   x_limits = c(0,18),
   x_major_breaks = seq(0,18,2)
-)
+) + geom_line(aes(y = fit), color = "red", linetype = "twodash")
 ```
 
 ## 2.2 Coeffcients, Fitted Values, and Residuals 
@@ -220,11 +222,13 @@ The `stats::summary()` function can also show us the $R^2$ value as "Multiple R-
 stats::summary.lm(roe_salary_lm)
 ```
 ## 2.4 Nonlinearities
-According to `(Wooldridge, page 37)` "...it is rather easy to incorporate many nonlinearities into simple regression analysis by appropriately defining the dependent and independent variables" (i.e. a variable transformation).
+According to `(Wooldridge, page 37)` "...it is rather easy to incorporate many non-linearities into simple regression analysis by appropriately defining the dependent and independent variables" (i.e. a variable transformation).
 
 In taking the above example of *wage* regressed on *education* suppose we believe that each year of education increases wage by a constant **percentage**.  The percentage of wage change for one unit of education is the same at any starting value for years of education. A model that gives a constant percentage effect is:
+
 <center>$log(wage) = \beta_{0} - \beta_{1}educ + \mu$<span style="float:right;">[2.10]</span></center>
-<div class="task">Task: Using equation [1] estimate the linear model of `log(wage)` (i.e. the natural log of *wage*) regressed on *educ*.</div>  
+
+<div class="task">Task: Using equation [2.10] estimate the linear model of `log(wage)` (i.e. the natural log of *wage*) regressed on *educ*.</div>  
 ```{r}
 log_wage_educ_lm <- stats::lm(log(wage) ~ educ, data = wage1)
 b0 <- coef(log_wage_educ_lm)[[1]]
@@ -233,9 +237,9 @@ b1 <- coef(log_wage_educ_lm)[[2]]
 The regression of `log(wage)` on education is: $$\widehat{log(wage)} = 0.584 + 0.083 \cdot educ$$
 The model's estimate for $\hat{\beta}_{1}$ is 0.083 or multiplying by 100 we can say that $\widehat{log(wage)}$ increases by 8.3% for every additional year of education.
 
-<div class="task">Task: Exponentiate equation [1] and plot the nonlinear nature of how *wage* increases for every additional year of education.</div> 
+<div class="task">Task: Exponentiate equation [2.10] and plot the nonlinear nature of how *wage* increases for every additional year of education.</div> 
 
-1. By exponentiating [1], we can write an equation involving just *wage* and *educ*: $$\widehat{wage} = exp(\hat{\beta_{0}} + \hat{\beta_{1}}educ + \hat{\mu)}$$
+1. By exponentiating [2.10], we can write an equation involving just *wage* and *educ*: $$\widehat{wage} = exp(\hat{\beta_{0}} + \hat{\beta_{1}}educ + \hat{\mu)}$$
 ```{r}
 educ <- seq(0, 19, 1)
 log_wage <- b0 + b1 * educ
@@ -264,7 +268,7 @@ RplotterPkg::create_scatter_plot(
 
 ## 2.5 Regression through the Origin and Regression on a Constant
 `(Wooldridge, Section 2-6, page 50)` discusses models without an intercept.
-<div class="task">Task: Using the above data of *salary* on *roe* compute the model $\hat{y} = \hat{\beta}_{1} \cdot x$ (i.e. regression is through the origin).</div>  
+<div class="task">Task: Using the above data of *salary* on *roe* compute the model $\hat{y} = \hat{\beta}_{1} \cdot x$ (i.e. regression is through the origin; in the OLS model use 0 for the intercept value).</div>  
 ```{r}
 roe_salary_no_intercept_lm <- stats::lm(formula = salary ~ 0 + roe, data = ceosal1)
 ```
@@ -396,22 +400,19 @@ The estimated coefficients via OLS are: `r coef(model_lm)`
 
 5. Plot both the population $y$ and the $\hat{y}$ estimated from OLS:
 ```{r}
-df_pop <- data.frame(
+dt <- data.table(
   x = x,
-  y = y
-)
-df_ols <- data.frame(
-  x = x,
-  y = model_lm$fitted.values
+  y = y,
+  fit = model_lm$fitted.values
 )
 
 RplotterPkg::create_scatter_plot(
-  df = df_pop,
+  df = dt,
   aes_x = "x",
   aes_y = "y",
   title = "Simulated sample and OLS Regression Line",
   rot_y_tic_label = TRUE
-) + geom_line(data = df_ols, aes(x = x, y = y), color = "blue")
+) + geom_line(aes(y = fit), color = "blue", linetype = "twodash")
 ```
 
 <div class="task">Task: Compute the standard errors of the above $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ OLS estimates.</div>  

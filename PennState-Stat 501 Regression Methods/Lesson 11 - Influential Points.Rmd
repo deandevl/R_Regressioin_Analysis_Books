@@ -1,0 +1,694 @@
+---
+title: "PennState Stat 501 Lesson 11 - Influential Points"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>
+
+Author: Rick Dean
+
+</div>
+
+<div>
+
+Article date: `r params$date`
+
+</div>
+
+::: {.abstract}
+<p class="abstract">
+
+Abstract
+
+</p>
+
+The following notes, R scripts, and plotting are based on the online course [PennState Lesson 11 Influential Points](https://online.stat.psu.edu/stat501/lesson/11)
+:::
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(here)
+library(ggplot2)
+library(data.table)
+library(RplotterPkg)
+library(RregressPkg)
+
+current_dir <- here::here("PennState-Stat 501 Regression Methods")
+```
+
+## 11-1 Distinction Between Outliers & High Leverage Observations
+
+The distinction between outliers and high leverage observations:
+
+a.  An **outlier** is a data point whose response y does not follow the general trend of the rest of the data.
+
+b.  A data point has **high leverage** if it has "extreme" predictor x values. With multiple predictors, extreme x values may be particularly high or low for one or more predictors, or may be "unusual" combinations of predictor values (e.g., with two predictors that are positively correlated, an unusual combination of predictor values might be a high value of one predictor paired with a low value of the other predictor).
+
+### Example 11-1 No outliers in y; No high/low leverage in x
+
+```{r}
+data_path <- file.path(current_dir, "data/influence1.txt")
+influence1_dt <- data.table::fread(data_path)
+RplotterPkg::create_scatter_plot(
+  df = influence1_dt,
+  aes_x = "x",
+  aes_y = "y",
+  title = "No ouliers-No leverage",
+  rot_y_tic_label = T,
+  x_major_breaks = seq(0,10,1)
+)
+```
+
+### Example 11-2 One outlier; No leverage
+
+```{r}
+data_path <- file.path(current_dir, "data/influence2.txt")
+has_outlier_dt <- data.table::fread(data_path)
+has_outlier_dt[,Line := "Has Outlier"]
+
+has_outlier_stats <- RregressPkg::ols_regress_calc(dep_str = "y", data_df = has_outlier_dt[,.(x,y)])
+has_outlier_dt[, Fit := has_outlier_stats$fitted_val]
+
+RplotterPkg::create_scatter_plot(
+  df = has_outlier_dt,
+  aes_x = "x",
+  aes_y = "y",
+  title = "One outlier-No leverage",
+  rot_y_tic_label = T,
+  x_major_breaks = seq(0,10,1)
+) + geom_point(aes(x = 4, y = 40), size=3.5, color="red")
+```
+
+### Compare line fit with and without outlier
+
+```{r}
+no_outlier_dt <- has_outlier_dt[Row != 21]
+no_outlier_dt[,Line := "No Outlier"]
+
+no_outlier_stats <- RregressPkg::ols_regress_calc(dep_str = "y",data_df = no_outlier_dt[,.(x,y)])
+no_outlier_dt[,Fit := no_outlier_stats$fitted_val]
+
+dt <- rbind(has_outlier_dt, no_outlier_dt)
+
+RplotterPkg::create_scatter_plot(
+  df = dt,
+  aes_x = "x",
+  aes_y = "Fit",
+  aes_color = "Line",
+  x_title = "X",
+  y_title = "Y",
+  connect = T,
+  show_pts = F,
+  rot_y_tic_label = T,
+  x_major_breaks = seq(0,10,1)
+) + geom_point(data = dt[Line == "Has Outlier"], aes(x = x, y = y)) +
+geom_point(aes(x = 4, y = 40), size=3.5, color="red")
+```
+
+Fit statistics with outlier ($R^2 = 91%$):
+
+```{r}
+RplotterPkg::create_table(
+  x = has_outlier_stats$coef_df
+)
+```
+
+Fit statistics with no outlier ($R^2 = 97%$):
+
+```{r}
+RplotterPkg::create_table(
+  x = no_outlier_stats$coef_df
+)
+```
+
+<blockquote>
+
+In short, the predicted responses, estimated slope coefficients, and hypothesis test results are not affected by the inclusion of the red data point. Therefore, the data point is not deemed influential. In summary, the red data point is not influential and does not have high leverage, but it is an outlier.
+
+</blockquote>
+
+### Example 11-3 One leverage; No outlier
+
+```{r}
+data_path <- file.path(current_dir, "data/influence3.txt")
+has_leverage_dt <- data.table::fread(data_path)
+has_leverage_dt[,Line := "Has Leverage"]
+
+has_leverage_stats <- RregressPkg::ols_regress_calc(dep_str = "y", data_df = has_leverage_dt[,.(x,y)])
+has_leverage_dt[, Fit := has_leverage_stats$fitted_val]
+
+RplotterPkg::create_scatter_plot(
+  df = has_leverage_dt,
+  aes_x = "x",
+  aes_y = "y",
+  title = "One leverage-No outlier",
+  rot_y_tic_label = T,
+  x_major_breaks = seq(0,15,1),
+  y_major_breaks = seq(0,70,10)
+) + geom_point(aes(x = 14, y = 68), size=3.5, color="red")
+```
+
+### Compare line fit with and without leverage
+
+```{r}
+no_leverage_dt <- has_leverage_dt[Row != 21]
+no_leverage_dt[,Line := "No Leverage"]
+
+no_leverage_stats <- RregressPkg::ols_regress_calc(dep_str = "y",data_df = no_leverage_dt[,.(x,y)])
+no_leverage_dt[,Fit := no_leverage_stats$fitted_val]
+pt_21_dt <- data.table(
+  Row = 21,
+  x = 14,
+  y = 0,
+  Line = "No Leverage",
+  Fit = 1.732178 + 14 * 5.116869
+)
+no_leverage_dt <-  rbind(no_leverage_dt, pt_21_dt)
+
+dt <- rbind(has_leverage_dt, no_leverage_dt)
+
+RplotterPkg::create_scatter_plot(
+  df = dt,
+  aes_x = "x",
+  aes_y = "Fit",
+  aes_color = "Line",
+  x_title = "X",
+  y_title = "Y",
+  connect = T,
+  show_pts = F,
+  rot_y_tic_label = T,
+  x_major_breaks = seq(0,15,1),
+  y_major_breaks = seq(0,70,10)
+) + geom_point(data = dt[Line == "Has Leverage"], aes(x = x, y = y)) +
+geom_point(aes(x = 14, y = 68), size=3.5, color="red")
+```
+
+Fit statistics with leverage ($R^2 = 97.7$):
+
+```{r}
+RplotterPkg::create_table(
+  x = has_leverage_stats$coef_df
+)
+```
+
+Fit statistics without leverage (\$R\^2 = 97.3)
+
+```{r}
+RplotterPkg::create_table(
+  x = no_leverage_stats$coef_df
+)
+```
+
+<blockquote>
+
+In short, the predicted responses, estimated slope coefficients, and hypothesis test results are not affected by the inclusion of the red data point. Therefore, the data point is not deemed influential. In summary, the red data point is not influential, nor is it an outlier, but it does have high leverage.
+
+</blockquote>
+
+### Example 11-4 With both outlier and leverage
+
+```{r}
+data_path <- file.path(current_dir, "data/influence4.txt")
+has_outl_lever_dt <- data.table::fread(data_path)
+has_outl_lever_dt[,Line := "Has Outlier-Leverage"]
+
+has_outl_lever_stats <- RregressPkg::ols_regress_calc(dep_str = "y", data_df = has_outl_lever_dt[,.(x,y)])
+has_outl_lever_dt[, Fit := has_outl_lever_stats$fitted_val]
+
+RplotterPkg::create_scatter_plot(
+  df = has_outl_lever_dt,
+  aes_x = "x",
+  aes_y = "y",
+  title = "Both outlier and leverage",
+  rot_y_tic_label = T,
+  x_major_breaks = seq(0,15,1),
+  y_major_breaks = seq(0,60,10)
+) + geom_point(aes(x = 13, y = 15), size=3.5, color="red")
+```
+
+### Compare the fit with and without outlier/leverage
+
+```{r}
+no_outl_lever_dt <- has_outl_lever_dt[Row != 21]
+no_outl_lever_dt[,Line := "No Outlier-Leverage"]
+
+no_outl_lever_stats <- RregressPkg::ols_regress_calc(dep_str = "y",data_df = no_outl_lever_dt[,.(x,y)])
+no_outl_lever_dt[,Fit := no_outl_lever_stats$fitted_val]
+
+dt <- rbind(has_outl_lever_dt, no_outl_lever_dt)
+
+RplotterPkg::create_scatter_plot(
+  df = dt,
+  aes_x = "x",
+  aes_y = "Fit",
+  aes_color = "Line",
+  x_title = "X",
+  y_title = "Y",
+  connect = T,
+  show_pts = F,
+  rot_y_tic_label = T,
+  x_major_breaks = seq(0,15,1),
+  y_major_breaks = seq(0,60,10)
+) + geom_point(data = dt[Line == "Has Outlier-Leverage"], aes(x = x, y = y)) +
+geom_point(aes(x = 13, y = 15), size=3.5, color="red")
+```
+
+Fit statistics with outlier-leverage ($R^2 = 55.2$):
+
+```{r}
+RplotterPkg::create_table(
+  x = has_outl_lever_stats$coef_df
+)
+```
+
+Fit statistics without outlier-leverage (\$R\^2 = 97.3)
+
+```{r}
+RplotterPkg::create_table(
+  x = no_outl_lever_stats$coef_df
+)
+```
+
+<blockquote>
+
+Here, the predicted responses and estimated slope coefficients are clearly affected by the presence of the red data point. While the data point did not affect the significance of the hypothesis test, the t-statistic did change dramatically. In this case, the red data point is deemed both high leverage and an outlier, and it turned out to be influential too.
+
+</blockquote>
+
+## 11-2 Using Leverages to Help Identify Extreme x Values
+
+Relationship between the predicted response $\hat{y}$ and the observed response $y$:
+
+$$\hat{y} = X(X'X)^{-1}X'y$$ That is $\hat{y} = Hy$ where $H$ is the n x n matrix -- the "hat" matrix. The "hat" matrix contains the "leverages" that help identify the extreme x values. The $h_{ii}$ quantifies the influence the observed response has on the predicted $\hat{y_{i}}$. If $h_{ii}$ is small then the observed response $y_{i}$ plays only a small role in the value of the predicted response $\hat{y_{i}}$.
+
+Important properties of the leverages:
+
+a.  The leverage $h_{ii}$ is a measure of the distance between the $x$ value for the $i^{th}$ data point and the mean of the $x$ values for all $n$ data points.
+
+b.  $h_{ii}$ is a number between 0 and 1, inclusive.
+
+c.  The sum of $h_{ii}$ equals $p$, the number of parameters (regression coefficients including the intercept).
+
+### Looking at the $h_{ii}$'s of Example 11-2 One outlier; No leverage
+
+```{r}
+hii <- diag(has_outlier_stats$hat)
+```
+
+$h_{1,1}$ = `r hii[[1]]`
+
+$h_{11,11}$ = `r hii[[11]]`
+
+$h_{20,20}$ = `r hii[[20]]`
+
+Sum $h_{ii}$ = `r sum(hii)`
+
+### Looking at the $h_{ii}$'s of Example 11-3 One leverage; No outlier
+
+The red point (14, 68) is the last point(21) and should have a large value for leverage.
+
+```{r}
+hii <- diag(has_leverage_stats$hat)
+```
+
+$h_{21,21}$ = `r hii[[21]]`
+
+### Rule of thumb for Identifying extreme x values
+
+$$h_{ii} > 3(\frac{p}{n})$$ where $p$ is the number of parameters including intercept and $n$ the number of observations.
+
+Important Distinctions:
+
+a.  leverage merely quantifies the **potential** for a data point to exert a strong influence on the regression
+
+b.  leverage depends only on predictor variables matrix "hat"
+
+c.  influence also depends on the observed value of the response $y_{i}$.
+
+## 11-3 Identifying Outliers (unusual y values)
+
+### Studentized residuals
+
+With ordinary residuals their magnitude depends on the units of measurement, thereby making it difficult to use residuals in detecting unusual $y$ values. The formula for the studentized residual (also known as internally studentized residuals):
+
+$$r_{i} = \frac{e_{i}}{s(e_{i})} = \frac{e_{i}}{\sqrt{MSE(1 - h_{ii})}}$$
+
+### A simple example
+1. A simple data set with x and y to be fitted:
+```{r}
+data_dt <- data.table(
+  x = c(1,2,3,4),
+  y = c(2,5,6,9)
+)
+data_stats <- RregressPkg::ols_regress_calc(dep_str = "y", data_df = data_dt)
+sres_dt <- data.table(
+  x = c(1,2,3,4),
+  y = c(2,5,6,9),
+  FITS = data_stats$fitted_val,
+  RESI = data_stats$resid,
+  HI = diag(data_stats$hat),
+  SRES = data_stats$influence_df$Student_Res
+)
+RplotterPkg::create_table(x = sres_dt)
+```
+
+A studentized residual *SRES* that is larger than 3 (in absolute value) is generally deemed an outlier.
+
+### Looking at Example 11-2 One outlier; No leverage
+Plot the studentized residual for each of the observations in Example 11-2:
+```{r}
+dt <- has_outlier_dt[, .(x, y)]
+influence_lst <- RregressPkg::plot_obs_influence(
+  data_df = dt,
+  resp_str = "y",
+  influence_meas = "internal",
+  title = "Studentized Residual Across Observations",
+  subtitle = "PennState Example 11-2 with one outlier",
+  rot_y_tic_label = T
+)
+influence_lst$plot
+```
+
+Showing observation 21 with a large studentized residual value.
+
+Looking at the ANOVA with an outlier:
+```{r}
+RplotterPkg::create_table(x = has_outlier_stats$anova_df)
+```
+Looking at the ANOVA without the outlier:
+```{r}
+RplotterPkg::create_table(no_outlier_stats$anova_df)
+```
+
+Note that with the outlier the Mean Square Residual Error is substantially inflated from 6.7 to 22.2.
+
+## 11.4 Deleted Residuals
+
+### Unstandardized deleted residual
+Definition of deleted residual:
+$$d_{i} = y_{i} - \hat{y_{(i)}}$$
+$y_{i}$  the observed response for the $i^{th}$ observation
+
+$\hat{y_{(i)}}$ the predicted response for the $i^{th}$ observation based on the estimated model with the $i^{th}$ observation removed.
+
+### Unstandardized deleted residual example.
+
+1. Create two datasets with and without an outlier and plot their regression lines:
+```{r}
+no_outlier_dt <- data.table(
+  x = c(1.0, 2.0, 3.0),
+  y = c(2.1, 3.8, 5.2),
+  line = rep("No_Outlier",3)
+)
+
+outlier_dt <- data.table(
+  x = c(1.0, 2.0, 3.0, 10.0),
+  y = c(2.1, 3.8, 5.2, 2.1),
+  line = rep("Outlier", 4)
+)
+
+no_outlier_stats <- RregressPkg::ols_regress_calc(dep_str = "y", data_df = no_outlier_dt[,.(x,y)])
+outlier_stats <- RregressPkg::ols_regress_calc(dep_str = "y", data_df = outlier_dt[,.(x,y)])
+
+no_outlier_dt[, fit := no_outlier_stats$fitted_val]
+outlier_dt[, fit := outlier_stats$fitted_val]
+
+dt <- rbind(no_outlier_dt, outlier_dt)
+
+RplotterPkg::create_scatter_plot(
+  df = dt,
+  aes_x = "x",
+  aes_y = "fit",
+  aes_linetype = "line",
+  connect = T,
+  show_pts = F,
+  x_major_breaks = seq(1,10,1)
+) + geom_point(data = no_outlier_dt, color = "blue") +
+  geom_point(data = outlier_dt[4], color = "red", size = 3.5)
+```
+
+2. The coefficients for the regression line with the 4th red point (10,2.1) removed:
+```{r}
+RplotterPkg::create_table(x = no_outlier_stats$coef_df)
+```
+
+3. Recompute the predicted value for 4th point with x = 10 using the above coefficients:
+```{r}
+y_4 <- 0.60 + 1.55 * 10
+```
+
+$\hat{y_{(4)}}$ = `r y_4`
+
+4. Compute $d_{4}$:
+```{r}
+d_4 <- 2.1 - y_4
+```
+
+$d_{4}$ = `r d_4`
+
+Note that we are still using the units of measurement in determining how large is enough to remove a point.  An alternative is to use a studentized deleted residual.
+
+### Studentized deleted residuals (TRES)
+Also known as externally studentized residual. The equation:
+
+$$t_{i} = \frac{e_{i}}{\sqrt{MSE_{(i)}(1 - h_{ii})}}$$
+where $e_{i}$ is the ordinary residual divided by a factor that includes the mean square error $MSE_{(i)}$ with the $i^{th}$ observation removed and the leverage $h_{ii}$.
+
+### Studentized deleted residual example
+Looking at the data file *Influence2.txt* which has one outlier at observation 21.
+
+Show both the studentized(SRES) and deleted studentized residual(TRES):
+```{r}
+sres_tres_dt <- data.table(
+  Row = 1:nrow(has_outlier_dt),
+  X = has_outlier_dt$x,
+  Y = has_outlier_dt$y,
+  RESI = has_outlier_stats$resid,
+  SRES = has_outlier_stats$influence_df$Student_Res,
+  TRES = has_outlier_stats$influence_df$Student_Del_Res
+)
+RplotterPkg::create_table(
+  x = sres_tres_dt,
+  caption = "Influence Measures SRES and TRES",
+  scroll_height = "300px",
+  fixed_thead = T
+)
+```
+
+Note the SRES and TRES values for the outlier observation no. 21.
+
+## 11-5  Identifying Influential Data Points
+
+### Difference in fits (DFFITS)
+Is defined as:
+$$DFFITS_{i} = \frac{\hat{y_{i}} - \hat{y_{(i)}}}{\sqrt{MSE_{(i)}h_{ii}}}$$
+<blockquote>...the numerator measures the difference in the predicted responses obtained when the $i^{th}$ data point is included and excluded from the analysis. The denominator is the estimated standard deviation of the difference in the predicted responses. Therefore, the difference in fits quantifies the number of standard deviations that the fitted value changes when the data point is omitted.</blockquote>
+
+### DFFITS example
+Looking again at the data file *Influence2.txt* which has one outlier at observation 21.
+
+Show the studentized(SRES), deleted studentized residual(TRES) and difference in fits(DFFITS):
+```{r}
+sres_tres_dt <- data.table(
+  Row = 1:nrow(has_outlier_dt),
+  X = has_outlier_dt$x,
+  Y = has_outlier_dt$y,
+  RESI = has_outlier_stats$resid,
+  SRES = has_outlier_stats$influence_df$Student_Res,
+  TRES = has_outlier_stats$influence_df$Student_Del_Res,
+  DFFITS = has_outlier_stats$influence_df$Dffits
+)
+RplotterPkg::create_table(
+  x = sres_tres_dt,
+  caption = "Studentized, Deleted Studentized Influence and Difference Fits",
+  scroll_height = "300px",
+  fixed_thead = T
+)
+```
+
+Again note the SRES, TRES, DFFITS values for the outlier observation no. 21 as compared to the other observations. A *DFFITS* is considered influential if its absolute value is greater than:
+
+$$2\sqrt{\frac{p + 1}{n - p - 1}} = 2\sqrt{\frac{2 + 1}{21 - 2 -1}} = 0.82$$
+where $n$ is the number of observations and $p$ is the number of predictors including the intercept.
+
+### Cook's distance measure
+Cook's distance is defined as:
+
+$$D_{i} = \frac{(y_{i} - \hat{y_{i}})}{p \times MSE}\left(\frac{h_{ii}}{(1 - h_{ii})^2}\right)$$
+<blockquote>The main thing to recognize is that Cook's $D_{i}$  depends on both the residual, $e_{i}$ (in the first term), and the leverage, $h_{ii}$  (in the second term). That is, both the x value and the y value of the data point play a role in the calculation of Cook's distance.</blockquote>
+
+### Cook's distance example
+Looking again at the data file *Influence2.txt* which has one outlier at observation 21.
+
+Show the studentized(SRES), deleted studentized residual(TRES), difference in fits(DFFITS), and Cook's distance:
+```{r}
+sres_tres_dt <- data.table(
+  Row = 1:nrow(has_outlier_dt),
+  X = has_outlier_dt$x,
+  Y = has_outlier_dt$y,
+  RESI = has_outlier_stats$resid,
+  SRES = has_outlier_stats$influence_df$Student_Res,
+  TRES = has_outlier_stats$influence_df$Student_Del_Res,
+  DFFITS = has_outlier_stats$influence_df$Dffits,
+  Cook = has_outlier_stats$influence_df$Cook
+)
+RplotterPkg::create_table(
+  x = sres_tres_dt,
+  caption = "Studentized, Deleted Student Influence, Difference Fits, Cook",
+  scroll_height = "300px",
+  fixed_thead = T
+)
+```
+
+Again note the SRES, TRES, DFFITS, Cook values for the outlier observation no. 21 as compared to the other observations. The guidelines for Cook's distance measure:
+
+a. If $D_{i}$ is greater than 0.5, then the $i_{th}$ data point is worthy of further investigation.
+
+b. If $D_{i}$ is greater than 1.0, the the $i_{th}$ data point is quite likely to be influential.
+
+c. If $D_{i}$ sticks out like a sore thumb from other $D_{i}$ values, it is almost certainly influential.
+
+## 11-6 Further Examples
+
+### Male Foot Length and Height Data
+
+1. Read in the data:
+```{r}
+data_path <- file.path(current_dir, "data/height_foot.txt")
+foot_height_dt <- data.table::fread(data_path)
+```
+
+2. Plot the data:
+```{r}
+RplotterPkg::create_scatter_plot(
+  df = foot_height_dt,
+  aes_x = "height",
+  aes_y = "foot",
+  title = "Male Height vs Foot Length",
+  subtitle = "33 observations and 1 outlier",
+  rot_y_tic_label = T,
+  x_limits = c(60,85),
+  x_major_breaks = seq(60, 85, 5)
+)
+```
+
+It appears that we may have an outlier.
+
+3. Plot the observations' *Cook's distance* influence measure:
+```{r}
+cook_foot_height_lst <- RregressPkg::plot_obs_influence(
+  foot_height_dt,
+  resp_str = "foot",
+  influence_meas = "cook",
+  label_threshold = 3.0,
+  title = "Cook's Distance Influential Measure",
+  subtitle = "Male height vs foot",
+  rot_y_tic_label = T
+)
+cook_foot_height_lst$plot
+```
+
+4. It's clear that observation 28 (*height* = 84, *foot* = 27) is an outlier. Compute the OLS estimates without this observation:
+```{r}
+foot_height_no28_dt <- foot_height_dt[-28]
+ols_no28_lst <- RregressPkg::ols_regress_calc(data_df = foot_height_no28_dt, dep_str = "foot")
+RplotterPkg::create_table(
+  x = ols_no28_lst$coef_df,
+  caption = "OLS for Foot ~ Height without obs 28"
+)
+```
+
+5. Compute the value for *foot* with *height* = 84 using the new OLS coefficients:
+```{r}
+new_foot <- 0.25312 + 0.384 * 84
+new_foot
+```
+
+6. Compute the unstandardized deleted residual $d_{i} = y_{i} - \hat{y_{i(i)}}$ :
+```{r}
+d_i_28 <- foot_height_dt[28,foot] - new_foot
+d_i_28
+```
+
+7. Compute the unstandardized $DFFITS = \hat{y_{i}} - \hat{y_{i(i)}}$ (difference between the two estimated response values):
+```{r}
+ols_lst <- RregressPkg::ols_regress_calc(data_df = foot_height_dt, dep_str = "foot")
+DFFITS_i <- ols_lst$fitted_val[[28]] - new_foot
+DFFITS_i
+```
+
+### Hospital Infection Data
+
+1. Read in the data and select average length of patient stay(x) and infection_risk(y) for $n$ = 112:
+```{r}
+data_path <- file.path(current_dir, "data/hospital_infct_03.txt")
+hosp_infect_raw_dt <- data.table::fread(data_path)
+hosp_infect_dt <- hosp_infect_raw_dt[, .(Stay, InfctRsk)]
+```
+
+2. Plot the data with estimated OLS line:
+```{r}
+ols_lst <- RregressPkg::ols_regress_calc(data_df = hosp_infect_dt, dep_str = "InfctRsk")
+fitted_dt <- data.table(
+  Stay = hosp_infect_dt$Stay,
+  Fit = ols_lst$fitted_val
+)
+RplotterPkg::create_scatter_plot(
+  df = hosp_infect_dt,
+  aes_x = "Stay",
+  aes_y = "InfctRsk",
+  title = "Hospital Infection ~ Stay",
+  subtitle = "OLS line estimate for 112 observations",
+  rot_y_tic_label = T,
+  x_limits = c(5,20),
+  x_major_breaks = seq(5, 20, 2.5)
+) + geom_line(data = fitted_dt, aes(y = Fit), color="red", size = 1.5)
+```
+
+<blockquote>Notice that there are two hospitals with extremely large values for length of stay and that the infection risks for those two hospitals are not correspondingly large.</blockquote>
+
+
+3. Plot the Cook's Distance measure of influence:
+```{r}
+cook_influ_lst <- RregressPkg::plot_obs_influence(
+  data_df = hosp_infect_dt,
+  resp_str = "InfctRsk",
+  influence_meas = "cook",
+  label_threshold = 0.2,
+  title = "Cook's Distance for Influential Observations",
+  subtitle = "Hospital Infection ~ Stay",
+  rot_y_tic_label = T
+)
+cook_influ_lst$plot
+```
+
+It appears that Cook's distance is large for the two hospitals with long average length of stay.
+
+4. Show the influence measures for this data:
+```{r}
+RplotterPkg::create_table(
+  x = ols_lst$influence_df,
+  caption = "Influence Measures for Hospital Infection ~ Stay",
+  full_width = T,
+  fixed_thead = T,
+  scroll_height = "300px",
+  footnote_title = "Source",
+  footnote = "112 Hospitals",
+  align_v = c("l","c","c","c","c")
+)
+```
+
+
+

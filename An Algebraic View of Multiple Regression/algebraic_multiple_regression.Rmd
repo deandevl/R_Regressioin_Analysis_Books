@@ -9,13 +9,6 @@ params:
   date: !r Sys.Date()    
 ---
 
-```{r, warning=FALSE, message=FALSE}
-library(knitr)
-library(dplyr)
-library(RregressPkg)
-library(RplotterPkg)
-```
-
 ```{r,setup, include=FALSE, eval=TRUE}
 options(knitr.table.format = "html", width = 140)
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
@@ -28,6 +21,13 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
   <p class="abstract">Abstract</p>
   The following R scripts/plots were inspired by the article [An Algebraic View of Multiple Regression](https://dasilvaa10.github.io/b1/)  by Alex daSilva
 </div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(dplyr)
+library(RregressPkg)
+library(RplotterPkg)
+```
 
 ## The data
 
@@ -46,6 +46,9 @@ summary(mpg_lm)
 ```
   
 ## Estimate the OLS parameters using matrix calculations
+
+<div class="note">Note: See [RegressPkg::ols_regress_calc()](https://github.com/deandevl/RregressPkg) for the derivation of the OLS via matrix calculations.</div>
+
 ```{r}
 ols_data_df <- data.frame(
   mpg = mtcars$mpg,
@@ -60,6 +63,8 @@ mpg_ols_lst <- RregressPkg::ols_regress_calc(
 ```
 
 ## Plot the two fitted estimates
+
+The `lm()` vs the `RregressPkg::ols_regress_calc()` versions:
 ```{r}
 fitted_df <- data.frame (
   lm_fitted = mpg_lm$fitted.values,
