@@ -1,0 +1,111 @@
+---
+title: "Create a Covariance/Correlation Matrix"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+The following R scripts in manually creating a covariance was inspired by the article [Making a Covariance Matrix in R](https://stats.seandolinar.com/making-a-covariance-matrix-in-r/) by seandolinar(GitHub)
+</div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(RplotterPkg)
+```
+
+## The data
+
+```{r}
+data_dt <- data.table(
+  math = c(84, 82, 81, 89, 73, 94, 92, 70, 88, 95),
+  science = c(85, 82, 72, 77, 75, 89, 95, 84, 77, 94),
+  history = c(97, 94, 93, 95, 88, 82, 78, 84, 69, 78))
+
+k <- ncol(data_dt)
+n <- nrow(data_dt)
+```
+
+## Creating the covariance/correlation manually
+
+1. Create a matrix of means for each column:
+```{r}
+means_dt <- data_dt[,.(math = mean(math), science = mean(science), history = mean(history))]
+means_mt <- matrix(data = 1, nrow = n) %*% as.matrix(means_dt, rownames = F)
+means_mt
+```
+
+2. Subtract *means_mt* from *data_dt*:
+```{r}
+data_mt <- as.matrix(data_dt, rownames = F)
+diff_mt <- data_mt - means_mt
+diff_mt
+```
+
+3. Create the covariance matrix:
+```{r}
+var_cov_mt <- t(diff_mt) %*% diff_mt * (n - 1)^-1
+var_cov_mt
+```
+
+4. Pull variance and standard deviations:
+```{r}
+var_mt <- diag(var_cov_mt)
+sd_mt <- sqrt(var_mt)
+```
+
+Variance = `r var_mt`
+
+SD = `r sd_mt`
+
+5. Create the correlation matrix:
+```{r}
+se_product_mt <- sd_mt %*% t(sd_mt)
+corr_mt <- var_cov_mt / se_product_mt
+```
+
+## Creating the covariance/correlation via stats:: package
+
+1. Covariance using `stats::cov()`
+```{r}
+var_cov_R_mt <- stats::cov(data_dt)
+```
+
+2. Correlation usine `stats::cor()`
+```{r}
+corr_R_mt <- stats::cor(data_dt)
+```
+
+## Compare correlation results
+
+1. Correlations manually:
+```{r}
+RplotterPkg::create_table(
+  x = corr_mt,
+  caption = "Correlations Manually"
+)
+```
+
+2. Correlations via `stats::cor()`:
+```{r}
+RplotterPkg::create_table(
+  x = corr_R_mt,
+  caption = "Correlations via stats::cor()"
+)
+```
+

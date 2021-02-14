@@ -11,7 +11,7 @@
 
 
 
-<title>Part 1 - Regression Analysis with Cross-Sectional Data</title>
+<title>Create a Covariance/Correlation Matrix</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -259,6 +259,230 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -423,19 +647,16 @@ summary {
 
 
 
-<h1 class="title toc-ignore">Part 1 - Regression Analysis with Cross-Sectional Data</h1>
+<h1 class="title toc-ignore">Create a Covariance/Correlation Matrix</h1>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#multiple-regression-analysis-estimation">3 Multiple Regression Analysis: Estimation</a>
-<ul>
-<li><a href="#multiple-regression-in-practice">3.1 Multiple Regression in Practice</a></li>
-<li><a href="#ols-in-matrix-form">3.2 OLS in Matrix Form</a></li>
-<li><a href="#ceteris-paribus-interpretation-and-omitted-variable-bias">3.3 Ceteris Paribus Interpretation and Omitted Variable Bias</a></li>
-<li><a href="#standard-errors-multicollinearity-and-vif">3.4 Standard Errors, Multicollinearity, and VIF</a></li>
-</ul></li>
+<li><a href="#the-data">The data</a></li>
+<li><a href="#creating-the-covariancecorrelation-manually">Creating the covariance/correlation manually</a></li>
+<li><a href="#creating-the-covariancecorrelation-via-stats-package">Creating the covariance/correlation via stats:: package</a></li>
+<li><a href="#compare-correlation-results">Compare correlation results</a></li>
 </ul>
 </div>
 
@@ -443,480 +664,249 @@ summary {
 Author: Rick Dean
 </div>
 <div>
-Article date: 2021-02-01
+Article date: 2021-02-08
 </div>
 <div class="abstract">
 <p class="abstract">
 Abstract
 </p>
-<p>The following notes and scripts are based on the following sources: <a href="https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&amp;keywords=Introductory+Econometrics%3A+A+Modern+Approach&amp;qid=1597005903&amp;s=books&amp;sr=1-2">Introductory Econometrics - A Modern Approach</a> by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as <code>(Wooldridge)</code>.</p>
-<p>The companion text <a href="http://www.urfie.net/index.html">Using R for Introductory Econometrics</a> by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as <code>(Heiss)</code>. The following is from <strong>Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 3</strong> of <code>(Heiss)</code>.</p>
+<p>The following R scripts in manually creating a covariance was inspired by the article <a href="https://stats.seandolinar.com/making-a-covariance-matrix-in-r/">Making a Covariance Matrix in R</a> by seandolinar(GitHub)</p>
 </div>
 <pre class="r"><code>library(knitr)
+library(kableExtra)
 library(data.table)
-library(wooldridge)
-library(ggplot2)
-library(RregressPkg)
-library(RplotterPkg)
-library(car)</code></pre>
-<div id="multiple-regression-analysis-estimation" class="section level1">
-<h1>3 Multiple Regression Analysis: Estimation</h1>
-<div id="multiple-regression-in-practice" class="section level2">
-<h2>3.1 Multiple Regression in Practice</h2>
-<div class="task">
-Task: Apply the <code>stats::lm()</code> function to determinants of College GPA <code>(Wooldridge, example 3.1, page 66)</code>.
+library(RplotterPkg)</code></pre>
+<div id="the-data" class="section level2">
+<h2>The data</h2>
+<pre class="r"><code>data_dt &lt;- data.table(
+  math = c(84, 82, 81, 89, 73, 94, 92, 70, 88, 95),
+  science = c(85, 82, 72, 77, 75, 89, 95, 84, 77, 94),
+  history = c(97, 94, 93, 95, 88, 82, 78, 84, 69, 78))
+
+k &lt;- ncol(data_dt)
+n &lt;- nrow(data_dt)</code></pre>
 </div>
+<div id="creating-the-covariancecorrelation-manually" class="section level2">
+<h2>Creating the covariance/correlation manually</h2>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Create a matrix of means for each column:</li>
 </ol>
-<pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)
-str(gpa_1)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   141 obs. of  29 variables:
-##  $ age     : int  21 21 20 19 20 20 22 22 22 19 ...
-##  $ soph    : int  0 0 0 1 0 0 0 0 0 1 ...
-##  $ junior  : int  0 0 1 0 1 0 0 0 0 0 ...
-##  $ senior  : int  1 1 0 0 0 1 0 0 0 0 ...
-##  $ senior5 : int  0 0 0 0 0 0 1 1 1 0 ...
-##  $ male    : int  0 0 0 1 0 1 0 0 0 0 ...
-##  $ campus  : int  0 0 0 1 0 1 0 0 0 0 ...
-##  $ business: int  1 1 1 1 1 1 1 0 0 1 ...
-##  $ engineer: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ colGPA  : num  3 3.4 3 3.5 3.6 ...
-##  $ hsGPA   : num  3 3.2 3.6 3.5 3.9 ...
-##  $ ACT     : int  21 24 26 27 28 25 25 22 21 27 ...
-##  $ job19   : int  0 0 1 1 0 0 0 1 1 1 ...
-##  $ job20   : int  1 1 0 0 1 0 0 0 0 0 ...
-##  $ drive   : int  1 1 0 0 0 0 0 1 1 0 ...
-##  $ bike    : int  0 0 0 0 1 0 1 0 0 0 ...
-##  $ walk    : int  0 0 1 1 0 1 0 0 0 1 ...
-##  $ voluntr : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ PC      : int  0 0 0 0 0 0 0 1 0 1 ...
-##  $ greek   : int  0 0 0 0 0 0 1 0 0 0 ...
-##  $ car     : int  1 1 1 0 1 1 1 0 1 0 ...
-##  $ siblings: int  1 0 1 1 1 1 1 1 1 1 ...
-##  $ bgfriend: int  0 1 0 0 1 0 0 1 1 0 ...
-##  $ clubs   : int  0 1 1 0 0 0 1 0 1 1 ...
-##  $ skipped : num  2 0 0 0 0 0 0 3 2 0.5 ...
-##  $ alcohol : num  1 1 1 0 1.5 0 2 3 2.5 0.75 ...
-##  $ gradMI  : int  1 1 1 0 1 0 1 1 1 1 ...
-##  $ fathcoll: int  0 1 1 0 1 1 0 1 1 0 ...
-##  $ mothcoll: int  0 1 1 0 0 0 1 1 1 1 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<pre class="r"><code>means_dt &lt;- data_dt[,.(math = mean(math), science = mean(science), history = mean(history))]
+means_mt &lt;- matrix(data = 1, nrow = n) %*% as.matrix(means_dt, rownames = F)
+means_mt</code></pre>
+<pre><code>##       math science history
+##  [1,] 84.8      83    85.8
+##  [2,] 84.8      83    85.8
+##  [3,] 84.8      83    85.8
+##  [4,] 84.8      83    85.8
+##  [5,] 84.8      83    85.8
+##  [6,] 84.8      83    85.8
+##  [7,] 84.8      83    85.8
+##  [8,] 84.8      83    85.8
+##  [9,] 84.8      83    85.8
+## [10,] 84.8      83    85.8</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Apply <code>stats::lm()</code>:</li>
+<li>Subtract <em>means_mt</em> from <em>data_dt</em>:</li>
 </ol>
-<pre class="r"><code>gpa_model &lt;- stats::lm(formula = colGPA ~ hsGPA + ACT, data = gpa_1)
-summary(gpa_model)</code></pre>
-<pre><code>## 
-## Call:
-## stats::lm(formula = colGPA ~ hsGPA + ACT, data = gpa_1)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.85442 -0.24666 -0.02614  0.28127  0.85357 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 1.286328   0.340822   3.774 0.000238 ***
-## hsGPA       0.453456   0.095813   4.733 5.42e-06 ***
-## ACT         0.009426   0.010777   0.875 0.383297    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.3403 on 138 degrees of freedom
-## Multiple R-squared:  0.1764, Adjusted R-squared:  0.1645 
-## F-statistic: 14.78 on 2 and 138 DF,  p-value: 1.526e-06</code></pre>
-<div class="task">
-Task: Apply the <code>stats::lm()</code> function to determinants of hourly wage <code>(Wooldridge, example 3.2, page 67)</code>.
-</div>
-<ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
-</ol>
-<pre class="r"><code>wage_1 &lt;- data.table::setDT(wooldridge::wage1)
-str(wage_1)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   526 obs. of  24 variables:
-##  $ wage    : num  3.1 3.24 3 6 5.3 ...
-##  $ educ    : int  11 12 11 8 12 16 18 12 12 17 ...
-##  $ exper   : int  2 22 2 44 7 9 15 5 26 22 ...
-##  $ tenure  : int  0 2 0 28 2 8 7 3 4 21 ...
-##  $ nonwhite: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ female  : int  1 1 0 0 0 0 0 1 1 0 ...
-##  $ married : int  0 1 0 1 1 1 0 0 0 1 ...
-##  $ numdep  : int  2 3 2 0 1 0 0 0 2 0 ...
-##  $ smsa    : int  1 1 0 1 0 1 1 1 1 1 ...
-##  $ northcen: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ south   : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ west    : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ construc: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ ndurman : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ trcommpu: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ trade   : int  0 0 1 0 0 0 1 0 1 0 ...
-##  $ services: int  0 1 0 0 0 0 0 0 0 0 ...
-##  $ profserv: int  0 0 0 0 0 1 0 0 0 0 ...
-##  $ profocc : int  0 0 0 0 0 1 1 1 1 1 ...
-##  $ clerocc : int  0 0 0 1 0 0 0 0 0 0 ...
-##  $ servocc : int  0 1 0 0 0 0 0 0 0 0 ...
-##  $ lwage   : num  1.13 1.18 1.1 1.79 1.67 ...
-##  $ expersq : int  4 484 4 1936 49 81 225 25 676 484 ...
-##  $ tenursq : int  0 4 0 784 4 64 49 9 16 441 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Apply <code>stats::lm()</code>:</li>
-</ol>
-<pre class="r"><code>wage_model &lt;- stats::lm(formula = log(wage) ~ educ + exper + tenure, data = wage_1)
-summary(wage_model)</code></pre>
-<pre><code>## 
-## Call:
-## stats::lm(formula = log(wage) ~ educ + exper + tenure, data = wage_1)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.05802 -0.29645 -0.03265  0.28788  1.42809 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.284360   0.104190   2.729  0.00656 ** 
-## educ        0.092029   0.007330  12.555  &lt; 2e-16 ***
-## exper       0.004121   0.001723   2.391  0.01714 *  
-## tenure      0.022067   0.003094   7.133 3.29e-12 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.4409 on 522 degrees of freedom
-## Multiple R-squared:  0.316,  Adjusted R-squared:  0.3121 
-## F-statistic: 80.39 on 3 and 522 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="task">
-Task: Repeat the estimate of <em>wage_model</em> with just the <em>educ</em> variable.
-</div>
-<pre class="r"><code>wage_model_educ &lt;- stats::lm(formula = log(wage) ~ educ, data = wage_1)
-summary(wage_model_educ)</code></pre>
-<pre><code>## 
-## Call:
-## stats::lm(formula = log(wage) ~ educ, data = wage_1)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.21158 -0.36393 -0.07263  0.29712  1.52339 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.583773   0.097336   5.998 3.74e-09 ***
-## educ        0.082744   0.007567  10.935  &lt; 2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.4801 on 524 degrees of freedom
-## Multiple R-squared:  0.1858, Adjusted R-squared:  0.1843 
-## F-statistic: 119.6 on 1 and 524 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="task">
-Task: Apply the <code>stats::lm()</code> function to determinants of 401(k) participation rate <code>(Wooldridge, example 3.3, page 70)</code>.
-</div>
-<ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
-</ol>
-<pre class="r"><code>k_401k &lt;- data.table::setDT(wooldridge::k401k)
-str(k_401k)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   1534 obs. of  8 variables:
-##  $ prate  : num  26.1 100 97.6 100 82.5 ...
-##  $ mrate  : num  0.21 1.42 0.91 0.42 0.53 ...
-##  $ totpart: num  1653 262 166 257 591 ...
-##  $ totelg : num  6322 262 170 257 716 ...
-##  $ age    : int  8 6 10 7 28 7 31 13 21 10 ...
-##  $ totemp : num  8709 315 275 500 933 ...
-##  $ sole   : int  0 1 1 0 1 1 1 0 1 1 ...
-##  $ ltotemp: num  9.07 5.75 5.62 6.21 6.84 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Apply <code>stats::lm()</code>:</li>
-</ol>
-<pre class="r"><code>k401k_model &lt;- stats::lm(formula = prate ~ mrate + age, data = k_401k)
-summary(k401k_model)</code></pre>
-<pre><code>## 
-## Call:
-## stats::lm(formula = prate ~ mrate + age, data = k_401k)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -81.162  -8.067   4.787  12.474  18.256 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  80.1191     0.7790  102.85  &lt; 2e-16 ***
-## mrate         5.5213     0.5259   10.50  &lt; 2e-16 ***
-## age           0.2432     0.0447    5.44 6.21e-08 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 15.94 on 1531 degrees of freedom
-## Multiple R-squared:  0.09225,    Adjusted R-squared:  0.09106 
-## F-statistic: 77.79 on 2 and 1531 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="task">
-Task: Apply the <code>stats::lm()</code> function to determinants of arrest <code>(Wooldridge, example 3.5, page 72)</code>.
-</div>
-<ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
-</ol>
-<pre class="r"><code>crime_1 &lt;- data.table::setDT(wooldridge::crime1)
-str(crime_1)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   2725 obs. of  16 variables:
-##  $ narr86 : int  0 2 1 2 1 0 2 5 0 0 ...
-##  $ nfarr86: int  0 2 1 2 1 0 2 3 0 0 ...
-##  $ nparr86: int  0 0 0 1 0 0 1 5 0 0 ...
-##  $ pcnv   : num  0.38 0.44 0.33 0.25 0 ...
-##  $ avgsen : num  17.6 0 22.8 0 0 ...
-##  $ tottime: num  35.2 0 22.8 0 0 ...
-##  $ ptime86: int  12 0 0 5 0 0 0 0 9 0 ...
-##  $ qemp86 : num  0 1 0 2 2 4 0 0 0 3 ...
-##  $ inc86  : num  0 0.8 0 8.8 8.1 ...
-##  $ durat  : num  0 0 11 0 1 ...
-##  $ black  : int  0 0 1 0 0 0 1 0 1 0 ...
-##  $ hispan : int  0 1 0 1 0 0 0 0 0 1 ...
-##  $ born60 : int  1 0 1 1 0 1 1 1 1 1 ...
-##  $ pcnvsq : num  0.1444 0.1936 0.1089 0.0625 0 ...
-##  $ pt86sq : int  144 0 0 25 0 0 0 0 81 0 ...
-##  $ inc86sq: num  0 0.64 0 77.44 65.61 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Apply <code>stats::lm()</code>:</li>
-</ol>
-<pre class="r"><code>crime_model &lt;- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86, data = crime_1)
-summary(crime_model)</code></pre>
-<pre><code>## 
-## Call:
-## stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86, data = crime_1)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -0.7118 -0.4031 -0.2953  0.3452 11.4358 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  0.711772   0.033007  21.565  &lt; 2e-16 ***
-## pcnv        -0.149927   0.040865  -3.669 0.000248 ***
-## ptime86     -0.034420   0.008591  -4.007 6.33e-05 ***
-## qemp86      -0.104113   0.010388 -10.023  &lt; 2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.8416 on 2721 degrees of freedom
-## Multiple R-squared:  0.04132,    Adjusted R-squared:  0.04027 
-## F-statistic:  39.1 on 3 and 2721 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="task">
-Task: Repeat the estimate of <em>crime_model</em> with <em>avgsen</em> (average sentence) variable.
-</div>
-<pre class="r"><code>crime_model_avgsen &lt;- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86 + avgsen, data = crime_1)
-summary(crime_model_avgsen)</code></pre>
-<pre><code>## 
-## Call:
-## stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86 + avgsen, 
-##     data = crime_1)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -0.9330 -0.4247 -0.2934  0.3506 11.4403 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  0.706756   0.033151  21.319  &lt; 2e-16 ***
-## pcnv        -0.150832   0.040858  -3.692 0.000227 ***
-## ptime86     -0.037391   0.008794  -4.252 2.19e-05 ***
-## qemp86      -0.103341   0.010396  -9.940  &lt; 2e-16 ***
-## avgsen       0.007443   0.004734   1.572 0.115993    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.8414 on 2720 degrees of freedom
-## Multiple R-squared:  0.04219,    Adjusted R-squared:  0.04079 
-## F-statistic: 29.96 on 4 and 2720 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-<div id="ols-in-matrix-form" class="section level2">
-<h2>3.2 OLS in Matrix Form</h2>
-<p>The derivation of the OLS estimates via matrix operations is presented at <code>(Wooldridge, Appendix E, page 720)</code> and has the following form:</p>
-<center>
-<span class="math inline">\(\hat{\beta} = (X^\prime X)^{-1}X^\prime y\)</span><span style="float:right;">[3.2]</span>
-</center>
-The vector of residuals can be manually calculated as:
-<center>
-<span class="math inline">\(\hat\mu = y - X\hat\beta\)</span><span style="float:right;">[3.3]</span>
-</center>
-The estimated variance of the error term <span class="math inline">\(\hat\sigma^2\)</span> is:
-<center>
-<span class="math inline">\(\hat\sigma^2 = \frac{1}{n-k-1}\hat\mu^\prime \hat\mu\)</span><span style="float:right;">[3.4]</span>
-</center>
-<p>The standard error of the regression (SER) is <span class="math inline">\(\hat\sigma = \sqrt{\hat\sigma^2}\)</span></p>
-According to <code>(Wooldridge, Theorem E.2, page 724)</code> the variance-covariance matrix of the OLS estimators has the matrix form:
-<center>
-<span class="math inline">\(\widehat{Var(\hat\beta)}=\hat\sigma^2(X^\prime X)^{-1}\)</span><span style="float:right;">[3.5]</span>
-</center>
-<div class="task">
-Task: Using the <em>gpa1</em> data apply the above equations [3.2] - [3.5].
-</div>
-<ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
-</ol>
-<pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Extract k, n, X, Y:</li>
-</ol>
-<pre class="r"><code>k &lt;- 2
-n &lt;- nrow(gpa_1)
-X &lt;- cbind(1, gpa_1$hsGPA, gpa_1$ACT)
-Y &lt;- gpa_1$colGPA
-head(X)</code></pre>
-<pre><code>##      [,1] [,2] [,3]
-## [1,]    1  3.0   21
-## [2,]    1  3.2   24
-## [3,]    1  3.6   26
-## [4,]    1  3.5   27
-## [5,]    1  3.9   28
-## [6,]    1  3.4   25</code></pre>
+<pre class="r"><code>data_mt &lt;- as.matrix(data_dt, rownames = F)
+diff_mt &lt;- data_mt - means_mt
+diff_mt</code></pre>
+<pre><code>##        math science history
+##  [1,]  -0.8       2    11.2
+##  [2,]  -2.8      -1     8.2
+##  [3,]  -3.8     -11     7.2
+##  [4,]   4.2      -6     9.2
+##  [5,] -11.8      -8     2.2
+##  [6,]   9.2       6    -3.8
+##  [7,]   7.2      12    -7.8
+##  [8,] -14.8       1    -1.8
+##  [9,]   3.2      -6   -16.8
+## [10,]  10.2      11    -7.8</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Coefficient estimates (equation [3.2]):</li>
+<li>Create the covariance matrix:</li>
 </ol>
-<pre class="r"><code>beta_hat &lt;- solve(t(X)%*%X) %*% t(X) %*% Y</code></pre>
-<p>The coefficients: 1.2863278, 0.4534559, 0.009426</p>
+<pre class="r"><code>var_cov_mt &lt;- t(diff_mt) %*% diff_mt * (n - 1)^-1
+var_cov_mt</code></pre>
+<pre><code>##              math   science   history
+## math     72.17778  36.88889 -27.15556
+## science  36.88889  62.66667 -26.77778
+## history -27.15556 -26.77778  83.95556</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Residuals (equation [3.3]):</li>
+<li>Pull variance and standard deviations:</li>
 </ol>
-<pre class="r"><code>mu_hat &lt;- Y - X %*% beta_hat</code></pre>
+<pre class="r"><code>var_mt &lt;- diag(var_cov_mt)
+sd_mt &lt;- sqrt(var_mt)</code></pre>
+<p>Variance = 72.1777778, 62.6666667, 83.9555556</p>
+<p>SD = 8.4957506, 7.9162281, 9.1627264</p>
 <ol start="5" style="list-style-type: decimal">
-<li>Variance of the error term (equation [3.4]) and the standard error (SER):</li>
+<li>Create the correlation matrix:</li>
 </ol>
-<pre class="r"><code>sigma_hat &lt;- as.numeric(t(mu_hat) %*% mu_hat / (n-k-1))
-SER &lt;- sqrt(sigma_hat)</code></pre>
-<p>Standard error of residuals (SER): 0.3403158</p>
-<ol start="6" style="list-style-type: decimal">
-<li>Estimated variance of coefficients and their standard error (equation [3.5]):</li>
-</ol>
-<pre class="r"><code>variance_beta_hat &lt;- sigma_hat * solve(t(X) %*% X)
-coefficient_se &lt;- sqrt(diag(variance_beta_hat))</code></pre>
-<p>Coefficient standard errors: 0.3408221, 0.0958129, 0.0107772</p>
+<pre class="r"><code>se_product_mt &lt;- sd_mt %*% t(sd_mt)
+corr_mt &lt;- var_cov_mt / se_product_mt</code></pre>
 </div>
-<div id="ceteris-paribus-interpretation-and-omitted-variable-bias" class="section level2">
-<h2>3.3 Ceteris Paribus Interpretation and Omitted Variable Bias</h2>
-<div class="task">
-Task: Using the college GPA data <code>(wooldridge::gpa1)</code>, repeat the regression of college GPA(<em>colGPA</em>) on high school GPA(<em>hsGPA</em>) and ACT achivement test(<em>ACT</em>). Study the <em>ceteris paribus</em> effect of ACT on college GPA.
-</div>
+<div id="creating-the-covariancecorrelation-via-stats-package" class="section level2">
+<h2>Creating the covariance/correlation via stats:: package</h2>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Covariance using <code>stats::cov()</code></li>
 </ol>
-<pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)</code></pre>
+<pre class="r"><code>var_cov_R_mt &lt;- stats::cov(data_dt)</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Get the ACT and hsGPA coefficients from the full model:</li>
+<li>Correlation usine <code>stats::cor()</code></li>
 </ol>
-<pre class="r"><code>gpa_model &lt;- lm(colGPA ~ ACT + hsGPA, data = gpa_1)
-ACT_full_coef &lt;- coef(gpa_model)[&quot;ACT&quot;]
-hsGPA_full_coef &lt;- coef(gpa_model)[&quot;hsGPA&quot;]</code></pre>
-<p>ACT full model coefficient: 0.009426 hsGPA full model coefficient: 0.4534559</p>
-<ol start="3" style="list-style-type: decimal">
-<li>Regress ACT on hsGPA and show the ACT coefficient:</li>
-</ol>
-<pre class="r"><code>ACT_hsGPA_coef &lt;- coef(lm(hsGPA ~ ACT, data = gpa_1))[&quot;ACT&quot;]</code></pre>
-<p>Coefficient between ACT and hsGPA: 0.0388968</p>
-<ol start="4" style="list-style-type: decimal">
-<li>Get the ACT coefficient with hsGPA <strong>NOT</strong> being fixed using <code>(Heiss, Equation 3.8, page 97)</code>:</li>
-</ol>
-<pre class="r"><code>ACT_unfixed_coef &lt;- ACT_full_coef + hsGPA_full_coef * ACT_hsGPA_coef</code></pre>
-<p>Coefficient of ACT with hsGPA not fixed: 0.027064</p>
-<ol start="5" style="list-style-type: decimal">
-<li>Get the ACT coefficient with hsGPA omitted:</li>
-</ol>
-<pre class="r"><code>ACT_coef &lt;- coef(lm(colGPA ~ ACT, data = gpa_1))[&quot;ACT&quot;]</code></pre>
-<p>Coefficient of ACT with hsGPA omitted: 0.027064</p>
+<pre class="r"><code>corr_R_mt &lt;- stats::cor(data_dt)</code></pre>
 </div>
-<div id="standard-errors-multicollinearity-and-vif" class="section level2">
-<h2>3.4 Standard Errors, Multicollinearity, and VIF</h2>
-<div class="task">
-Task: Using the college GPA data <code>(wooldridge::gpa1)</code>, manually calculate <em>hsGPA</em>’s VIF (variance inflation factor) and its coefficient standard error.
-</div>
+<div id="compare-correlation-results" class="section level2">
+<h2>Compare correlation results</h2>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Correlations manually:</li>
 </ol>
-<pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Get the ACT and hsGPA coefficients from the full model:</li>
-</ol>
-<pre class="r"><code>gpa_model &lt;- lm(colGPA ~ ACT + hsGPA, data = gpa_1)
-(gpa_model_summary &lt;- summary(gpa_model))</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = colGPA ~ ACT + hsGPA, data = gpa_1)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.85442 -0.24666 -0.02614  0.28127  0.85357 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 1.286328   0.340822   3.774 0.000238 ***
-## ACT         0.009426   0.010777   0.875 0.383297    
-## hsGPA       0.453456   0.095813   4.733 5.42e-06 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.3403 on 138 degrees of freedom
-## Multiple R-squared:  0.1764, Adjusted R-squared:  0.1645 
-## F-statistic: 14.78 on 2 and 138 DF,  p-value: 1.526e-06</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Extract the standard error of the residual (SER) from the summary:</li>
-</ol>
-<pre class="r"><code>SER &lt;- gpa_model_summary$sigma</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Regress hsGPA on ACT for calculating hsGPA_R2 and hsGPA_VIF:</li>
-</ol>
-<pre class="r"><code>hsGPA_ACT_model &lt;- lm(hsGPA ~ ACT, data = gpa_1)
-hsGPA_R2 &lt;- summary(hsGPA_ACT_model)$r.squared
-hsGPA_VIF &lt;- 1/(1 - hsGPA_R2)</code></pre>
-<p>hsGPA <span class="math inline">\(R^2\)</span> = 0.1195815</p>
-<p>hsGPA VIF = 1.1358234</p>
-<ol start="5" style="list-style-type: decimal">
-<li>Using <code>(Heiss, Equation 3.11, page 99)</code> manually calculate the <em>se(hsGPA)</em>:</li>
-</ol>
-<pre class="r"><code>n &lt;- nobs(gpa_model)
-hsGPA_se &lt;- 1/sqrt(n-1) * SER/sd(gpa_1$hsGPA) * sqrt(hsGPA_VIF)</code></pre>
-<div class="task">
-Task: Using the data set <code>wooldridge::wage1</code> for determining hourly wage <code>(Wooldridge, example 3.2, page 67)</code>, compute and compare the regressors VIF values as computed from the <code>car::vif()</code>.
+<pre class="r"><code>RplotterPkg::create_table(
+  x = corr_mt,
+  caption = &quot;Correlations Manually&quot;
+)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
+Correlations Manually
 </div>
-<ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
-</ol>
-<pre class="r"><code>wage_1 &lt;- data.table::setDT(wooldridge::wage1)</code></pre>
+</center>
+</caption>
+<thead>
+<tr>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+math
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+science
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+history
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+math
+</td>
+<td>
+1.0000000
+</td>
+<td>
+0.5484986
+</td>
+<td>
+-0.3488448
+</td>
+</tr>
+<tr>
+<td>
+science
+</td>
+<td>
+0.5484986
+</td>
+<td>
+1.0000000
+</td>
+<td>
+-0.3691743
+</td>
+</tr>
+<tr>
+<td>
+history
+</td>
+<td>
+-0.3488448
+</td>
+<td>
+-0.3691743
+</td>
+<td>
+1.0000000
+</td>
+</tr>
+</tbody>
+</table>
 <ol start="2" style="list-style-type: decimal">
-<li>Regress <em>log(wage)</em> on <em>educ</em>, <em>exper</em>, <em>tenure</em>:</li>
+<li>Correlations via <code>stats::cor()</code>:</li>
 </ol>
-<pre class="r"><code>wage_model &lt;- lm(log(wage) ~ educ + exper + tenure, data = wage_1)
-summary(wage_model)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = log(wage) ~ educ + exper + tenure, data = wage_1)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.05802 -0.29645 -0.03265  0.28788  1.42809 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.284360   0.104190   2.729  0.00656 ** 
-## educ        0.092029   0.007330  12.555  &lt; 2e-16 ***
-## exper       0.004121   0.001723   2.391  0.01714 *  
-## tenure      0.022067   0.003094   7.133 3.29e-12 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.4409 on 522 degrees of freedom
-## Multiple R-squared:  0.316,  Adjusted R-squared:  0.3121 
-## F-statistic: 80.39 on 3 and 522 DF,  p-value: &lt; 2.2e-16</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Automatically calculate VIF of the regressors:</li>
-</ol>
-<pre class="r"><code>car::vif(wage_model)</code></pre>
-<pre><code>##     educ    exper   tenure 
-## 1.112771 1.477618 1.349296</code></pre>
+<pre class="r"><code>RplotterPkg::create_table(
+  x = corr_R_mt,
+  caption = &quot;Correlations via stats::cor()&quot;
+)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
+Correlations via stats::cor()
 </div>
+</center>
+</caption>
+<thead>
+<tr>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+math
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+science
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+history
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+math
+</td>
+<td>
+1.0000000
+</td>
+<td>
+0.5484986
+</td>
+<td>
+-0.3488448
+</td>
+</tr>
+<tr>
+<td>
+science
+</td>
+<td>
+0.5484986
+</td>
+<td>
+1.0000000
+</td>
+<td>
+-0.3691743
+</td>
+</tr>
+<tr>
+<td>
+history
+</td>
+<td>
+-0.3488448
+</td>
+<td>
+-0.3691743
+</td>
+<td>
+1.0000000
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

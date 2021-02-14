@@ -1,5 +1,5 @@
 ---
-title: "Part 1 - Regression Analysis with Cross-Sectional Data"
+title: "3-MRA_Estimation"
 output: 
    html_document:
     toc: yes
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
   The following notes and scripts are based on the following sources:
 [Introductory Econometrics - A Modern Approach](https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&keywords=Introductory+Econometrics%3A+A+Modern+Approach&qid=1597005903&s=books&sr=1-2)  by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as `(Wooldridge)`. 
  
-The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 3** of `(Heiss)`.
+The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 3 MRA Estimation** of `(Heiss)`.
 </div> 
 
 ```{r, warning=FALSE, message=FALSE}
@@ -233,6 +233,9 @@ hsGPA VIF = `r hsGPA_VIF`
 n <- nobs(gpa_model)
 hsGPA_se <- 1/sqrt(n-1) * SER/sd(gpa_1$hsGPA) * sqrt(hsGPA_VIF)
 ```
+
+The standard error for *hsGPA* is `r hsGPA_se`.
+This is the same value we obtained in the matrix computation of the OLS in section 3.2 above.
 
 <div class="task">Task: Using the data set `wooldridge::wage1` for determining hourly wage `(Wooldridge, example 3.2, page 67)`, compute and compare the regressors VIF values as computed from the `car::vif()`.</div>    
 

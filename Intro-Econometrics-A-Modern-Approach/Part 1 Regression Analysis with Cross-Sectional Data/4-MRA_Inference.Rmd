@@ -1,5 +1,5 @@
 ---
-title: "Part 1 - Regression Analysis with Cross-Sectional Data"
+title: "4-MRA_Inference"
 output: 
    html_document:
     toc: yes
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
   The following notes and scripts are based on the following sources:
 [Introductory Econometrics - A Modern Approach](https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&keywords=Introductory+Econometrics%3A+A+Modern+Approach&qid=1597005903&s=books&sr=1-2)  by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as `(Wooldridge)`. 
  
-The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 4** of `(Heiss)`.
+The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 4 MRA Inference** of `(Heiss)`.
 </div> 
 
 ```{r, warning=FALSE, message=FALSE}
@@ -220,7 +220,7 @@ mu <- stats::resid(campus_crime_model)
 ser <- sqrt((n-1)/(n-2) * stats::var(mu))
 ```
 
-The standard error of the regression = `r ser`
+The standard error of the regression = `r ser`. Note that this is labeled in the summary above as "Residual standard error:".
 
 4. Compute the the standard error for the estimated parameter $\hat{\beta}_{enroll}$. See `(Wooldridge, Equation 2.57, page 47)` and `(Heiss, Equation 2.16, page 82)`:
 ```{r}
@@ -255,6 +255,7 @@ str(jtrain_1987)
 ```
 
 2. Estimate the OLS parameters for the model
+*scrap* = scrap rate  *hrsemp* = annual hours of training per employee  *sales* = annual firm sales in dollars  *employ* = number of firm employees
 ```{r}
 jtrain_model <- lm(log(scrap) ~ hrsemp + log(sales) + log(employ), data = jtrain_1987)
 summary(jtrain_model)
@@ -267,6 +268,7 @@ k <- 4
 mu <- stats::resid(jtrain_model)
 ser <- sqrt((n-1)/(n-2) * stats::var(mu)) 
 ```
+SER = `r ser`
 
 4. Create a matrix of predictor values and add a column of ones for the intercept (showing the first 6 rows):
 ```{r}
@@ -286,9 +288,14 @@ jtrain_var_cov
 jtrain_se <- sqrt(diag(jtrain_var_cov))
 names(jtrain_se) <- names(coef(jtrain_model))
  
-jtrain_se %>%
-  kbl(col.names = "se($\\hat{\\beta}_{j}$)", caption = "Standard Errors", digits = 4) %>%
-  kable_paper(full_width = FALSE, position = "left")
+RplotterPkg::create_table(
+  x = data.frame(Coefficient = names(jtrain_se), se = jtrain_se),
+  caption = "Standard Errors",
+  col_names = c("Coefficient", "se($\\hat{\\beta}_{j}$)"),
+  head_bkgd = "blue",
+  head_col = "white",
+  position = "left"
+)
 ```
 
 7. Compute the $t$ statistic for *hrsemp*:

@@ -1,0 +1,130 @@
+---
+title: "Bootstrap Your Standard Errors in R"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+The following are notes and R scripts inspired by the article [Bootstrap Your Standard Errors in R, the Tidy Way](http://svmiller.com/blog/2020/03/bootstrap-standard-errors-in-r/) by Steve Miller.  
+</div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(here)
+library(lmtest)
+library(RregressPkg)
+library(RplotterPkg)
+
+current_dir <- here()
+```
+
+
+## What is homoskedasticity?
+
+From Steve Miller:
+<blockquote>One of those important assumptions of an OLS model that is easy to violate in a social science application is that of homoskedasticity.</blockquote>
+
+
+From Wikipedia:
+<blockquote>A standard assumption in a linear regression, $y_{i} = X_{i} \beta + \epsilon_{i} , i = 1 , … , N$ , is that the variance of the disturbance term $\epsilon_{i}$ is the same across observations, and in particular does not depend on the values of the explanatory variables $X_{i}$.</blockquote>
+
+## What is bootstrapping?
+
+From Steve Miller:
+<blockquote>Bootstrapping, a resampling with replacement approach to calculating statistics of interest (e.g. standard errors from a regression), ...</blockquote>
+
+## The data
+
+The data:
+<blockquote>It’s some statewide crime data from around 1993 or so that come available in Agresti and Finlay’s Statistical Methods for the Social Sciences since around its third edition in 1997.</blockquote>
+
+1. Read the data:
+```{r}
+data_file <- file.path(current_dir, "Bootstrap Your Standard Errors in R/data/crime.txt")
+crime_dt <- data.table::fread(data_file)
+crime_dt <- crime_dt[, .(State = State, ViolentC = VR, Poverty = P, Single = S, Metro = M, White = W, HSGrad = H)]
+ols_crime_lst <- RregressPkg::ols_regress_calc(df = crime_dt, resp_col = "ViolentC", id_col = "State")
+```
+
+2. Plot the response (*ViolentC*) versus the predictors (*Poverty*, *Single*, *Metro*, *White*, *HSGrad*)
+```{r, fig.width=13, fig.height=13}
+RregressPkg::plot_matrix_scatter(
+  df = crime_dt[, !c("State")],
+  plot_dim = 13
+)
+```
+
+There appears to be a relationship the response *ViolentC* with *Single*, *Metro*, and *White*.  There also appears some outliers for values of *ViolentC* and possible leverage influence from the predictors. 
+
+3. Check any state's influence on the OLS by plotting Cook's distance measurement which considers both response outliers and predictor leverage:
+```{r,fig.width=14, fig.height=8}
+influence_lst <- RregressPkg::plot_obs_influence(
+  df = crime_dt,
+  resp_col = "ViolentC",
+  id_col = "State",
+  influence_meas = "cook",
+  label_threshold = 0.4,
+  title = "Cook's Distance for State Observations",
+  rot_y_tic_label = T,
+)
+influence_lst$plot
+```
+4. Show the response and predictor values for states *HI*, *MS*, and *DC*:
+```{r}
+high_influence_dt <- crime_dt[State %in% c("HI","MS","DC")]
+
+influence_dt <- data.table::setDT(ols_crime_lst$influence_df)
+influence_val_v <- unlist(influence_dt[Observation %in% c("HI","MS","DC"), .(Cook)])
+
+high_influence_dt[, Cook := influence_val_v]
+
+RplotterPkg::create_table(
+  x = high_influence_dt,
+  caption = "Possible Outlier/Leverage Influence",
+  align_v = c("l", rep("c",7)),
+  head_bkgd = "blue",
+  head_col = "white"
+)
+```
+
+*HI* has a low *ViolentC* but large *Metro*. 
+
+*DC* has both the largest response *ViolentC* and largest *Single* predictor
+
+*MS* has the third highest *Poverty* but a medium response *ViolentC*
+
+## The problem and OLS estimates
+
+<blockquote>Supposed we wanted to explain the violent crime rate per 100,000 people in the population (*violent*) as a function of the percentage of the state with income below the poverty level (*poverty*), the percentage of families in the state headed by a single parent (*single*), the percent of population in metropolitan areas (*metro*), the percentage of the state that is white (*white*), and the percentage of the state that graduated from high school (*highschool*). </blockquote>
+
+1. Show the OLS estimates:
+```{r}
+RplotterPkg::create_table(
+  x = ols_crime_lst$coef_df,
+  caption = "OLS Estimates for Violent Crime Rate",
+  align_v = c("l", rep("c",4)),
+  head_bkgd = "blue",
+  head_col = "white",
+  footnote_title = "Observations:",
+  footnote = "  All 51 states"
+)
+```
+
+
+

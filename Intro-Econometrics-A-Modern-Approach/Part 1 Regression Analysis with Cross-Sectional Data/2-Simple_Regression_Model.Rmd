@@ -1,5 +1,5 @@
 ---
-title: "Part 1 - Regression Analysis with Cross-Sectional Data"
+title: "2-Simple_Regression_Model"
 output: 
    html_document:
     toc: yes
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
   The following notes and scripts are based on the following sources:
 [Introductory Econometrics - A Modern Approach](https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&keywords=Introductory+Econometrics%3A+A+Modern+Approach&qid=1597005903&s=books&sr=1-2)  by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as `(Wooldridge)`. 
  
-The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 2** of `(Heiss)`.
+The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 2 The simple Regression Model** of `(Heiss)`.
 </div> 
 
 ```{r, warning=FALSE, message=FALSE}

@@ -1,0 +1,179 @@
+---
+title: "PennState Stat 501 Lesson 7 - MLR Estimation & Prediction"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>
+
+Author: Rick Dean
+
+</div>
+
+<div>
+
+Article date: `r params$date`
+
+</div>
+
+::: {.abstract}
+<p class="abstract">
+
+Abstract
+
+</p>
+
+The following notes, and R scripts are based on the online course [PennState Lesson 7 MLR Estimation and Prediction](https://online.stat.psu.edu/stat501/lesson/7)
+:::
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(here)
+library(data.table)
+library(RregressPkg)
+
+current_dir <- here::here("PennState-Stat 501 Regression Methods")
+```
+
+## 7.1 Confidence interval for the mean response
+A confidence interval reflects the uncertainty around the **mean** response values, while the prediction interval reflects the uncertainty around a **single** response value.
+
+Which one should we use? The answer to this question depends on the context and the purpose of the analysis.  Generally we are interested in specific individual predictions, so a prediction interval would be more appropriate. Using a confidence interval when you should be using a prediction interval will greatly underestimate the uncertainty in a given value.
+
+The standard error of the fit for **in-scope** $X_{h}$ is given by: $$se(\hat{y_{h}}) = \sqrt{MSE(X_{h}^T(X^TX)^{-1}X_{h})}$$ and the confidence interval is:
+
+$$\hat{y}_{h}  \pm  t_{(\alpha/2,n-p)} \times se(\hat{y_{h}})$$ where
+
+a.  The above formula for $\hat{y_{h}}$ is the **fitted value** when predictors $X_{h}$ are within "**scope of the model**. Section 7.2 presents the  **predicted value** when we have a new response $y_{new}.
+
+b.  $t_{(\alpha/2,n-p)}$ is the $t$-multiplier. Note that the $t$-multiplier has $n-p$ degrees of freedom because the confidence interval uses the mean square error (MSE) whose denominator is $n-p$.
+
+## Example using the IQ Size data
+
+### Manually estimate the fit, se, and 95% CI
+
+For $X_{h}$ we have *Brain* = 90.0 and *Height* = 70.0.
+
+1.  Read in the data:
+
+```{r}
+data_path <- file.path(current_dir, "data/iqsize.txt")
+iqsize_dt <- data.table::fread(data_path)
+iqsize_dt <- iqsize_dt[, !c("Weight")]
+```
+
+2.  Estimate the OLS parameters:
+
+```{r}
+iqsize_ols_lst <- RregressPkg::ols_calc(
+  x = iqsize_dt,
+  resp_col = "PIQ"
+)
+```
+
+3.  Compute the fitted value $\hat{y}_{h}$:
+
+```{r}
+coef_vals <- iqsize_ols_lst$coef_df$Value
+y_h <- coef_vals[[1]] + coef_vals[[2]] * 90.0 + coef_vals[[3]] * 70.0
+y_h
+```
+
+4.  Compute the se of the fit:
+
+```{r}
+X <- as.matrix(iqsize_dt[, !c("PIQ")])
+Inter_v <- c(Inter = 1)
+X <- cbind(Inter_v,X)
+x2_inv <- solve(t(X) %*% X)
+
+X_h <- matrix(c(1.0, 90.0, 70.0), ncol = 3)
+
+X_hh <- X_h %*% x2_inv %*% t(X_h)
+
+se_fit <- sqrt(iqsize_ols_lst$mse * X_hh)[,1]
+se_fit
+```
+
+5.  Compute the 95% CI's for $\hat{y}_{h}$:
+
+```{r}
+n = nrow(X)
+p = ncol(X)
+t = stats::qt(0.975, n - p)
+CI_upper <- y_h + t * se_fit
+CI_lower <- y_h - t * se_fit
+```
+
+CI_upper = `r CI_upper`
+
+CI_lower = `r CI_lower`
+
+The take away:
+
+> We can be 95% confident that the average performance IQ score of all college students with brain size = 90 and height = 70 is between 98.24 and 113.04 counts per 10,000.
+
+### Estimate the confidence intervals using `stats::predict()`
+
+1. Compute the linear model:
+```{r}
+iqsize_lm <- lm(data = iqsize_dt, formula = PIQ ~ Brain + Height)
+iqsize_lm
+```
+2. Define one set of predictor values:
+```{r}
+X_h <- data.frame(Brain = 90.0, Height = 70.0)
+```
+
+3. Compute the fit and the 95% CI:
+```{r}
+iqsize_predict <- stats::predict(iqsize_lm, X_h, interval = "confidence", se.fit = T)
+iqsize_predict
+```
+
+
+## 7.2 Prediction interval for a new response 
+
+### Estimate the prediction interval for the IQ Size data
+
+Using `RregressPkg::ols_predict_calc()`.
+
+1. Set up the data set:
+```{r}
+data_path <- file.path(current_dir, "data/iqsize.txt")
+iqsize_dt <- data.table::fread(data_path)
+iqsize_dt <- iqsize_dt[, !c("Weight")]
+```
+
+2. Define the predictor values:
+```{r}
+predictors_df <- data.frame(
+  Brain = 90.0,
+  Height = 70.0
+)
+```
+
+3. Call `RregressPkg::ols_predict_calc()`:
+```{r}
+iqsize_respones_df <- RregressPkg::ols_predict_calc(
+  x = iqsize_dt,
+  resp_col = "PIQ",
+  predictors_df = predictors_df
+)
+```
+
+4. Display the predictions:
+```{r}
+RplotterPkg::create_table(x = iqsize_respones_df, caption = "IQ Predictions")
+```
+

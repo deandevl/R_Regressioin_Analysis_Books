@@ -7,6 +7,6 @@ The repository contains notes/scripts/inspiration from the following articles/bo
 3. [The Normal Distribution, Central Limit Theorem, and Inference from a Sample](http://svmiller.com/blog/2020/03/normal-distribution-central-limit-theorem-inference/) by Steve Miller
 4. [Applied Predictive Modeling](http://appliedpredictivemodeling.com/) by Max Kuhn and Kjell Johnson.
 5. [Can You Beat MLB Recods?](https://joshuacook.netlify.app/post/riddler-beat-mlb-records/) by Joshua Cook
-6. [Workshop 4: Linear models](https://qcbsrworkshops.github.io/workshop04/workshop04-en/workshop04-en.html#1) presented by Quebec Centre for Biodiversity
 7. [An Algebraic View of Multiple Regression](https://dasilvaa10.github.io/b1/) by [Alex daSilva](https://dasilvaa10.github.io/)
 8. [PennState-Stat 501 Regression Methods](https://online.stat.psu.edu/stat501/lesson/welcome-stat-501)  Selected sections from this online course
+8. [Bootstrap Your Standard Errors in R](http://svmiller.com/blog/2020/03/bootstrap-standard-errors-in-r/) by Steve Miller
