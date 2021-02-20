@@ -76,8 +76,8 @@ iqsize_dt <- iqsize_dt[, !c("Weight")]
 
 ```{r}
 iqsize_ols_lst <- RregressPkg::ols_calc(
-  x = iqsize_dt,
-  resp_col = "PIQ"
+  df = iqsize_dt,
+  formula_obj = PIQ ~ Brain + Height
 )
 ```
 
@@ -166,8 +166,8 @@ predictors_df <- data.frame(
 3. Call `RregressPkg::ols_predict_calc()`:
 ```{r}
 iqsize_respones_df <- RregressPkg::ols_predict_calc(
-  x = iqsize_dt,
-  resp_col = "PIQ",
+  df = iqsize_dt,
+  formula_obj = PIQ ~ Brain + Height,
   predictors_df = predictors_df
 )
 ```

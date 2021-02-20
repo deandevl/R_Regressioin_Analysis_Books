@@ -206,20 +206,25 @@ summary {
 <li><a href="#other-hypotheses">4.1.3 Other hypotheses</a></li>
 </ul></li>
 <li><a href="#confidence-intervals">4.2 Confidence Intervals</a></li>
-<li><a href="#linear-restrictions-f-tests">4.3 Linear Restrictions: <span class="math inline">\(F\)</span> Tests</a></li>
+<li><a href="#a-testing-hypotheses-involving-more-than-one-coefficient">4.3a Testing hypotheses involving more than one coefficient</a>
+<ul>
+<li><a href="#alternative-1">Alternative 1</a></li>
+<li><a href="#alternative-2">Alternative 2</a></li>
+</ul></li>
+<li><a href="#b-linear-restrictions-f-tests">4.3b Linear Restrictions: <span class="math inline">\(F\)</span> Tests</a></li>
 </ul></li>
 </ul>
 </div>
 
 <div>
-Author: Rick Dean
+<p>Author: Rick Dean</p>
 </div>
 <div>
-Article date: 2021-02-13
+<p>Article date: 2021-02-19</p>
 </div>
 <div class="abstract">
 <p class="abstract">
-Abstract
+<p>Abstract</p>
 </p>
 <p>The following notes and scripts are based on the following sources: <a href="https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&amp;keywords=Introductory+Econometrics%3A+A+Modern+Approach&amp;qid=1597005903&amp;s=books&amp;sr=1-2">Introductory Econometrics - A Modern Approach</a> by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as <code>(Wooldridge)</code>.</p>
 <p>The companion text <a href="http://www.urfie.net/index.html">Using R for Introductory Econometrics</a> by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as <code>(Heiss)</code>. The following is from <strong>Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 4 MRA Inference</strong> of <code>(Heiss)</code>.</p>
@@ -233,34 +238,37 @@ library(RregressPkg)
 library(RplotterPkg)</code></pre>
 <div id="multiple-regression-analysis-inference" class="section level1">
 <h1>4 Multiple Regression Analysis: Inference</h1>
-In <code>(Wooldridge, section 4.1, page 106)</code> is added assumption <strong>MLR.6 Normality of the error term</strong> to the previous assumptions <strong>MLR.1</strong> through <strong>MLR.5</strong>. Together these assumptions constitute the classical linear model (CLM). Under the CLM, <code>(Wooldridge, page 107)</code> presents Theorem 4.1 where: <span class="math display">\[\hat{\beta}_{j} \sim Normal[\beta_{j}, Var(\hat{\beta}_{j})]\]</span>
+<p>In <code>(Wooldridge, section 4.1, page 106)</code> is added assumption <strong>MLR.6 Normality of the error term</strong> to the previous assumptions <strong>MLR.1</strong> through <strong>MLR.5</strong>. Together these assumptions constitute the classical linear model (CLM). Under the CLM, <code>(Wooldridge, page 107)</code> presents Theorem 4.1 where: <span class="math display">\[\hat{\beta}_{j} \sim Normal[\beta_{j}, Var(\hat{\beta}_{j})]\]</span></p>
 <div class="take">
-<b>Take Away:</b> <em>Under CLM, the OLS estimators are normally distributed</em>
+<p><b>Take Away:</b> <em>Under CLM, the OLS estimators are normally distributed</em></p>
 </div>
 <p>Also contained in Theorem 4.1 is a reference to the <span class="math inline">\(t\)</span> statistic where: <span class="math display">\[t = \frac{(\hat{\beta}_{j} - \beta_{j})}{sd(\hat{\beta}_{j})} \sim Normal(0,1)\]</span></p>
 <div id="the-t-test" class="section level2">
 <h2>4.1 The <span class="math inline">\(t\)</span> Test</h2>
 <div id="general-setup" class="section level3">
 <h3>4.1.1 General Setup</h3>
-<code>(Wooldridge, page 108)</code> presents Theorem 4.2 where: <span class="math display">\[\frac{(\hat{\beta}_{j} - \beta_{j})}{se(\hat{\beta}_{j})} \sim t_{n-k-1}\]</span>
+<p><code>(Wooldridge, page 108)</code> presents Theorem 4.2 where: <span class="math display">\[\frac{(\hat{\beta}_{j} - \beta_{j})}{se(\hat{\beta}_{j})} \sim t_{n-k-1}\]</span></p>
 <div class="take">
-<b>Take Away:</b> <em>The <span class="math inline">\(t\)</span> distribution (with n-k-1 degrees of freedom) allows us to make inferences/hypothesis’ on the population <span class="math inline">\(\beta_{j}\)</span></em>
+<p><b>Take Away:</b> <em>The <span class="math inline">\(t\)</span> distribution (with n-k-1 degrees of freedom) allows us to make inferences/hypothesis’ on the population <span class="math inline">\(\beta_{j}\)</span></em></p>
 </div>
-An important type of hypotheses we are often interested in is of the form
+<p>An important type of hypotheses we are often interested in is of the form</p>
 <center>
-<span class="math inline">\(H_{0}: \beta_{j} = a_{j}\)</span><span style="float:right;">[Heiss, 4.1]</span>
+<p><span class="math inline">\(H_{0}: \beta_{j} = a_{j}\)</span><span style="float:right;">[Heiss, 4.1]</span></p>
 </center>
-where <span class="math inline">\(a_{j}\)</span> is some number, very often <span class="math inline">\(a_{j} = 0\)</span>. For the most common case of two-tailed tests, the alternative hypothesis is
+<p>where <span class="math inline">\(a_{j}\)</span> is some number, very often <span class="math inline">\(a_{j} = 0\)</span>. For the most common case of two-tailed tests, the alternative hypothesis is</p>
 <center>
-<span class="math inline">\(H_{1}: \beta_{j} \neq a_{j}\)</span><span style="float:right;">[Heiss, 4.2]</span>
+<p><span class="math inline">\(H_{1}: \beta_{j} \neq a_{j}\)</span><span style="float:right;">[Heiss, 4.2]</span></p>
 </center>
-<p>By using Theorem 4.2, we can compute a <span class="math inline">\(t\)</span> statistic to compare an estimated <span class="math inline">\(\hat{\beta_{j}}\)</span> with a hypothesized value using the following form <code>(Wooldridge, Equation 4.13, page 116)</code>: <span class="math display">\[t = \frac{\hat{\beta_{j}} - a_{j}}{se(\hat{\beta_{j}})}\]</span></p>
+<p>By using Theorem 4.2, we can compute a <span class="math inline">\(t\)</span> statistic to compare an estimated <span class="math inline">\(\hat{\beta_{j}}\)</span> with a hypothesized value using the following form <code>(Wooldridge, Equation 4.13, page 116)</code>:</p>
+<center>
+<span class="math inline">\(t = \frac{\hat{\beta_{j}} - a_{j}}{se(\hat{\beta_{j}})}\)</span><span style="float:right;">[Wooldridge 4.13]</span>
+</center>
 <p>The rejection rule for <span class="math inline">\(H_{0}: \beta_{j} = a_{j}\)</span> is the absolute value of the <span class="math inline">\(t\)</span> statistic from the above equation greater than some critical value <span class="math inline">\(c\)</span> from the <span class="math inline">\(t\)</span> distribution: <span class="math display">\[|t_{\hat\beta_{j}}| &gt; c\]</span></p>
 </div>
 <div id="standard-case" class="section level3">
 <h3>4.1.2 Standard case</h3>
 <div class="task">
-Task: Using the college GPA data <code>(wooldridge::gpa1)</code>, (where <em>colGPA</em> is regressed on <em>hsGPS</em>, <em>ACT</em>, and <em>skipped</em>) calculate the critical values of the <span class="math inline">\(t\)</span> two-tailed test from both the exact <span class="math inline">\(t\)</span> distribution and the normal approximation.
+<p>Task: Using the college GPA data <code>(wooldridge::gpa1)</code>, (where <em>colGPA</em> is regressed on <em>hsGPS</em>, <em>ACT</em>, and <em>skipped</em>) calculate the critical values of the <span class="math inline">\(t\)</span> two-tailed test from both the exact <span class="math inline">\(t\)</span> distribution and the normal approximation.</p>
 </div>
 <ol style="list-style-type: decimal">
 <li>Read in the <code>(Wolldridge::gpa1)</code> data set:</li>
@@ -343,11 +351,11 @@ normal
 </tbody>
 </table>
 <div class="note">
-Note: The critical values are nearly the same.
+<p>Note: The critical values are nearly the same.</p>
 </div>
 <p><br></p>
 <div class="task">
-Task: Apply the OLS estimation to the model for GPA data and compare the <code>stats::summary()</code> results of the <span class="math inline">\(t\)</span> and <span class="math inline">\(p\)</span> test estimation with manually computed values.
+<p>Task: Apply the OLS estimation to the model for GPA data and compare the <code>stats::summary()</code> results of the <span class="math inline">\(t\)</span> and <span class="math inline">\(p\)</span> test estimation with manually computed values.</p>
 </div>
 <ol style="list-style-type: decimal">
 <li>Read in the <code>(Wolldridge::gpa1)</code> data set:</li>
@@ -586,7 +594,7 @@ skipped
 </tbody>
 </table>
 <div class="note">
-Note: The <span class="math inline">\(t\)</span> values for all the coefficients except <span class="math inline">\(\hat{\beta}_{act}\)</span> are larger in absolute value than the critical <span class="math inline">\(t\)</span> values in Table 4.1 <strong>Critical <span class="math inline">\(t\)</span> Values</strong> above. So we would reject <span class="math inline">\(H_{0}\)</span> for all the usual significance levels.
+<p>Note: The <span class="math inline">\(t\)</span> values for all the coefficients except <span class="math inline">\(\hat{\beta}_{act}\)</span> are larger in absolute value than the critical <span class="math inline">\(t\)</span> values in Table 4.1 <strong>Critical</strong> <span class="math inline">\(t\)</span> Values above. So we would reject <span class="math inline">\(H_{0}\)</span> for all the usual significance levels.</p>
 </div>
 <p><br></p>
 <ol start="6" style="list-style-type: decimal">
@@ -662,14 +670,14 @@ skipped
 </tbody>
 </table>
 <div class="note">
-Note: Compare the manual values to those computed from the above <code>stats::summary()</code>.
+<p>Note: Compare the manual values to those computed from the above <code>stats::summary()</code>.</p>
 </div>
 </div>
 <div id="other-hypotheses" class="section level3">
 <h3>4.1.3 Other hypotheses</h3>
 <p>Although <span class="math inline">\(H_{0}: \beta_{j} = 0\)</span> is the most common null hypothesis, we sometimes want to test whether <span class="math inline">\(\beta_{j}\)</span> is equal to some other given constant. Two common examples are <span class="math inline">\(\beta_{i} = 1\)</span> and <span class="math inline">\(\beta_{j} = -1\)</span>. <code>(Wooldride, Example 4.4, page 116)</code> considers a simple model of campus crime regressed on student enrollment. The hypothesis is <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span>. This means that a 1% increase in enrollment results in a 1% increase in campus crime. The alternative hypothesis is <span class="math inline">\(H_{1}: \beta_{enroll} &gt; 1\)</span>, which implies that a 1% increase in enrollment increases crime by MORE than 1%.</p>
 <div class="task">
-Task: Perform a <span class="math inline">\(t\)</span> test on the enrollment parameter and investigate the alternative hypothesis that <span class="math inline">\(\beta_{enroll} &gt; 1\)</span>.
+<p>Task: Perform a <span class="math inline">\(t\)</span> test on the enrollment parameter and investigate the alternative hypothesis that <span class="math inline">\(\beta_{enroll} &gt; 1\)</span>.</p>
 </div>
 <ol style="list-style-type: decimal">
 <li>Read in the data:</li>
@@ -733,11 +741,11 @@ ser &lt;- sqrt((n-1)/(n-2) * stats::var(mu))</code></pre>
 <pre class="r"><code>c_95 &lt;- stats::qt(p = .95, df = n-k-1)</code></pre>
 <p>One-sided critical <span class="math inline">\(t\)</span> value at the 95% probability level = 1.6610518</p>
 <div class="note">
-Note: With the <span class="math inline">\(t\)</span> statistic for <span class="math inline">\(\hat{\beta}_{enroll}\)</span> greater than the critical <span class="math inline">\(t\)</span> value, we reject the null hypothesis <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span>
+<p>Note: With the <span class="math inline">\(t\)</span> statistic for <span class="math inline">\(\hat{\beta}_{enroll}\)</span> greater than the critical <span class="math inline">\(t\)</span> value, we reject the null hypothesis <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span></p>
 </div>
 <p><br></p>
 <div class="task">
-Task: Test the effect of job training on scrap rates from the <code>(Wooldridge::jtrain)</code> data set. See <code>(Wooldridge, Example 4.7, page 121)</code>
+<p>Task: Test the effect of job training on scrap rates from the <code>(Wooldridge::jtrain)</code> data set. See <code>(Wooldridge, Example 4.7, page 121)</code></p>
 </div>
 <ol style="list-style-type: decimal">
 <li>Read in the data:</li>
@@ -914,7 +922,7 @@ log(employ)
 <pre class="r"><code>t_5 &lt;- qt(p = 0.05, df = n-k)</code></pre>
 <p>The critical <span class="math inline">\(t\)</span> statistic at 5% probability value is -1.7081408</p>
 <div class="note">
-Note: Since the <span class="math inline">\(t\)</span> statistic for <em>hrsemp</em> does not fall beyond the critical <span class="math inline">\(t\)</span> value, we conclude that the coefficient value is not statistically significant.
+<p>Note: Since the <span class="math inline">\(t\)</span> statistic for <em>hrsemp</em> does not fall beyond the critical <span class="math inline">\(t\)</span> value, we conclude that the coefficient value is not statistically significant.</p>
 </div>
 <p><br></p>
 </div>
@@ -923,11 +931,11 @@ Note: Since the <span class="math inline">\(t\)</span> statistic for <em>hrsemp<
 <h2>4.2 Confidence Intervals</h2>
 <p>By <code>(Wooldridge, Equation 4.16, page 123)</code> confidence intervals for the regression parameters are:</p>
 <center>
-<span class="math inline">\(\hat{\beta}_{j} \pm c \cdot se(\hat{\beta}_{j})\)</span><span style="float:right;">[4.8]</span>
+<p><span class="math inline">\(\hat{\beta}_{j} \pm c \cdot se(\hat{\beta}_{j})\)</span><span style="float:right;">[Heiss 4.8]</span></p>
 </center>
 <p>where <span class="math inline">\(c\)</span> is the critical value for the two-sided <span class="math inline">\(t\)</span> test at a 5% or 1% significance level.</p>
 <div class="task">
-Task: Using the <code>wooldridge::rdchem</code> data set compute the 5% confidence intervals for the regression variables (<code>Wooldridge, Example 4.8, page 123)</code>.
+<p>Task: Using the <code>wooldridge::rdchem</code> data set compute the 5% confidence intervals for the regression variables (<code>Wooldridge, Example 4.8, page 123)</code>.</p>
 </div>
 <ol style="list-style-type: decimal">
 <li>Read in the data:</li>
@@ -999,13 +1007,170 @@ sales_lower_ci &lt;- coef(rdchem_model)[[&quot;log(sales)&quot;]] - c_975 * rdch
 profmarg_lower_ci &lt;- coef(rdchem_model)[[&quot;profmarg&quot;]] - c_975 * rdchem_se[[&quot;profmarg&quot;]]</code></pre>
 <p>The lower/upper confidence values for <span class="math inline">\(\beta_{profmarg}\)</span> are -0.0040882 and 0.0473996</p>
 </div>
-<div id="linear-restrictions-f-tests" class="section level2">
-<h2>4.3 Linear Restrictions: <span class="math inline">\(F\)</span> Tests</h2>
-<p><code>(Wooldridge, sections 4.4 and 4.5, page 124 - 136)</code> discusses more general tests than those for the null hypotheses in Equation [4.1] above.</p>
+<div id="a-testing-hypotheses-involving-more-than-one-coefficient" class="section level2">
+<h2>4.3a Testing hypotheses involving more than one coefficient</h2>
+<p><code>(Wooldridge, sections 4.4 and 4.5, page 124 - 136)</code> discusses more general tests than those for the null hypotheses in Equation [Heiss 4.1] above.</p>
 <div class="task">
-Task: Follow the example in <code>(Wooldridge, sections 4.4, page 124)</code> for testing a single hypotesis on a combination of <span class="math inline">\(\hat{\beta}_{j}\)</span>. Use the <code>wooldridge::twoyear</code> data set and test the null hypothesis:
+<p>Task: Follow the example in <code>(Wooldridge, sections 4.4, page 124)</code> for testing a single hypotheses on a combination of <span class="math inline">\(\hat{\beta}_{j}\)</span>. Use the <code>wooldridge::twoyear</code> data set and test the null hypothesis for the difference in two coefficients.</p>
 </div>
-<p><span class="math display">\[H_{0}: \beta_{jc} = \beta_{univ}\]</span> The alternative hypothesis is that a year at a junior college is worth less than a year at a university: <span class="math display">\[H_{1}: \beta_{jc} &lt; \beta_{univ}\]</span> <code>(Wooldridge, page 126)</code> restates <span class="math inline">\(H_{0}\)</span> as: <span class="math display">\[H_{0}: \theta_{1} = 0\]</span> against <span class="math display">\[H_{1}: \theta_{1} &lt; 0\]</span> where <span class="math inline">\(\theta_{1} = \beta_{1} - \beta_{2}\)</span></p>
+The example’s OLS model is the following: <span class="math display">\[log(wage) = \beta_{intercept} + \beta_{jc} + \beta_{univ} + \beta_{exper} + \mu\]</span> The hypothesis of interest is whether one year at a junior college is worth one year at a university:
+<center>
+<span class="math inline">\(H_{0}: \beta_{jc} = \beta_{univ}\)</span><span style="float:right;">[Wooldridge 4.18]</span>
+</center>
+<p>Under <span class="math inline">\(H_{0}\)</span>, another year at a junior college and another year at a university lead to the same percentage increase in <em>wage</em>.</p>
+The alternative hypothesis is that a year at a junior college is worth less than a year at a university:
+<center>
+<span class="math inline">\(H_{1}: \beta_{jc} &lt; \beta_{univ}\)</span><span style="float:right;">[Wooldridge 4.19]</span>
+</center>
+<div id="alternative-1" class="section level3">
+<h3>Alternative 1</h3>
+<p>We now have two parameters <span class="math inline">\(\beta_{jc}\)</span> and <span class="math inline">\(\beta_{univ}\)</span> in the null hypothesis. Wooldridge rewrites this hypothesis to follow the form in Equation [Heiss 4.1] above as: <span class="math display">\[H_{0}: \beta_{jc} - \beta_{univ} = 0\]</span> and the hypothesis alternative: <span class="math display">\[H_{1}: \beta_{jc} - \beta_{univ} &lt; 0\]</span> Following Equation [Wooldridge 4.13] above, we can now estimate our <span class="math inline">\(t\)</span>-statistic as:</p>
+<center>
+<span class="math inline">\(t = \frac{\hat{\beta}_{jc} - \hat{\beta}_{univ}}{se(\hat{\beta}_{jc} - \hat{\beta}_{univ})}\)</span><span style="float:right;">[Wooldridge 4.20]</span>
+</center>
+<p>The question is how we estimate the standard error in the denominator of [Wooldridge 4.20]. Let’s get some numbers for <span class="math inline">\(\hat{\beta}_{jc}\)</span> and <span class="math inline">\(\hat{\beta}_{univ}\)</span> and then return to this question:</p>
+<ol style="list-style-type: decimal">
+<li>Set up the data:</li>
+</ol>
+<pre class="r"><code>data(&quot;twoyear&quot;,package = &quot;wooldridge&quot;)
+twoyear_dt &lt;- data.table::setDT(twoyear)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Estimate the OLS:</li>
+</ol>
+<pre class="r"><code>twoyear_ols_lst &lt;- RregressPkg::ols_calc(
+  df = twoyear_dt,
+  formula_obj = lwage ~ jc + univ + exper
+)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Show the coefficients:</li>
+</ol>
+<pre class="r"><code>RplotterPkg::create_table(x = twoyear_ols_lst$coef_df, caption = &quot;lwage ~ jc + univ + exper&quot;)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
+lwage ~ jc + univ + exper
+</div>
+</center>
+</caption>
+<thead>
+<tr>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Coef
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Value
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+SE
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+t_value
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+p_Value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+(Intercept)
+</td>
+<td>
+1.472325579
+</td>
+<td>
+0.0210617974
+</td>
+<td>
+69.905030
+</td>
+<td>
+0.000000e+00
+</td>
+</tr>
+<tr>
+<td>
+jc
+</td>
+<td>
+0.066696719
+</td>
+<td>
+0.0068292993
+</td>
+<td>
+9.766261
+</td>
+<td>
+2.208637e-22
+</td>
+</tr>
+<tr>
+<td>
+univ
+</td>
+<td>
+0.076876249
+</td>
+<td>
+0.0023088998
+</td>
+<td>
+33.295619
+</td>
+<td>
+3.188663e-225
+</td>
+</tr>
+<tr>
+<td>
+exper
+</td>
+<td>
+0.004944224
+</td>
+<td>
+0.0001574852
+</td>
+<td>
+31.394852
+</td>
+<td>
+4.413517e-202
+</td>
+</tr>
+</tbody>
+</table>
+<p>Both <span class="math inline">\(\hat{\beta}_{jc}\)</span> and <span class="math inline">\(\hat{\beta}_{univ}\)</span> are quite significant with a difference of <span class="math inline">\(\hat{\beta}_{jc}\)</span> - <span class="math inline">\(\hat{\beta}_{univ}\)</span>:</p>
+<pre class="r"><code>diff_jc_univ &lt;- twoyear_ols_lst$coef[&quot;jc&quot;] - twoyear_ols_lst$coef[&quot;univ&quot;]
+diff_jc_univ</code></pre>
+<pre><code>##          jc 
+## -0.01017953</code></pre>
+<p>Returning to our above question in computing the <span class="math inline">\(t\)</span>-statistic, we need the standard error for the difference in these two coefficients. Wooldridge provides Equation [Wooldridge 4.22] where:</p>
+<p><span class="math display">\[Var(\hat{\beta}_{jc} - \hat{\beta}_{univ}) = Var(\hat{\beta}_{jc}) + Var(\hat{\beta}_{univ}) - 2Cov(\hat{\beta}_{jc}, \hat{\beta}_{univ})\]</span> The square root of <span class="math inline">\(Var(\hat{\beta}_{jc} - \hat{\beta}_{univ})\)</span> would give us the standard error we are looking for. Following through with <em>twoyear_ols_lst</em> which has the variance-covariance matrix:</p>
+<pre class="r"><code>twoyear_ols_lst$var_cov</code></pre>
+<pre><code>##               (Intercept)            jc          univ         exper
+## (Intercept)  4.435993e-04 -1.741689e-05 -1.573705e-05 -3.105216e-06
+## jc          -1.741689e-05  4.663933e-05  1.928214e-06 -1.718550e-08
+## univ        -1.573705e-05  1.928214e-06  5.331018e-06  3.934073e-08
+## exper       -3.105216e-06 -1.718550e-08  3.934073e-08  2.480159e-08</code></pre>
+<p>Doing the arithmetic, the standard error is:</p>
+<pre class="r"><code>vc &lt;- twoyear_ols_lst$var_cov
+se_jc_univ &lt;- sqrt(vc[&quot;jc&quot;,&quot;jc&quot;] + vc[&quot;univ&quot;,&quot;univ&quot;] - 2 * vc[&quot;jc&quot;,&quot;univ&quot;])
+se_jc_univ</code></pre>
+<pre><code>## [1] 0.00693642</code></pre>
+<p>And the <span class="math inline">\(t\)</span>-statistic for the coefficient difference is:</p>
+<pre class="r"><code>t_jc_univ &lt;- diff_jc_univ/se_jc_univ
+t_jc_univ</code></pre>
+<pre><code>##        jc 
+## -1.467548</code></pre>
+<p>As Wooldridge comments on page 126, “there is some, but not strong, evidence against Equation [Wooldridge 4.18].”</p>
+</div>
+<div id="alternative-2" class="section level3">
+<h3>Alternative 2</h3>
+<p><code>(Wooldridge, page 126)</code> restates <span class="math inline">\(H_{0}\)</span> as: <span class="math display">\[H_{0}: \theta_{1} = 0\]</span> against <span class="math display">\[H_{1}: \theta_{1} &lt; 0\]</span> where <span class="math inline">\(\theta_{1} = \beta_{1} - \beta_{2}\)</span></p>
 <ol style="list-style-type: decimal">
 <li>Read in the data:</li>
 </ol>
@@ -1119,7 +1284,7 @@ summary(wage_model_totcoll)</code></pre>
 ## Multiple R-squared:  0.2224, Adjusted R-squared:  0.2221 
 ## F-statistic: 644.5 on 3 and 6759 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="note">
-Note: The coefficient for <em>jc</em> is the difference in <span class="math inline">\(\beta_{jc} - \beta_{univ}\)</span> from the original model <em>wage_model</em>.
+<p>Note: The coefficient for <em>jc</em> is the difference in <span class="math inline">\(\beta_{jc} - \beta_{univ}\)</span> from the original model <em>wage_model</em>.</p>
 </div>
 <p><br></p>
 <ol start="5" style="list-style-type: decimal">
@@ -1135,24 +1300,133 @@ k &lt;- 3
 t_critical_jc_univ &lt;-  stats::qt(p = 0.05, df = n - k - 1)</code></pre>
 <p>The critical <span class="math inline">\(t\)</span> value is -1.6450791</p>
 <div class="note">
-Note: It appears that the estimate <span class="math inline">\(t\)</span> value does not go beyond the critical value so we do not reject the null hypothesis <span class="math inline">\(H_{0}: \beta_{jc} = \beta_{univ}\)</span>.
+<p>Note: It appears that the estimate <span class="math inline">\(t\)</span> value does not go beyond the critical value so we do not reject the null hypothesis <span class="math inline">\(H_{0}: \beta_{jc} = \beta_{univ}\)</span>.</p>
 </div>
 <p><br></p>
 <div class="take">
-<b>Take Away:</b> <em>Single hypothesis tests concerning more than one <span class="math inline">\(\beta_{j}\)</span> can always be tested by rewriting the model to contain the parameter of interest. Then, a standard <span class="math inline">\(t\)</span> statistic can be used.</em>
+<p><b>Take Away:</b> <em>Single hypothesis tests concerning more than one <span class="math inline">\(\beta_{j}\)</span> can always be tested by rewriting the model to contain the parameter of interest. Then, a standard <span class="math inline">\(t\)</span> statistic can be used.</em></p>
 </div>
 <p><br></p>
 <div class="task">
-Task: Using data set <em>MLB1</em> analyze major league baseball players’ salaries as it relates to batting average (<em>bavg</em>), home runs per year (<em>hrunsyr</em>) and runs batted in per year (<em>rbisyr</em>), controlling for the number of years (<em>years</em>) and number of games played (<em>gamesyr</em>).
+<p>Task: Using data set <em>MLB1</em> analyze major league baseball players’ salaries as it relates to batting average (<em>bavg</em>), home runs per year (<em>hrunsyr</em>) and runs batted in per year (<em>rbisyr</em>), controlling for the number of years (<em>years</em>) and number of games played (<em>gamesyr</em>).</p>
 </div>
-The regression model takes the following form:
+<p>The regression model takes the following form:</p>
 <center>
 <span class="math inline">\(log(salary) = \beta_{0} + \beta_{1} \cdot years + \beta_{2} \cdot gamesyr + \beta_{3} \cdot bavg + \beta_{4} \cdot hrunsyr + \beta_{5} \cdot rbisyr + \mu\)</span><span style="float:right;">[Heiss, 4.9]</span>
 </center>
-The null hypothesis’: <span class="math display">\[H_{0}: \beta_{bavg} = 0, \beta_{hrunsyr} = 0, \beta_{rbisyr} = 0\]</span>
+<p>The null hypothesis’: <span class="math display">\[H_{0}: \beta_{bavg} = 0, \beta_{hrunsyr} = 0, \beta_{rbisyr} = 0\]</span></p>
 <center>
 <span class="math inline">\(H_{1}:\)</span> at least one of the performance measures matters
 </center>
+</div>
+</div>
+<div id="b-linear-restrictions-f-tests" class="section level2">
+<h2>4.3b Linear Restrictions: <span class="math inline">\(F\)</span> Tests</h2>
+<p>We’ve been using the <span class="math inline">\(t\)</span>-statistic to test hypothesis for a single predictor. Now we want to test a hypothesis involving a <strong>group</strong> of predictors. <code>[Heiss]</code> and <code>[Wooldridge]</code> start with an example data set <em>wooldridge::mlb1</em> that looks at a goup of baseball related predictors and their influence on a player’s salary.</p>
+<ol style="list-style-type: decimal">
+<li>Set the data set:</li>
+</ol>
+<pre class="r"><code>data(&quot;mlb1&quot;, package = &quot;wooldridge&quot;)
+mlb1_dt &lt;- data.table::setDT(mlb1)
+mlb1_dt &lt;- mlb1_dt[,.(salary, years, gamesyr, bavg, hrunsyr, rbisyr)]</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Define both the unrestricted and restricted models:</li>
+</ol>
+<pre class="r"><code>ur_formula_obj &lt;- log(salary) ~ years + gamesyr + bavg + hrunsyr + rbisyr
+r_formula_obj &lt;- log(salary) ~ years + gamesyr</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Using <code>RregressPkg::ols_F_calc()</code> compute the F statistic for the null hypothesis: <span class="math display">\[H_{0}: \beta_{bavg} = \beta_{hrunsyr} = \beta_{rbisyr} = 0\]</span></li>
+</ol>
+<p>with the alternative hypothesis that at least one of the predictors matters. From the equation for the <span class="math inline">\(F\)</span>-statistic we see that it reflects the degree of residual increase in applying the restrictive model to the response.</p>
+<pre class="r"><code>mlb1_F_df &lt;- RregressPkg::ols_F_calc(
+  df = mlb1,
+  ur_formula_obj = ur_formula_obj,
+  r_formula_obj = r_formula_obj
+)</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Display the results:</li>
+</ol>
+<pre class="r"><code>RplotterPkg::create_table(
+  x = mlb1_F_df,
+  caption = &quot;Predictor Hypothesis: bavg = hrunsyr = rbisyr = 0&quot;
+)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
+Predictor Hypothesis: bavg = hrunsyr = rbisyr = 0
+</div>
+</center>
+</caption>
+<thead>
+<tr>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+F_val
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+crit
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+p_val
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+prob
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+df_1
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+df_2
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+R2_ur
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+R2_r
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+SSR_ur
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+SSR_r
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+9.5503
+</td>
+<td>
+3.8385
+</td>
+<td>
+4e-06
+</td>
+<td>
+0.99
+</td>
+<td>
+3
+</td>
+<td>
+347
+</td>
+<td>
+0.628
+</td>
+<td>
+0.597
+</td>
+<td>
+183.19
+</td>
+<td>
+198.31
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 

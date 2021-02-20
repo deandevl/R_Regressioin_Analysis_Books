@@ -1,0 +1,228 @@
+---
+title: "7-MRA_With_Qualitative_Regressors"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+
+The following notes and scripts are based on the following sources: [Introductory Econometrics - A Modern Approach](https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&keywords=Introductory+Econometrics%3A+A+Modern+Approach&qid=1597005903&s=books&sr=1-2) by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as `(Wooldridge)`.
+
+The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`. The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 7 MRA With Qualitative Regressors** of `(Heiss)`.  
+</div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(wooldridge)
+library(AER)
+library(ggplot2)
+library(car)
+library(RregressPkg)
+library(RplotterPkg)
+```
+
+# 7 Multiple Regression Analysis with Qualitative Regressors
+
+## 7.1 
+
+### Dummy bi-variable for *female*
+Looking at the data set `wooldridge::wage1` which has a dummy variable for *female* of Example 7.1 `(Heiss)`.
+
+1. Set up the data set:
+```{r}
+data("wage1", package = "wooldridge")
+wage1_dt <- data.table::setDT(wage1)
+wage1_dt <- wage1_dt[, .(wage, married, female, educ, exper, tenure)]
+```
+
+2. Estimate the OLS parameters:
+```{r}
+wage1_ols_lst <- RregressPkg::ols_calc(
+  df = wage1_dt,
+  formula_obj = wage ~ female + educ + exper +  tenure
+)
+```
+
+3. Show the OLS estimates:
+```{r}
+RplotterPkg::create_table(
+  x = wage1_ols_lst$coef_df,
+  caption = "OLS: wage ~ female + educ + exper + tenure"
+)
+```
+A woman makes $1.81 per hour less than a man *with the same education, experience, and tenure*.
+
+### Qualitative variable with 4 outcomes
+Looking at at the data set `wooldridge::wage1` which has a qualitative variable that combines gender with martial status Example 7.2 `(Heiss)`.
+
+1. Estimate the OLS parameters: 
+```{r}
+wage1_ols_lst <- RregressPkg::ols_calc(
+  df = wage1_dt,
+  formula_obj = log(wage) ~ married * female + educ +  exper + I(exper^2) + tenure + I(tenure^2)
+)
+```
+
+2. Show the OLS estimates:
+```{r}
+RplotterPkg::create_table(
+  x = wage1_ols_lst$coef_df,
+  caption = "log(wage) ~ married * female + educ +  exper + I(exper^2) + tenure + I(tenure^2)"
+)
+```
+
+## 7.2 Logical variables
+
+<div class="task">Task: Change the *female* predictor in Section 7.1 above to a logical variable and do the OLS.</div>
+
+1. Convert *female*:
+```{r}
+wage1_dt[, female := as.logical(female)]
+
+```
+
+2. Estimate the OLS parameters:
+```{r}
+wage1_ols_lst <- RregressPkg::ols_calc(
+  df = wage1_dt,
+  formula_obj = wage ~ female + educ + exper +  tenure
+)
+```
+
+3. Show the estimates:
+```{r}
+RplotterPkg::create_table(
+  x = wage1_ols_lst$coef_df,
+  caption = "OLS: wage ~ female + educ + exper + tenure"
+)
+```
+
+## 7.3 Factor variables
+
+1. Set up the data set:
+```{r}
+data("CPS1985", package = "AER")
+CPS1985_dt <- data.table::setDT(CPS1985)
+CPS1985_dt <- CPS1985_dt[, .(wage, education = education, experience = experience, gender = gender, occupation = occupation)]
+```
+
+2. Redefine *gender* and *occupation* factor predictors as numeric:
+```{r}
+CPS1985_dt[, gender := fifelse(gender == "female", 1, 0)]
+CPS1985_dt[, occupation := fifelse(occupation == "worker",1,
+                           fifelse(occupation == "management",2,
+                           fifelse(occupation == "sales",3,
+                           fifelse(occupation == "office",4,
+                           fifelse(occupation == "services",5,
+                           fifelse(occupation == "technical",6,0))))))]
+CPS1985_dt[, `:=`(occupation = as.factor(occupation), gender = as.factor(gender))]
+table(CPS1985_dt$occupation)
+```
+
+
+3. Estimate the OLS parameters:
+```{r}
+CPS1985_ols_lst <- RregressPkg::ols_calc(
+  df = CPS1985_dt,
+  formula_obj = log(wage) ~ education + experience + gender + occupation
+)
+```
+
+4. Show the coefficients:
+```{r}
+RplotterPkg::create_table(CPS1985_ols_lst$coef_df, caption = "log(wage) ~ education + experience + gender + occupation")
+```
+
+## 7.4 Breaking a numeric variable into categories
+Following `(Wooldridge)` Section 7-3a page 214 Example 7.8. Dividing the *rank* variable of law schools into numeric groups from the `wooldridge::lawsch85 dataset.
+
+1. Set up the data and cut points:
+```{r}
+data("lawsch85", package = "wooldridge")
+cutpts <- c(0,10,25,40,60,100,175)
+lawsch85$rankcat <- cut(lawsch85$rank, cutpts)
+lawsch85_dt <- data.table::setDT(lawsch85)
+lawsch85_dt <- lawsch85_dt[, .(salary, rankcat, LSAT, GPA, libvol, cost)]
+levels(lawsch85_dt$rankcat)
+```
+
+2. Show the occurrances for *rankcat*:
+```{r}
+table(lawsch85_dt$rankcat)
+```
+3. Set the category "(100,175]" as the first reference category:
+```{r}
+lawsch85_dt$rankcat <- stats::relevel(lawsch85_dt$rankcat, "(100,175]")
+levels(lawsch85_dt$rankcat)
+```
+
+4. Set the numerics for *rankcat*:
+```{r}
+lawsch85_dt[, rankcat := 
+              fifelse(rankcat == "(100,175]", 1,
+              fifelse(rankcat == "(0,10]", 2,
+              fifelse(rankcat == "(10,25]", 3,
+              fifelse(rankcat == "(25,40]", 4,
+              fifelse(rankcat == "(40,60]", 5,
+              fifelse(rankcat == "(60,100]", 6,0))))))]
+lawsch85_dt$rankcat <- as.factor(lawsch85_dt$rankcat)
+```
+
+5. Estimate the OLS:
+```{r}
+lawsch85_ols_lst <- RregressPkg::ols_calc(
+  df = lawsch85_dt,
+  formula_obj = log(salary) ~ rankcat + LSAT + GPA + log(libvol) + log(cost),
+  na_omit = T
+)
+```
+6. Show the coefficients:
+```{r}
+RplotterPkg::create_table(x = lawsch85_ols_lst$coef_df)
+```
+
+## 7.5 Interactions and differences in regression functions across groups
+Dummy and factor variables can be interacted just like any other variables. An important case is a model in which one or more dummy variables are interacted with all other regressors. This allows the whole regression model to differ by groups of observations identified by the dummy variable. The following example uses `(Wooldridge)` Section 7.4c page 221.
+
+1. Set up the data:
+```{r}
+data("gpa3", package = "wooldridge")
+gpa3_dt <- data.table::setDT(gpa3)
+gpa3_dt <- gpa3_dt[spring == 1, .(cumgpa, female, sat, hsperc, tothrs)]
+```
+
+2. Estimate the OLS:
+```{r}
+gpa3_ols_lst <- RregressPkg::ols_calc(
+  df = gpa3_dt, 
+  formula_obj = cumgpa ~ female * (sat + hsperc + tothrs)
+)
+```
+
+3. Show the coefficients:
+```{r}
+RplotterPkg::create_table(x = gpa3_ols_lst$coef_df, caption = "cumgpa ~ female * (sat + hsperc + tothrs)")
+```
+
+4. Perform the $F$ test for all the interaction effects using `car::linearHypothsis()`. Select all coefficients with names containing "female".
+```{r}
+gpa3_lm <- stats::lm(cumgpa ~ female * (sat + hsperc + tothrs), data = gpa3_dt)
+car::linearHypothesis(gpa3_lm, matchCoefs(gpa3_lm, "female"))
+```
+

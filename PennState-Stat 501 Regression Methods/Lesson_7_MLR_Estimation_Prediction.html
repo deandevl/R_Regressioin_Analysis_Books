@@ -214,7 +214,7 @@ summary {
 <p>Author: Rick Dean</p>
 </div>
 <div>
-<p>Article date: 2021-02-14</p>
+<p>Article date: 2021-02-18</p>
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -254,8 +254,8 @@ iqsize_dt &lt;- iqsize_dt[, !c(&quot;Weight&quot;)]</code></pre>
 <li>Estimate the OLS parameters:</li>
 </ol>
 <pre class="r"><code>iqsize_ols_lst &lt;- RregressPkg::ols_calc(
-  x = iqsize_dt,
-  resp_col = &quot;PIQ&quot;
+  df = iqsize_dt,
+  formula_obj = PIQ ~ Brain + Height
 )</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Compute the fitted value <span class="math inline">\(\hat{y}_{h}\)</span>:</li>
@@ -278,7 +278,7 @@ X_hh &lt;- X_h %*% x2_inv %*% t(X_h)
 
 se_fit &lt;- sqrt(iqsize_ols_lst$mse * X_hh)[,1]
 se_fit</code></pre>
-<pre><code>## [1] 3.646064</code></pre>
+<pre><code>## [1] 3.699294</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Compute the 95% CI’s for <span class="math inline">\(\hat{y}_{h}\)</span>:</li>
 </ol>
@@ -287,8 +287,8 @@ p = ncol(X)
 t = stats::qt(0.975, n - p)
 CI_upper &lt;- y_h + t * se_fit
 CI_lower &lt;- y_h - t * se_fit</code></pre>
-<p>CI_upper = 113.0410309</p>
-<p>CI_lower = 98.2372247</p>
+<p>CI_upper = 113.1490935</p>
+<p>CI_lower = 98.129162</p>
 <p>The take away:</p>
 <blockquote>
 <p>We can be 95% confident that the average performance IQ score of all college students with brain size = 90 and height = 70 is between 98.24 and 113.04 counts per 10,000.</p>
@@ -353,8 +353,8 @@ iqsize_dt &lt;- iqsize_dt[, !c(&quot;Weight&quot;)]</code></pre>
 <li>Call <code>RregressPkg::ols_predict_calc()</code>:</li>
 </ol>
 <pre class="r"><code>iqsize_respones_df &lt;- RregressPkg::ols_predict_calc(
-  x = iqsize_dt,
-  resp_col = &quot;PIQ&quot;,
+  df = iqsize_dt,
+  formula_obj = PIQ ~ Brain + Height,
   predictors_df = predictors_df
 )</code></pre>
 <ol start="4" style="list-style-type: decimal">

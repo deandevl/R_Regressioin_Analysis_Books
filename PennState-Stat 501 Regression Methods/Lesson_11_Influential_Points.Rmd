@@ -66,7 +66,10 @@ data_path <- file.path(current_dir, "data/influence2.txt")
 has_outlier_dt <- data.table::fread(data_path)
 has_outlier_dt[,Line := "Has Outlier"]
 
-has_outlier_stats <- RregressPkg::ols_calc(x = has_outlier_dt[,.(x,y)], resp_col = "y" )
+has_outlier_stats <- RregressPkg::ols_calc(
+  df = has_outlier_dt[,.(x,y)], 
+  formula_obj = y ~ x 
+)
 has_outlier_dt[, Fit := has_outlier_stats$fitted_val]
 
 RplotterPkg::create_scatter_plot(
@@ -85,7 +88,9 @@ RplotterPkg::create_scatter_plot(
 no_outlier_dt <- has_outlier_dt[Row != 21]
 no_outlier_dt[,Line := "No Outlier"]
 
-no_outlier_stats <- RregressPkg::ols_calc(x = no_outlier_dt[,.(x,y)], resp_col = "y")
+no_outlier_stats <- RregressPkg::ols_calc(
+  df = no_outlier_dt[,.(x,y)], 
+  formula_obj = y ~ x)
 no_outlier_dt[,Fit := no_outlier_stats$fitted_val]
 
 dt <- rbind(has_outlier_dt, no_outlier_dt)
@@ -134,7 +139,10 @@ data_path <- file.path(current_dir, "data/influence3.txt")
 has_leverage_dt <- data.table::fread(data_path)
 has_leverage_dt[,Line := "Has Leverage"]
 
-has_leverage_stats <- RregressPkg::ols_calc(x = has_leverage_dt[,.(x,y)], resp_col = "y")
+has_leverage_stats <- RregressPkg::ols_calc(
+  df = has_leverage_dt[,.(x,y)], 
+  formula_obj = y ~ x
+)
 has_leverage_dt[, Fit := has_leverage_stats$fitted_val]
 
 RplotterPkg::create_scatter_plot(
@@ -154,7 +162,10 @@ RplotterPkg::create_scatter_plot(
 no_leverage_dt <- has_leverage_dt[Row != 21]
 no_leverage_dt[,Line := "No Leverage"]
 
-no_leverage_stats <- RregressPkg::ols_calc(x = no_leverage_dt[,.(x,y)], resp_col = "y")
+no_leverage_stats <- RregressPkg::ols_calc(
+  df = no_leverage_dt[,.(x,y)], 
+  formula_obj = y ~ x
+)
 no_leverage_dt[,Fit := no_leverage_stats$fitted_val]
 pt_21_dt <- data.table(
   Row = 21,
@@ -212,7 +223,10 @@ data_path <- file.path(current_dir, "data/influence4.txt")
 has_outl_lever_dt <- data.table::fread(data_path)
 has_outl_lever_dt[,Line := "Has Outlier-Leverage"]
 
-has_outl_lever_stats <- RregressPkg::ols_calc(x = has_outl_lever_dt[,.(x,y)], resp_col = "y")
+has_outl_lever_stats <- RregressPkg::ols_calc(
+  df = has_outl_lever_dt[,.(x,y)],
+  formula_obj = y ~ x
+)
 has_outl_lever_dt[, Fit := has_outl_lever_stats$fitted_val]
 
 RplotterPkg::create_scatter_plot(
@@ -232,7 +246,9 @@ RplotterPkg::create_scatter_plot(
 no_outl_lever_dt <- has_outl_lever_dt[Row != 21]
 no_outl_lever_dt[,Line := "No Outlier-Leverage"]
 
-no_outl_lever_stats <- RregressPkg::ols_calc(x = no_outl_lever_dt[,.(x,y)], resp_col = "y")
+no_outl_lever_stats <- RregressPkg::ols_calc(
+  df = no_outl_lever_dt[,.(x,y)],
+  formula_obj = y ~ x)
 no_outl_lever_dt[,Fit := no_outl_lever_stats$fitted_val]
 
 dt <- rbind(has_outl_lever_dt, no_outl_lever_dt)
@@ -343,12 +359,18 @@ data_dt <- data.table(
 ```
 2. Compute the basic OLS parameters:
 ```{r}
-ols_stats <- RregressPkg::ols_calc(x = data_dt, resp_col = "y")
+ols_stats <- RregressPkg::ols_calc(
+  df = data_dt, 
+  formula_obj = y ~ x)
 ```
 
 3. Compute the internal studentized residuals:
 ```{r}
-simple_influence_lst <- RregressPkg::ols_influence_calc(x = data_dt, resp_col = "y")
+simple_influence_lst <- RregressPkg::plot_influence(
+  df = data_dt, 
+  formula_obj = y ~ x,
+  influence_meas = "internal"
+)
 ```
 
 4. Display the internal studentized residuals (SRES):
@@ -371,9 +393,9 @@ An internal studentized residual *SRES* that is larger than 3 (in absolute value
 Plot the internal studentized residual for each of the observations in Example 11-2:
 ```{r}
 dt <- has_outlier_dt[, .(x, y)]
-internal_influence_lst <- RregressPkg::ols_influence_calc(
-  x = dt,
-  resp_col = "y",
+internal_influence_lst <- RregressPkg::plot_influence(
+  df = dt,
+  formula_obj = y ~ x,
   influence_meas = "internal",
   title = "Internal Studentized Residual Across Observations",
   subtitle = "PennState Example 11-2 with one outlier",
@@ -427,8 +449,12 @@ outlier_dt <- data.table(
   line = rep("Outlier", 4)
 )
 
-no_outlier_stats <- RregressPkg::ols_calc(x = no_outlier_dt[,.(x,y)], resp_col = "y")
-outlier_stats <- RregressPkg::ols_calc(x = outlier_dt[,.(x,y)], resp_col = "y")
+no_outlier_stats <- RregressPkg::ols_calc(
+  df = no_outlier_dt[,.(x,y)], 
+  formula_obj = y ~ x)
+outlier_stats <- RregressPkg::ols_calc(
+  df = outlier_dt[,.(x,y)], 
+  formula_obj = y ~ x)
 
 no_outlier_dt[, fit := no_outlier_stats$fitted_val]
 outlier_dt[, fit := outlier_stats$fitted_val]
@@ -483,9 +509,9 @@ Show both the internal studentized(SRES) and external studentized residual(TRES)
 1. Compute the external studentized residual:
 ```{r}
 dt <- has_outlier_dt[, .(x, y)]
-external_influence_lst <- RregressPkg::ols_influence_calc(
-  x = dt, 
-  resp_col = "y",
+external_influence_lst <- RregressPkg::plot_influence(
+  df = dt, 
+  formula_obj = y ~ x,
   influence_meas = "external")
 ```
 
@@ -525,9 +551,9 @@ Show the studentized(SRES), deleted studentized residual(TRES) and difference in
 1. Compute the difference in fits:
 ```{r}
 dt <- has_outlier_dt[, .(x, y)]
-diff_influence_lst <- RregressPkg::ols_influence_calc(
-  x = dt, 
-  resp_col = "y",
+diff_influence_lst <- RregressPkg::plot_influence(
+  df = dt, 
+  formula_obj = y ~ x,
   influence_meas = "dffits"
 )
 ```
@@ -570,9 +596,9 @@ Show the studentized(SRES), deleted studentized residual(TRES), difference in fi
 1. Compute Cook's distance:
 ```{r}
 dt <- has_outlier_dt[, .(x, y)]
-cook_influence_lst <- RregressPkg::ols_influence_calc(
-  x = dt, 
-  resp_col = "y",
+cook_influence_lst <- RregressPkg::plot_influence(
+  df = dt, 
+  formula_obj = y ~ x,
   influence_meas = "cook"
 )
 ```
@@ -633,9 +659,9 @@ It appears that we may have an outlier.
 
 3. Compute Cook's distance:
 ```{r}
-influence_lst <- RregressPkg::ols_influence_calc(
-  x = foot_height_dt,
-  resp_col = "foot",
+influence_lst <- RregressPkg::plot_influence(
+  df = foot_height_dt,
+  formula_obj = foot ~ height,
   influence_meas = "cook",
   label_threshold = 3.0,
   title = "Cook's Distance Influential Measure",
@@ -652,7 +678,10 @@ influence_lst$plot
 5. It's clear that observation 28 (*height* = 84, *foot* = 27) is an outlier. Compute the OLS estimates without this observation:
 ```{r}
 foot_height_no28_dt <- foot_height_dt[-28]
-ols_no28_lst <- RregressPkg::ols_calc(x = foot_height_no28_dt, resp_col = "foot")
+ols_no28_lst <- RregressPkg::ols_calc(
+  df = foot_height_no28_dt, 
+  formula_obj = foot ~ height
+)
 RplotterPkg::create_table(
   x = ols_no28_lst$coef_df,
   caption = "OLS for Foot ~ Height without obs 28"
@@ -673,7 +702,9 @@ d_i_28
 
 7. Compute the unstandardized $DFFITS = \hat{y_{i}} - \hat{y_{i(i)}}$ (difference between the two estimated response values):
 ```{r}
-ols_lst <- RregressPkg::ols_calc(x = foot_height_dt, resp_col = "foot")
+ols_lst <- RregressPkg::ols_calc(
+  df = foot_height_dt, 
+  formula_obj = foot ~ height)
 DFFITS_i <- ols_lst$fitted_val[[28]] - new_foot
 DFFITS_i
 ```
@@ -689,7 +720,10 @@ hosp_infect_dt <- hosp_infect_raw_dt[, .(Stay, InfctRsk)]
 
 2. Plot the data with estimated OLS line:
 ```{r}
-ols_lst <- RregressPkg::ols_calc(x = hosp_infect_dt, resp_col = "InfctRsk")
+ols_lst <- RregressPkg::ols_calc(
+  df = hosp_infect_dt, 
+  formula_obj = InfctRsk ~ Stay
+)
 fitted_dt <- data.table(
   Stay = hosp_infect_dt$Stay,
   Fit = ols_lst$fitted_val
@@ -710,9 +744,9 @@ RplotterPkg::create_scatter_plot(
 
 3. Compute Cook's Distance measure of influence:
 ```{r}
-influence_lst <- RregressPkg::ols_influence_calc(
-  x = hosp_infect_dt,
-  resp_col = "InfctRsk",
+influence_lst <- RregressPkg::plot_influence(
+  df = hosp_infect_dt,
+  formula_obj = InfctRsk ~ Stay,
   influence_meas = "cook",
   label_threshold = 0.2,
   title = "Cook's Distance for Influential Observations",

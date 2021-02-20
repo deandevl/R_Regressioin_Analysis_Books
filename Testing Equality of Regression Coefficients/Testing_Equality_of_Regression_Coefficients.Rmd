@@ -1,0 +1,180 @@
+---
+title: "Testing the Equality of Regression Coefficients"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>
+
+Author: Rick Dean
+
+</div>
+
+<div>
+
+Article date: `r params$date`
+
+</div>
+
+::: {.abstract}
+<p class="abstract">
+
+Abstract
+
+</p>
+
+The following notes and R scripts were inspired by an article titled [Testing the Equality of Regression Coefficients](https://shouldbewriting.netlify.app/posts/2021-02-16-testing-coefficients-equality/) by Mattan S. Ben-Shachar. The author compares four methods with an example data set.
+:::
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(effectsize)
+library(RregressPkg)
+library(RplotterPkg)
+library(car)
+library(ggplot2)
+```
+
+## The data set
+
+### Access the data
+
+Source of the data is `effectsize::hardlyworking` where the response is a *worker's salary* (**salary**) and predictors *number of extra hours* (**xtra_hours**) and *number of compliments* (**n_comps**).
+
+```{r}
+data("hardlyworking", package = "effectsize")
+head(hardlyworking)
+```
+
+### Plot the response with the predictors
+
+```{r}
+RplotterPkg::multi_scatter_plot(
+  df = hardlyworking,
+  variables = c("xtra_hours", "n_comps"),
+  aes_y = "salary",
+  title = "Salary vs Extra Hours and No. of Complements",
+  subtitle = "Data set: effectsize::hardlyworking",
+  rot_y_tic_label = T,
+  col_width = 5
+)
+```
+
+### Standardize the data
+
+```{r}
+hardlyworking_dt <- data.table::setDT(hardlyworking)
+hardlyworking_dt[, `:=`(salary_z = scale(salary), xtra_hours_z = scale(xtra_hours), n_comps_z = scale(n_comps))]
+```
+
+## Method 1: As model comparisons
+
+### Compute the OLS estimates for the first lm model `salary_z ~ xtra_hours_z + n_comps_z`
+
+```{r}
+model_1_lst <- RregressPkg::ols_calc(df = hardlyworking_dt, formula_obj = salary_z ~ xtra_hours_z + n_comps_z)
+RplotterPkg::create_table(x = model_1_lst$coef_df, caption = "Model 1: salary_z ~ xtra_hours_z + n_comps_z")
+```
+
+### Compute the OLS estimates for the second lm model `salary_z ~ I(xtra_hours_z + n_comps_z)`
+
+```{r}
+model_2_lst <- RregressPkg::ols_calc(df = hardlyworking_dt, formula_obj = salary_z ~ I(xtra_hours_z + n_comps_z))
+RplotterPkg::create_table(x = model_2_lst$coef_df, caption = "Model 2: salary_z ~ I(xtra_hours_z + n_comps_z)")
+```
+
+### Compare the models via ANOVA
+
+Model 1 ANOVA
+
+```{r}
+RplotterPkg::create_table(x = model_1_lst$anova_df, caption = "Model 1: salary_z ~ xtra_hours_z + n_comps_z")
+```
+
+Model 2 ANOVA
+
+```{r}
+RplotterPkg::create_table(x = model_2_lst$anova_df, caption = "Model 2: salary_z ~ I(xtra_hours_z + n_comps_z)")
+```
+
+
+Using `stats::anova()`:
+```{r}
+ model_1_lm <- lm(salary_z ~ xtra_hours_z + n_comps_z, data = hardlyworking_dt)
+ model_2_lm <- lm(salary_z ~ I(xtra_hours_z + n_comps_z), data=hardlyworking_dt)
+ stats::anova(model_1_lm,model_2_lm)
+```
+
+::: {.note}
+Note: It appears that model 1 is preferred (with a lower SS Residual Error) and its predictors are showing that $\hat{\beta}_{XtraHours}$ \> $\hat{\beta}_{Compliments}$
+:::
+
+## Method 2: Paternoster et al (1998)
+
+Compute the $t$-test to compare the coefficients according to [Paternoster et al (1998)](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.1025.8565&rep=rep1&type=pdf). From the first model results that separates the two coefficients (*model_1\_lst*): 1. The model's coefficient differences:
+
+```{r}
+b_x_hours <- model_1_lst$coef_df$Value[[2]]
+b_n_comp <- model_1_lst$coef_df$Value[[3]]
+diff_coef =b_x_hours - b_n_comp
+```
+diff_coef = `r diff_coef`
+
+2.  The model's standard errors of the coefficients:
+
+```{r}
+sd_x_hours <- model_1_lst$coef_df$SE[[2]]
+sd_n_comp <- model_1_lst$coef_df$SE[[3]]
+```
+sd_x\_hours = `r sd_x_hours`
+
+sd_n\_comp = `r sd_n_comp`
+
+3.  Use the correct formula for computing the $t$-statistic for the difference in coefficients: $$Z = \frac{b_{1} - b_{2}}{\sqrt{SEb_{1}^2 + SEb_{2}^2}}$$
+```{r}
+Z = diff_coef / sqrt(sd_x_hours^2 + sd_n_comp^2)
+```
+Z = `r Z`
+
+4. The variance for the difference between two coefficients:
+$$Var(\hat\beta_{1} - \hat\beta_{2}) = Var(\hat\beta_{1}) + Var(\hat\beta_{2}) - 2*Cov(\hat\beta_{1},\hat{\beta_{2}})$$
+```{r}
+var_diff <- sd_n_comp^2 + sd_x_hours^2 - 2 * model_1_lst$var_cov[2,3]
+
+se_diff <- sqrt(var_diff)
+```
+var_diff = `r var_diff`
+
+se_diff = `r se_diff`
+
+5. The $t$-statistic with n-p degrees of freedom (n = 500, p = 2 var + 1 intercept) = 497:
+$$t_{diff} = \frac{b_{1} - b_{2}}{SE_{diff}}$$
+```{r}
+t_diff = diff_coef/se_diff
+```
+t_diff = `r t_diff` 
+
+Z = `r Z`
+
+## Method 5: Using `car::linearHypothesis()`
+```{r}
+car::linearHypothesis(model_1_lm, c("xtra_hours_z - n_comps_z"))
+```
+
+
+
+
+
+

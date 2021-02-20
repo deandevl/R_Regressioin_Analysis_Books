@@ -14,16 +14,29 @@ options(knitr.table.format = "html")
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 8)
 ```
 
-<div>Author: Rick Dean</div>
-<div>Article date: `r params$date`</div>
+<div>
 
-<div class="abstract">
-  <p class="abstract">Abstract</p>
-  The following notes and scripts are based on the following sources:
-[Introductory Econometrics - A Modern Approach](https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&keywords=Introductory+Econometrics%3A+A+Modern+Approach&qid=1597005903&s=books&sr=1-2)  by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as `(Wooldridge)`. 
- 
-The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`.  The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 4 MRA Inference** of `(Heiss)`.
-</div> 
+Author: Rick Dean
+
+</div>
+
+<div>
+
+Article date: `r params$date`
+
+</div>
+
+::: {.abstract}
+<p class="abstract">
+
+Abstract
+
+</p>
+
+The following notes and scripts are based on the following sources: [Introductory Econometrics - A Modern Approach](https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&keywords=Introductory+Econometrics%3A+A+Modern+Approach&qid=1597005903&s=books&sr=1-2) by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as `(Wooldridge)`.
+
+The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`. The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 4 MRA Inference** of `(Heiss)`.
+:::
 
 ```{r, warning=FALSE, message=FALSE}
 library(knitr)
@@ -36,45 +49,67 @@ library(RplotterPkg)
 ```
 
 # 4 Multiple Regression Analysis: Inference
-In `(Wooldridge, section 4.1, page 106)` is added assumption **MLR.6 Normality of the error term** to the previous assumptions **MLR.1** through **MLR.5**.  Together these assumptions constitute the classical linear model (CLM).  Under the CLM, `(Wooldridge, page 107)` presents Theorem 4.1 where:
-$$\hat{\beta}_{j} \sim Normal[\beta_{j}, Var(\hat{\beta}_{j})]$$
-<div class="take"><b>Take Away:</b> <em>Under CLM, the OLS estimators are normally distributed</em></div>
 
-Also contained in Theorem 4.1 is a reference to the $t$ statistic where:
-$$t = \frac{(\hat{\beta}_{j} - \beta_{j})}{sd(\hat{\beta}_{j})} \sim Normal(0,1)$$
+In `(Wooldridge, section 4.1, page 106)` is added assumption **MLR.6 Normality of the error term** to the previous assumptions **MLR.1** through **MLR.5**. Together these assumptions constitute the classical linear model (CLM). Under the CLM, `(Wooldridge, page 107)` presents Theorem 4.1 where: $$\hat{\beta}_{j} \sim Normal[\beta_{j}, Var(\hat{\beta}_{j})]$$
+
+::: {.take}
+<b>Take Away:</b> <em>Under CLM, the OLS estimators are normally distributed</em>
+:::
+
+Also contained in Theorem 4.1 is a reference to the $t$ statistic where: $$t = \frac{(\hat{\beta}_{j} - \beta_{j})}{sd(\hat{\beta}_{j})} \sim Normal(0,1)$$
 
 ## 4.1 The $t$ Test
+
 ### 4.1.1 General Setup
-`(Wooldridge, page 108)` presents Theorem 4.2 where:
-$$\frac{(\hat{\beta}_{j} - \beta_{j})}{se(\hat{\beta}_{j})} \sim t_{n-k-1}$$
-<div class="take"><b>Take Away:</b> <em>The $t$ distribution (with n-k-1 degrees of freedom) allows us to make inferences/hypothesis' on the population $\beta_{j}$</em></div>
+
+`(Wooldridge, page 108)` presents Theorem 4.2 where: $$\frac{(\hat{\beta}_{j} - \beta_{j})}{se(\hat{\beta}_{j})} \sim t_{n-k-1}$$
+
+::: {.take}
+<b>Take Away:</b> <em>The $t$ distribution (with n-k-1 degrees of freedom) allows us to make inferences/hypothesis' on the population $\beta_{j}$</em>
+:::
 
 An important type of hypotheses we are often interested in is of the form
-<center>$H_{0}: \beta_{j} = a_{j}$<span style="float:right;">[Heiss, 4.1]</span></center>
 
-where $a_{j}$ is some number, very often $a_{j} = 0$.  For the most common case of two-tailed tests, the alternative hypothesis is
-<center>$H_{1}: \beta_{j} \neq a_{j}$<span style="float:right;">[Heiss, 4.2]</span></center>
+<center>
+
+$H_{0}: \beta_{j} = a_{j}$[[Heiss, 4.1]]{style="float:right;"}
+
+</center>
+
+where $a_{j}$ is some number, very often $a_{j} = 0$. For the most common case of two-tailed tests, the alternative hypothesis is
+
+<center>
+
+$H_{1}: \beta_{j} \neq a_{j}$[[Heiss, 4.2]]{style="float:right;"}
+
+</center>
 
 By using Theorem 4.2, we can compute a $t$ statistic to compare an estimated $\hat{\beta_{j}}$ with a hypothesized value using the following form `(Wooldridge, Equation 4.13, page 116)`:
-$$t = \frac{\hat{\beta_{j}} - a_{j}}{se(\hat{\beta_{j}})}$$
 
-The rejection rule for $H_{0}: \beta_{j} = a_{j}$ is the absolute value of the $t$ statistic from the above equation greater than some critical value $c$ from the $t$ distribution:
-$$|t_{\hat\beta_{j}}| > c$$
+<center>$t = \frac{\hat{\beta_{j}} - a_{j}}{se(\hat{\beta_{j}})}$<span style="float:right;">[Wooldridge 4.13]</span></center>
+
+The rejection rule for $H_{0}: \beta_{j} = a_{j}$ is the absolute value of the $t$ statistic from the above equation greater than some critical value $c$ from the $t$ distribution: $$|t_{\hat\beta_{j}}| > c$$
 
 ### 4.1.2 Standard case
-<div class="task">Task: Using the college GPA data `(wooldridge::gpa1)`, (where *colGPA* is regressed on *hsGPS*, *ACT*, and *skipped*) calculate the critical values of the $t$ two-tailed test from both the exact $t$ distribution and the normal approximation.</div> 
 
-1. Read in the `(Wolldridge::gpa1)` data set:
+::: {.task}
+Task: Using the college GPA data `(wooldridge::gpa1)`, (where *colGPA* is regressed on *hsGPS*, *ACT*, and *skipped*) calculate the critical values of the $t$ two-tailed test from both the exact $t$ distribution and the normal approximation.
+:::
+
+1.  Read in the `(Wolldridge::gpa1)` data set:
+
 ```{r}
 gpa_1 <- data.table::setDT(wooldridge::gpa1)
 ```
 
-2. Set the significance level probabilities of 5% and 1%:
+2.  Set the significance level probabilities of 5% and 1%:
+
 ```{r}
 prob <- c(0.05, 0.01)
 ```
 
-3. Compute the exact quartile values for these levels from the $t$ distribution:
+3.  Compute the exact quartile values for these levels from the $t$ distribution:
+
 ```{r}
 n <-  nrow(gpa_1)
 k <-  3
@@ -82,12 +117,13 @@ df <- n - k - 1
 t_critical = qt(p = (1 - prob/2), df = df)
 ```
 
-4. Compute the quartile values approximated from a normal distribution:
+4.  Compute the quartile values approximated from a normal distribution:
+
 ```{r}
 normal_critical = qnorm(1 - prob/2)
 ```
 
-5. The critical values for the `(Wooldridge::gpal)` data set:
+5.  The critical values for the `(Wooldridge::gpal)` data set:
 
 ```{r}
 critical_df <- data.frame(
@@ -104,22 +140,31 @@ RplotterPkg::create_table(
 )
 ```
 
-<div class="note">Note: The critical values are nearly the same.</div><br>
+::: {.note}
+Note: The critical values are nearly the same.
+:::
 
-<div class="task">Task: Apply the OLS estimation to the model for GPA data and compare the `stats::summary()` results of the $t$ and $p$ test estimation with manually computed values. </div>  
+<br>
 
-1. Read in the `(Wolldridge::gpa1)` data set:
+::: {.task}
+Task: Apply the OLS estimation to the model for GPA data and compare the `stats::summary()` results of the $t$ and $p$ test estimation with manually computed values.
+:::
+
+1.  Read in the `(Wolldridge::gpa1)` data set:
+
 ```{r}
 gpa_1 <- data.table::setDT(wooldridge::gpa1)
 ```
 
-2. Estimate the OLS of the model and apply `stats::summary()` to the estimate:
+2.  Estimate the OLS of the model and apply `stats::summary()` to the estimate:
+
 ```{r}
 gpa_model <- lm(colGPA ~ hsGPA + ACT + skipped, data = gpa_1)
 summary(gpa_model)
 ```
 
-3. Extract the $\hat{\beta}_{j}$ coefficients from the model *gpa_model*:
+3.  Extract the $\hat{\beta}_{j}$ coefficients from the model *gpa_model*:
+
 ```{r}
 coefficients_gpa <- coef(gpa_model)
 dt <- data.table(
@@ -136,7 +181,8 @@ RplotterPkg::create_table(
 )
 ```
 
-4. Compute the standard errors $se(\hat{\beta}_{j})$ manually from the model *gpa_model* using `stats::vcov()`: 
+4.  Compute the standard errors $se(\hat{\beta}_{j})$ manually from the model *gpa_model* using `stats::vcov()`:
+
 ```{r}
 standard_errors_gpa <- sqrt(diag(vcov(gpa_model)))
 dt <- data.table(
@@ -153,7 +199,8 @@ RplotterPkg::create_table(
 )
 ```
 
-5. With the coefficients and their standard errors compute their $t$ statistics using equation [Heiss, 4.4] where the hypothetical value of the coefficient $a_{j} = 0$ is being tested ([Heiss, 4.1]):
+5.  With the coefficients and their standard errors compute their $t$ statistics using equation [Heiss, 4.4] where the hypothetical value of the coefficient $a_{j} = 0$ is being tested ([Heiss, 4.1]):
+
 ```{r}
 t_coefficients_gpa <- coefficients_gpa/standard_errors_gpa
 dt <- data.table(
@@ -170,9 +217,14 @@ RplotterPkg::create_table(
 )
 ```
 
-<div class="note">Note: The $t$ values for all the coefficients except $\hat{\beta}_{act}$ are larger in absolute value than the critical $t$ values in Table 4.1 **Critical $t$ Values** above.  So we would reject $H_{0}$ for all the usual significance levels. </div><br>
+::: {.note}
+Note: The $t$ values for all the coefficients except $\hat{\beta}_{act}$ are larger in absolute value than the critical $t$ values in Table 4.1 **Critical** $t$ Values above. So we would reject $H_{0}$ for all the usual significance levels.
+:::
 
-6. Using the manually computed $t$ statistic for the coefficients, compute the $p$ values:
+<br>
+
+6.  Using the manually computed $t$ statistic for the coefficients, compute the $p$ values:
+
 ```{r}
 n <-  nrow(gpa_1)
 k <-  3
@@ -192,27 +244,34 @@ RplotterPkg::create_table(
 )
 ```
 
-<div class="note">Note: Compare the manual values to those computed from the above `stats::summary()`.</div>
+::: {.note}
+Note: Compare the manual values to those computed from the above `stats::summary()`.
+:::
 
 ### 4.1.3 Other hypotheses
-Although $H_{0}: \beta_{j} = 0$ is the most common null hypothesis, we sometimes want to test whether $\beta_{j}$ is equal to some other given constant.
-Two common examples are $\beta_{i} = 1$ and $\beta_{j} = -1$.  `(Wooldride, Example 4.4, page 116)` considers a simple model of campus crime regressed on student enrollment.  The hypothesis is $H_{0}: \beta_{enroll} = 1$. This means that a 1% increase in enrollment results in a 1% increase in campus crime. The alternative hypothesis is $H_{1}: \beta_{enroll} > 1$, which implies that a 1% increase in enrollment increases crime by MORE than 1%.
 
-<div class="task">Task: Perform a $t$ test on the enrollment parameter and investigate the alternative hypothesis that $\beta_{enroll} > 1$.</div>    
+Although $H_{0}: \beta_{j} = 0$ is the most common null hypothesis, we sometimes want to test whether $\beta_{j}$ is equal to some other given constant. Two common examples are $\beta_{i} = 1$ and $\beta_{j} = -1$. `(Wooldride, Example 4.4, page 116)` considers a simple model of campus crime regressed on student enrollment. The hypothesis is $H_{0}: \beta_{enroll} = 1$. This means that a 1% increase in enrollment results in a 1% increase in campus crime. The alternative hypothesis is $H_{1}: \beta_{enroll} > 1$, which implies that a 1% increase in enrollment increases crime by MORE than 1%.
 
-1. Read in the data:
+::: {.task}
+Task: Perform a $t$ test on the enrollment parameter and investigate the alternative hypothesis that $\beta_{enroll} > 1$.
+:::
+
+1.  Read in the data:
+
 ```{r}
 campus_crime <- data.table::setDT(wooldridge::campus)
 str(campus_crime)
 ```
 
-2. Construct the OLS model estimate:
+2.  Construct the OLS model estimate:
+
 ```{r}
 campus_crime_model <- lm(log(crime) ~ log(enroll), data = campus_crime)
 summary(campus_crime_model)
 ```
 
-3. Compute the variance $\hat{\sigma}^2$ of the individual errors terms $\mu_{i}$ or standard error of the regression (SER).  See `(Wooldridge, Equation 2.61, page 49)` and `(Heiss, Equation 2.14, page 82)`:
+3.  Compute the variance $\hat{\sigma}^2$ of the individual errors terms $\mu_{i}$ or standard error of the regression (SER). See `(Wooldridge, Equation 2.61, page 49)` and `(Heiss, Equation 2.14, page 82)`:
+
 ```{r}
 n <- nobs(campus_crime_model)
 k <- 1
@@ -222,68 +281,83 @@ ser <- sqrt((n-1)/(n-2) * stats::var(mu))
 
 The standard error of the regression = `r ser`. Note that this is labeled in the summary above as "Residual standard error:".
 
-4. Compute the the standard error for the estimated parameter $\hat{\beta}_{enroll}$. See `(Wooldridge, Equation 2.57, page 47)` and `(Heiss, Equation 2.16, page 82)`:
+4.  Compute the the standard error for the estimated parameter $\hat{\beta}_{enroll}$. See `(Wooldridge, Equation 2.57, page 47)` and `(Heiss, Equation 2.16, page 82)`:
+
 ```{r}
 coef_enroll_se <- 1/sqrt(n-1) * ser/stats::sd(log(campus_crime$enroll))
 ```
 
 $\hat{\beta}_{enroll}$ standard error = `r coef_enroll_se`
 
-5. Compute the $t$ statistic for $\hat{\beta}_{enroll}$ using equation [Heiss, 4.4]:
+5.  Compute the $t$ statistic for $\hat{\beta}_{enroll}$ using equation [Heiss, 4.4]:
+
 ```{r}
 t_enroll <- (1.27 - 1)/coef_enroll_se
 ```
 
 $\hat{\beta}_{enroll}$ $t$ value = `r t_enroll`
 
-6. Compute the one-sided 5% critical value for the $t$ distribution:
+6.  Compute the one-sided 5% critical value for the $t$ distribution:
+
 ```{r}
 c_95 <- stats::qt(p = .95, df = n-k-1)
 ```
 
 One-sided critical $t$ value at the 95% probability level = `r c_95`
 
-<div class="note">Note: With the $t$ statistic for $\hat{\beta}_{enroll}$ greater than the critical $t$ value, we reject the null hypothesis $H_{0}: \beta_{enroll} = 1$</div><br>
+::: {.note}
+Note: With the $t$ statistic for $\hat{\beta}_{enroll}$ greater than the critical $t$ value, we reject the null hypothesis $H_{0}: \beta_{enroll} = 1$
+:::
 
-<div class="task">Task: Test the effect of job training on scrap rates from the `(Wooldridge::jtrain)` data set.  See `(Wooldridge, Example 4.7, page 121)`</div>   
+<br>
 
-1. Read in the data:
+::: {.task}
+Task: Test the effect of job training on scrap rates from the `(Wooldridge::jtrain)` data set. See `(Wooldridge, Example 4.7, page 121)`
+:::
+
+1.  Read in the data:
+
 ```{r}
 jtrain <- data.table::setDT(wooldridge::jtrain)
 jtrain_1987 <- jtrain[year == 1987 & union == 0]
 str(jtrain_1987)
 ```
 
-2. Estimate the OLS parameters for the model
-*scrap* = scrap rate  *hrsemp* = annual hours of training per employee  *sales* = annual firm sales in dollars  *employ* = number of firm employees
+2.  Estimate the OLS parameters for the model *scrap* = scrap rate *hrsemp* = annual hours of training per employee *sales* = annual firm sales in dollars *employ* = number of firm employees
+
 ```{r}
 jtrain_model <- lm(log(scrap) ~ hrsemp + log(sales) + log(employ), data = jtrain_1987)
 summary(jtrain_model)
 ```
 
-3. Compute the standard error of the regression (SER):
+3.  Compute the standard error of the regression (SER):
+
 ```{r}
 n <- nobs(jtrain_model)
 k <- 4
 mu <- stats::resid(jtrain_model)
 ser <- sqrt((n-1)/(n-2) * stats::var(mu)) 
 ```
+
 SER = `r ser`
 
-4. Create a matrix of predictor values and add a column of ones for the intercept (showing the first 6 rows):
+4.  Create a matrix of predictor values and add a column of ones for the intercept (showing the first 6 rows):
+
 ```{r}
 predict_mat <- cbind(1, jtrain_model$model$hrsemp, jtrain_model$model$`log(sales)`, jtrain_model$model$`log(employ)`)
 colnames(predict_mat) <- names(coef(jtrain_model))
 head(predict_mat)
 ```
 
-5. Compute the variance-covariance matrix according to `(Wooldridge, Theorem E.2, page 724):
+5.  Compute the variance-covariance matrix according to \`(Wooldridge, Theorem E.2, page 724):
+
 ```{r}
 jtrain_var_cov <- ser^2 * solve(t(predict_mat) %*% predict_mat)
 jtrain_var_cov
 ```
 
-6. The standard errors of $\hat{\beta}_{j}$ are the square roots of the main diagonal of the variance-covariance matrix *jtrain_var_cov*:
+6.  The standard errors of $\hat{\beta}_{j}$ are the square roots of the main diagonal of the variance-covariance matrix *jtrain_var_cov*:
+
 ```{r}
 jtrain_se <- sqrt(diag(jtrain_var_cov))
 names(jtrain_se) <- names(coef(jtrain_model))
@@ -298,42 +372,60 @@ RplotterPkg::create_table(
 )
 ```
 
-7. Compute the $t$ statistic for *hrsemp*:
+7.  Compute the $t$ statistic for *hrsemp*:
+
 ```{r}
 t_hrsemp <- coef(jtrain_model)[["hrsemp"]]/jtrain_se[["hrsemp"]]
 ```
+
 The $t$ statistic for *hrsemp* is `r t_hrsemp`
 
-8. Compute the critical $t$ statistic for the alternative hypothesis $H_{1}: \beta_{hrsemp} < 0$ at the 5% probability:
+8.  Compute the critical $t$ statistic for the alternative hypothesis $H_{1}: \beta_{hrsemp} < 0$ at the 5% probability:
+
 ```{r}
 t_5 <- qt(p = 0.05, df = n-k)
 ```
+
 The critical $t$ statistic at 5% probability value is `r t_5`
 
-<div class="note">Note: Since the $t$ statistic for *hrsemp* does not fall beyond the critical $t$ value, we conclude that the coefficient value is not statistically significant.</div><br>
+::: {.note}
+Note: Since the $t$ statistic for *hrsemp* does not fall beyond the critical $t$ value, we conclude that the coefficient value is not statistically significant.
+:::
+
+<br>
 
 ## 4.2 Confidence Intervals
+
 By `(Wooldridge, Equation 4.16, page 123)` confidence intervals for the regression parameters are:
 
-<center>$\hat{\beta}_{j} \pm c \cdot se(\hat{\beta}_{j})$<span style="float:right;">[4.8]</span></center>
+<center>
+
+$\hat{\beta}_{j} \pm c \cdot se(\hat{\beta}_{j})$[[Heiss 4.8]]{style="float:right;"}
+
+</center>
 
 where $c$ is the critical value for the two-sided $t$ test at a 5% or 1% significance level.
 
-<div class="task">Task: Using the `wooldridge::rdchem` data set compute the 5% confidence intervals for the regression variables (`Wooldridge, Example 4.8, page 123)`.</div>    
+::: {.task}
+Task: Using the `wooldridge::rdchem` data set compute the 5% confidence intervals for the regression variables (`Wooldridge, Example 4.8, page 123)`.
+:::
 
-1. Read in the data:
+1.  Read in the data:
+
 ```{r}
 rdchem <- data.table::setDT(wooldridge::rdchem)
 str(rdchem)
 ```
 
-2. Estimate an OLS model that regresses *rd* with *sales* and *profmarg*:
+2.  Estimate an OLS model that regresses *rd* with *sales* and *profmarg*:
+
 ```{r}
 rdchem_model <- lm(log(rd) ~ log(sales) + profmarg, data = rdchem)
 summary(rdchem_model)
 ```
 
-3. Compute the standard errors of the coefficients:
+3.  Compute the standard errors of the coefficients:
+
 ```{r}
 n = nobs(rdchem_model)
 k = 3
@@ -344,74 +436,160 @@ rdchem_var_cov <- ser^2 * solve(t(X) %*% X) # variance-covariance matrix of coef
 rdchem_se <- sqrt(diag(rdchem_var_cov))
 names(rdchem_se) = names(coef(rdchem_model))
 ```
+
 The standard errors for the coefficients are: `r (rdchem_se)`
 
-4. Considering the *sales* coefficient, from a two-sided $t$ test compute the critical $t$ statistic ($c$ in Equation [4.8] above) at the 97.5% level of probability:
+4.  Considering the *sales* coefficient, from a two-sided $t$ test compute the critical $t$ statistic ($c$ in Equation [4.8] above) at the 97.5% level of probability:
+
 ```{r}
 c_975 <- stats::qt(p = 0.975, df = n - k - 1)
 ```
+
 The critical two-sided $t$ value at the 97.5% probability is `r c_975`
 
-5. Using equation [4.8] above, compute the confidence intervals for the *sales* coefficient $\beta_{log(sales)}$:
+5.  Using equation [4.8] above, compute the confidence intervals for the *sales* coefficient $\beta_{log(sales)}$:
+
 ```{r}
 sales_upper_ci <- coef(rdchem_model)[["log(sales)"]] + c_975 * rdchem_se[["log(sales)"]]
 sales_lower_ci <- coef(rdchem_model)[["log(sales)"]] - c_975 * rdchem_se[["log(sales)"]]
 ```
+
 The lower/upper confidence values for $\beta_{log(sales)}$ are `r sales_lower_ci` and `r sales_upper_ci`
 
-6. Using equation [4.8] above, compute the confidence intervals for the *profmarg* coefficient $\beta_{profmarg}$:
+6.  Using equation [4.8] above, compute the confidence intervals for the *profmarg* coefficient $\beta_{profmarg}$:
+
 ```{r}
 profmarg_upper_ci <- coef(rdchem_model)[["profmarg"]] + c_975 * rdchem_se[["profmarg"]]
 profmarg_lower_ci <- coef(rdchem_model)[["profmarg"]] - c_975 * rdchem_se[["profmarg"]]
 ```
+
 The lower/upper confidence values for $\beta_{profmarg}$ are `r profmarg_lower_ci` and `r profmarg_upper_ci`
 
-## 4.3 Linear Restrictions: $F$ Tests
-`(Wooldridge, sections 4.4 and 4.5, page 124 - 136)` discusses more general tests than those for the null hypotheses in Equation [4.1] above.
 
-<div class="task">Task: Follow the example in `(Wooldridge, sections 4.4, page 124)` for testing a single hypotesis on a combination of $\hat{\beta}_{j}$. Use the `wooldridge::twoyear` data set and test the null hypothesis:</div>
-$$H_{0}: \beta_{jc} = \beta_{univ}$$
-The alternative hypothesis is that a year at a junior college is worth less than a year at a university:
-$$H_{1}: \beta_{jc} < \beta_{univ}$$
-`(Wooldridge, page 126)` restates $H_{0}$ as:
-$$H_{0}: \theta_{1} = 0$$
-against 
-$$H_{1}: \theta_{1} < 0$$
-where $\theta_{1} = \beta_{1} - \beta_{2}$
+## 4.3a Testing hypotheses involving more than one coefficient
 
-1. Read in the data:
+`(Wooldridge, sections 4.4 and 4.5, page 124 - 136)` discusses more general tests than those for the null hypotheses in Equation [Heiss 4.1] above.
+
+::: {.task}
+Task: Follow the example in `(Wooldridge, sections 4.4, page 124)` for testing a single hypotheses on a combination of $\hat{\beta}_{j}$. Use the `wooldridge::twoyear` data set and test the null hypothesis for the difference in two coefficients.  
+:::
+
+The example's OLS model is the following:
+$$log(wage) = \beta_{intercept} + \beta_{jc} + \beta_{univ} + \beta_{exper} + \mu$$
+The hypothesis of interest is whether one year at a junior college is worth one year at a university:
+<center>$H_{0}: \beta_{jc} = \beta_{univ}$<span style="float:right;">[Wooldridge 4.18]</span></center>
+
+Under $H_{0}$, another year at a junior college and another year at a university lead to the same percentage increase in *wage*.
+
+The alternative hypothesis is that a year at a junior college is worth less than a year at a university: 
+<center>$H_{1}: \beta_{jc} < \beta_{univ}$<span style="float:right;">[Wooldridge 4.19]</span></center>
+
+### Alternative 1
+We now have two parameters $\beta_{jc}$ and $\beta_{univ}$ in the null hypothesis.  Wooldridge rewrites this hypothesis to follow the form in Equation [Heiss 4.1] above as:
+$$H_{0}: \beta_{jc} - \beta_{univ} = 0$$
+and the hypothesis alternative:
+$$H_{1}: \beta_{jc} - \beta_{univ} < 0$$
+Following Equation [Wooldridge 4.13] above, we can now estimate our $t$-statistic as:
+
+<center>$t = \frac{\hat{\beta}_{jc} - \hat{\beta}_{univ}}{se(\hat{\beta}_{jc} - \hat{\beta}_{univ})}$<span style="float:right;">[Wooldridge 4.20]</span></center>
+
+The question is how we estimate the standard error in the denominator of [Wooldridge 4.20].
+Let's get some numbers for $\hat{\beta}_{jc}$ and $\hat{\beta}_{univ}$ and then return to this question:
+
+1. Set up the data:
+```{r}
+data("twoyear",package = "wooldridge")
+twoyear_dt <- data.table::setDT(twoyear)
+```
+
+2. Estimate the OLS:
+```{r}
+twoyear_ols_lst <- RregressPkg::ols_calc(
+  df = twoyear_dt,
+  formula_obj = lwage ~ jc + univ + exper
+)
+```
+
+3. Show the coefficients:
+```{r}
+RplotterPkg::create_table(x = twoyear_ols_lst$coef_df, caption = "lwage ~ jc + univ + exper")
+```
+Both $\hat{\beta}_{jc}$ and $\hat{\beta}_{univ}$ are quite significant with a difference of $\hat{\beta}_{jc}$ - $\hat{\beta}_{univ}$: 
+```{r}
+diff_jc_univ <- twoyear_ols_lst$coef["jc"] - twoyear_ols_lst$coef["univ"]
+diff_jc_univ
+```
+
+
+Returning to our above question in computing the $t$-statistic, we need the standard error for the difference in these two coefficients. Wooldridge provides Equation [Wooldridge 4.22] where:
+
+$$Var(\hat{\beta}_{jc} - \hat{\beta}_{univ}) = Var(\hat{\beta}_{jc}) + Var(\hat{\beta}_{univ}) - 2Cov(\hat{\beta}_{jc}, \hat{\beta}_{univ})$$
+The square root of $Var(\hat{\beta}_{jc} - \hat{\beta}_{univ})$ would give us the standard error we are looking for.  Following through with *twoyear_ols_lst* which has the variance-covariance matrix:
+```{r}
+twoyear_ols_lst$var_cov
+```
+Doing the arithmetic, the standard error is:
+```{r}
+vc <- twoyear_ols_lst$var_cov
+se_jc_univ <- sqrt(vc["jc","jc"] + vc["univ","univ"] - 2 * vc["jc","univ"])
+se_jc_univ
+```
+
+And the $t$-statistic for the coefficient difference is:
+```{r}
+t_jc_univ <- diff_jc_univ/se_jc_univ
+t_jc_univ
+```
+As Wooldridge comments on page 126, "there is some, but not strong, evidence against Equation [Wooldridge 4.18]."
+
+### Alternative 2
+
+`(Wooldridge, page 126)` restates $H_{0}$ as: $$H_{0}: \theta_{1} = 0$$ against $$H_{1}: \theta_{1} < 0$$ where $\theta_{1} = \beta_{1} - \beta_{2}$
+
+1.  Read in the data:
+
 ```{r}
 twoyear_dt <- data.table::setDT(wooldridge::twoyear)
 str(twoyear_dt)
 ```
 
-2. Regress *lwage* on *jc*, *univ*, and *exper*:
+2.  Regress *lwage* on *jc*, *univ*, and *exper*:
+
 ```{r}
 wage_model <- lm(lwage ~ jc + univ + exper, data = twoyear_dt)
 summary(wage_model)
 ```
 
-3. Construct a new variable *totcoll* as  *jc* + *univ*:
+3.  Construct a new variable *totcoll* as *jc* + *univ*:
+
 ```{r}
 twoyear_dt[,`:=`(totcoll = jc + univ)]
 str(twoyear_dt)
 ```
 
-4. Regress *lwage* on a new model involving *jc*, *totcoll*, and *exper*:
+4.  Regress *lwage* on a new model involving *jc*, *totcoll*, and *exper*:
 
 ```{r}
 wage_model_totcoll <- lm(lwage ~ jc + totcoll + exper, data = twoyear_dt)
 summary(wage_model_totcoll)
 ```
-<div class="note">Note: The coefficient for *jc* is the difference in $\beta_{jc} - \beta_{univ}$ from the original model *wage_model*.</div><br>
 
-5. Compute the $t$ statistic for $\beta_{jc} - \beta_{univ}$ i.e($\frac{\beta_{jc}}{se(\beta_{jc})}$)
+::: {.note}
+Note: The coefficient for *jc* is the difference in $\beta_{jc} - \beta_{univ}$ from the original model *wage_model*.
+:::
+
+<br>
+
+5.  Compute the $t$ statistic for $\beta_{jc} - \beta_{univ}$ i.e($\frac{\beta_{jc}}{se(\beta_{jc})}$)
+
 ```{r}
 t_beta_jc_univ <- -0.010179/0.00693
 ```
+
 The $t$ statistic for $\beta_{jc} - \beta_{univ}$ is `r t_beta_jc_univ`
 
-6. Compute the critical $t$ value for the one-sided hypothesis $H_{1}: \beta_{jc} < \beta_{univ}$. In words, a year at a junior college is worth less than a year at a university.
+6.  Compute the critical $t$ value for the one-sided hypothesis $H_{1}: \beta_{jc} < \beta_{univ}$. In words, a year at a junior college is worth less than a year at a university.
+
 ```{r}
 n <- 6763
 k <- 3
@@ -420,18 +598,68 @@ t_critical_jc_univ <-  stats::qt(p = 0.05, df = n - k - 1)
 
 The critical $t$ value is `r t_critical_jc_univ`
 
-<div class="note">Note: It appears that the estimate $t$ value does not go beyond the critical value so we do not reject the null hypothesis $H_{0}: \beta_{jc} = \beta_{univ}$.</div><br>
+::: {.note}
+Note: It appears that the estimate $t$ value does not go beyond the critical value so we do not reject the null hypothesis $H_{0}: \beta_{jc} = \beta_{univ}$.
+:::
 
-<div class="take"><b>Take Away:</b> <em>Single hypothesis tests concerning more than one $\beta_{j}$ can always be tested by rewriting the model to contain the parameter of interest. Then, a standard $t$ statistic can be used.</em></div><br>
+<br>
 
-<div class="task">Task: Using data set *MLB1* analyze major league baseball players' salaries as it relates to batting average (*bavg*), home runs per year (*hrunsyr*) and runs batted in per year (*rbisyr*), controlling for the number of years (*years*) and number of games played (*gamesyr*).</div>
+::: {.take}
+<b>Take Away:</b> <em>Single hypothesis tests concerning more than one $\beta_{j}$ can always be tested by rewriting the model to contain the parameter of interest. Then, a standard $t$ statistic can be used.</em>
+:::
+
+<br>
+
+::: {.task}
+Task: Using data set *MLB1* analyze major league baseball players' salaries as it relates to batting average (*bavg*), home runs per year (*hrunsyr*) and runs batted in per year (*rbisyr*), controlling for the number of years (*years*) and number of games played (*gamesyr*).
+:::
 
 The regression model takes the following form:
-<center>$log(salary) = \beta_{0} + \beta_{1} \cdot years + \beta_{2} \cdot gamesyr + \beta_{3} \cdot bavg + \beta_{4} \cdot hrunsyr + \beta_{5} \cdot rbisyr   + \mu$<span style="float:right;">[Heiss, 4.9]</span></center>
 
-The null hypothesis':
-$$H_{0}: \beta_{bavg} = 0, \beta_{hrunsyr} = 0, \beta_{rbisyr} = 0$$
-<center>$H_{1}:$ at least one of the performance measures matters</center>
+<center>
+$log(salary) = \beta_{0} + \beta_{1} \cdot years + \beta_{2} \cdot gamesyr + \beta_{3} \cdot bavg + \beta_{4} \cdot hrunsyr + \beta_{5} \cdot rbisyr + \mu$[[Heiss, 4.9]]{style="float:right;"}
+</center>
 
+The null hypothesis': $$H_{0}: \beta_{bavg} = 0, \beta_{hrunsyr} = 0, \beta_{rbisyr} = 0$$
+
+<center>
+$H_{1}:$ at least one of the performance measures matters
+</center>
+
+## 4.3b Linear Restrictions: $F$ Tests
+We've been using the $t$-statistic to test hypothesis for a single predictor. Now we want to test a hypothesis involving a **group** of predictors. `[Heiss]` and `[Wooldridge]` start with an example data set *wooldridge::mlb1* that looks at a goup of baseball related predictors and their influence on a player's salary.
+
+1. Set the data set:
+```{r}
+data("mlb1", package = "wooldridge")
+mlb1_dt <- data.table::setDT(mlb1)
+mlb1_dt <- mlb1_dt[,.(salary, years, gamesyr, bavg, hrunsyr, rbisyr)]
+```
+
+2. Define both the unrestricted and restricted models:
+```{r}
+ur_formula_obj <- log(salary) ~ years + gamesyr + bavg + hrunsyr + rbisyr
+r_formula_obj <- log(salary) ~ years + gamesyr
+```
+
+3. Using `RregressPkg::ols_F_calc()` compute the F statistic for the null hypothesis:
+$$H_{0}: \beta_{bavg} = \beta_{hrunsyr} = \beta_{rbisyr} = 0$$
+
+with the alternative hypothesis that at least one of the predictors matters.  From the equation for the $F$-statistic we see that it reflects the  degree of residual increase in applying the restrictive model to the response.
+```{r}
+mlb1_F_df <- RregressPkg::ols_F_calc(
+  df = mlb1,
+  ur_formula_obj = ur_formula_obj,
+  r_formula_obj = r_formula_obj
+)
+```
+
+4. Display the results:
+```{r}
+RplotterPkg::create_table(
+  x = mlb1_F_df,
+  caption = "Predictor Hypothesis: bavg = hrunsyr = rbisyr = 0"
+)
+```
 
 

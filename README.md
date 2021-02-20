@@ -10,3 +10,4 @@ The repository contains notes/scripts/inspiration from the following articles/bo
 7. [An Algebraic View of Multiple Regression](https://dasilvaa10.github.io/b1/) by [Alex daSilva](https://dasilvaa10.github.io/)
 8. [PennState-Stat 501 Regression Methods](https://online.stat.psu.edu/stat501/lesson/welcome-stat-501)  Selected sections from this online course
 8. [Bootstrap Your Standard Errors in R](http://svmiller.com/blog/2020/03/bootstrap-standard-errors-in-r/) by Steve Miller
+9. [Testing the Equality of Regression Coefficients](https://shouldbewriting.netlify.app/posts/2021-02-16-testing-coefficients-equality/) by  Mattan S. Ben-Shachar
