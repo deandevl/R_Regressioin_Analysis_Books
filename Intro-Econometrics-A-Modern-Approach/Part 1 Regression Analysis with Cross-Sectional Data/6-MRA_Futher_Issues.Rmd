@@ -56,37 +56,23 @@ library(RplotterPkg)
 
 Predicting the value of the response variable $y$ given certain values of the predictors $x_{1}, x_{2} ... x_{k}$.
 
-::: {.note}
-Note: In this section we will be following `(Wooldridge page 186 Sectiion 6-4)` to incorporate his techniques rather than using `stats::predict()` from R.
-:::
+In this section we will be following `(Wooldridge page 186 Sectiion 6-4)` to incorporate his techniques rather than using `stats::predict()` from R.
 
 ### 6.2.1 Confidence intervals for predictions
 
 Given a OLS model:
 
-<center>
-
-$\hat{y} = \hat{\beta_{0}} + \hat{\beta_{1}}x_{1} + \hat{\beta_{2}}x_{2} + ... \hat{\beta_{k}}x_{k}$[[6.27]]{style="float:right;"}
-
-</center>
+<center>$\hat{y} = \hat{\beta_{0}} + \hat{\beta_{1}}x_{1} + \hat{\beta_{2}}x_{2} + ... \hat{\beta_{k}}x_{k}$[[6.27 Wooldridge page 186]]{style="float:right;"}</center><br>
 
 and specific values for the predictors: $c_{1}, c_{2} ... c_{k}$
 
 We want to measure the uncertainty for the predicted value $\hat{\theta_{0}}$ where:
 
-<center>
-
-$\hat{\theta_{0}} = \hat{\beta_{0}} + \hat{\beta_{1}}c_{1} + \hat{\beta_{2}}c_{2} + ... \hat{\beta_{k}}c_{k}$[[6.29]]{style="float:right;"}
-
-</center>
+<center>$\hat{\theta_{0}} = \hat{\beta_{0}} + \hat{\beta_{1}}c_{1} + \hat{\beta_{2}}c_{2} + ... \hat{\beta_{k}}c_{k}$[[6.29 Wooldridge page 187]]{style="float:right;"}</center><br>
 
 A `[Wooldridge]` trick is described for estimating a standard error and subsequently a confidence interval for $\hat{\theta_{0}}$ by solving for the intercept $\hat{\beta_{0}}$ in equation [6.29] and plugging it into equation [6.27] to obtain:
 
-<center>
-
-$y = \hat{\theta_{0}} + \beta_{1}(x_{1} - c_{1}) + \beta_{2}(x_{2} - c_{2}) + ... + \beta_{k}(x_{k} - c_{k})$[[6.30]]{style="float:right;"}
-
-</center>
+<center>$y = \hat{\theta_{0}} + \beta_{1}(x_{1} - c_{1}) + \beta_{2}(x_{2} - c_{2}) + ... + \beta_{k}(x_{k} - c_{k})$[[6.30 Wooldridge page 187]]{style="float:right;"}</center><br>
 
 We can now subtract $c_{1}, c_{2} ... c_{k}$ from each of the sampled $x_{1}, x_{2} ... x_{k}$ and perform the OLS estimates on equation [6.30] where $\hat{\theta_{0}}$ is the intercept with an estimated standard error. Finding the standard error will lead us to defining the $t$-statistic based confidence interval.
 
@@ -95,7 +81,6 @@ Task: Find the confidence interval for predicted college GPA (`wooldridge::gpa2`
 :::
 
 1.  Compute the OLS for `colgpa ~ sat + hsperc + hsize + hsize^2`:
-
 ```{r}
 data("gpa2", package = "wooldridge")
 
@@ -106,13 +91,11 @@ gpa2_ols_lst <- RregressPkg::ols_calc(
 ```
 
 2.  Show the coefficients and their standard errors:
-
 ```{r}
 RplotterPkg::create_table(x = gpa2_ols_lst$coef_df)
 ```
 
 3.  Assign a specific set of values for the predictors (i.e. $c_{1}, c_{2} ... c_{k}$) and subtract these values from our sample predictors $x_{1}, x_{2} ... x_{k}$:
-
 ```{r}
 gpa2_dt <- data.table::setDT(gpa2)
 gpa2_dt <- gpa2_dt[, .(colgpa = colgpa, sat = sat - 1200, hsperc = hsperc - 30, hsize = hsize - 5)]
@@ -120,7 +103,6 @@ head(gpa2_dt)
 ```
 
 4.  Re-compute the OLS estimate on the new set of predictor values:
-
 ```{r}
 gpa2_ols_new_lst <- RregressPkg::ols_calc(
   df = gpa2_dt,
@@ -129,7 +111,6 @@ gpa2_ols_new_lst <- RregressPkg::ols_calc(
 ```
 
 5.  Show the coefficients and their standard errors:
-
 ```{r}
 RplotterPkg::create_table(x = gpa2_ols_new_lst$coef_df)
 ```
@@ -139,11 +120,10 @@ Note that there is no change in the coefficient values -- the only change is our
 Now that we have the value for $\hat{\theta_{0}}$ (2.70) and its standard error (0.019) we can compute its $t$-statistic based confidence intervals.
 
 6.  Compute $\hat{\theta_{0}}$ confidence intervals at the 95% confidence level:
-
 ```{r}
 t_val <- stats::qt(0.975, gpa2_ols_new_lst$n -1)
-CI_upper <- gpa2_ols_new_lst$coef[["Intercept"]] + gpa2_ols_new_lst$coef_se[["Intercept"]] * t_val
-CI_lower <- gpa2_ols_new_lst$coef[["Intercept"]] - gpa2_ols_new_lst$coef_se[["Intercept"]] * t_val
+CI_upper <- gpa2_ols_new_lst$coef[["(Intercept)"]] + gpa2_ols_new_lst$coef_se[["(Intercept)"]] * t_val
+CI_lower <- gpa2_ols_new_lst$coef[["(Intercept)"]] - gpa2_ols_new_lst$coef_se[["(Intercept)"]] * t_val
 ```
 
 The upper CI for $\hat{\theta_{0}}$ is `r CI_upper`
@@ -155,7 +135,6 @@ Task: Compare the above results with results using R's `stats::predict()`.
 :::
 
 1.  Compute the model using `stats::lm()`:
-
 ```{r}
 gpa2_lm <- stats::lm(colgpa ~ sat + hsperc + hsize + I(hsize^2), data = gpa2)
 gpa2_lm
@@ -176,8 +155,8 @@ ci_theta_0 <- stats::predict(gpa2_lm, c_values, interval = "confidence")
 ci_theta_0
 ```
 
-The two approaches agree.
-
+<div class="takeaway">Take Away: The two approaches agree.</div>
+ 
 ### 6.2.2 Prediction Intervals
 
 Confidence intervals reflect the uncertainty about the **expected value** of the response variable given values for the predictors. In predicting an **individual** we have to account for the additional uncertainty regarding the unobserved characteristics reflected by the error term $\mu$.
@@ -190,7 +169,7 @@ b. The variance of the error in the population $\mu$
 
 <div class="task">Task: Use `RregressPkg::ols_predict_calc()` to estimate prediction intervals for the college gpa (`wooldridge::gpa2`).</div>
 
-1. Set up the data:
+1. Read the data:
 ```{r}
 gpa_2_dt <- data.table::setDT(wooldridge::gpa2)
 gpa_2_dt <- gpa_2_dt[, .(colgpa, sat, hsperc, hsize)]
@@ -223,7 +202,7 @@ RplotterPkg::create_table(gpa_2_response_df, caption = "College gpa Estimates")
 
 <div class="task">Task: Using `RregressPkg::plot_predictor()` plot the effect of predictor variable *rooms* on the response variable *log(price)* in the `wooldridge::hprice2` data set. </div>
 
-1. Setup the data:
+1. Read the data:
 ```{r}
 data("hprice2", package = "wooldridge")
 
@@ -244,12 +223,3 @@ response_lst <- RregressPkg::plot_predictor(
 )
 response_lst$plot
 ```
-
-
-
-
-
-
-
-
-

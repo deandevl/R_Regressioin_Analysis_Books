@@ -1,0 +1,391 @@
+---
+title: "Illustrate Some Correlation Limitations and Fallacies in R"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+The following are notes and R scripts inspired by the article [Illustrate Some Correlation Limitations and Fallacies in R](http://svmiller.com/blog/2020/01/illustrate-correlation-fallacies-limitations-in-r/) by Steve Miller.  
+</div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(ggplot2)
+library(ggrepel)
+library(RplotterPkg)
+library(RregressPkg)
+library(here)
+
+current_dir <- here()
+```
+
+## Anscombe’s Quartet
+
+### Anscombe’s stats
+Anscombe has 4 data sets, each with 2 variables, 11 observations, same means, same variance, same regression line, same residual sum of squares, same correlation.
+```{r}
+data("anscombe")
+anscombe_dt <- data.table::data.table(anscombe)
+anscombe_stats_dt <- data.table(
+  var = colnames(anscombe_dt)
+)
+anscombe_stats_dt <- anscombe_stats_dt[, `:=`(
+  mean = lapply(anscombe_dt, function(x) format(mean(x),digits = 4,nsmall=4)), 
+  sd = lapply(anscombe_dt, function(x) format(sd(x),digits = 4,nsmall=4)))]
+
+RplotterPkg::create_table(
+  x = anscombe_stats_dt,
+  col_names = c("Variable","Mean","Standard Deviation"),
+  head_bkgd = "purple",
+  head_col = "white",
+  align_v = c("l","c","c")
+)
+```
+
+### Anscombe’s plots
+
+1. "Melt" *anscombe_dt* to give us a data.table with three columns (*Quartet*, *X*, *Y*).
+```{r}
+anscombe_melt_dt <- data.table::melt(anscombe_dt, measure = patterns("^x","^y"),value.name = c("X","Y"))
+anscombe_melt_dt <-  anscombe_melt_dt[, .(Quartet = paste0("Quartet ", variable), X = X, Y = Y)]
+```
+
+2. Define the OLS fits and confidence intervals:
+```{r}
+all_ols_dt <- anscombe_melt_dt[,{
+  X_vals = seq(min(.SD$X), max(.SD$X), 0.5)
+  ols_df = RregressPkg::ols_predict_calc(
+    df = .SD,
+    formula_obj = Y ~ X,
+    predictors_df = data.frame(X = X_vals)
+  )
+  .(X = X_vals, fit = ols_df$fit, lwr = ols_df$lwr, upr = ols_df$upr)
+}, by = Quartet]
+```
+
+2. Plot the points, fitted lines, and the confidence intervals:
+```{r,fig.height=10, fig.width=13}
+
+add_on <- c(
+  geom_point(data = anscombe_melt_dt[Quartet == "Quartet 1"], aes(x = X, y = Y)),
+  geom_point(data = anscombe_melt_dt[Quartet == "Quartet 2"], aes(x = X, y = Y)),
+  geom_point(data = anscombe_melt_dt[Quartet == "Quartet 3"], aes(x = X, y = Y)),
+  geom_point(data = anscombe_melt_dt[Quartet == "Quartet 4"], aes(x = X, y = Y))
+)
+RplotterPkg::multi_scatter_plot(
+  df = all_ols_dt,
+  factor_var = "Quartet",
+  factor_x = "X",
+  aes_y = "fit",
+  CI_lwr = "lwr",
+  CI_upr = "upr",
+  CI_type = "ribbon",
+  CI_color = "purple",
+  connect = T,
+  show_pts = F,
+  col_width = 6,
+  x_limits = c(4,20),
+  x_major_breaks = seq(4,20,2),
+  y_limits = c(0,20),
+  y_major_breaks = seq(0,20,2),
+  show_minor_grids = F,
+  rot_y_tic_label = T,
+  line_color = "blue",
+  title = "Anscombe's Quartet, Visualized",
+  subtitle = "Anscombe's quartet emphasizes the importance of exploratory data analysis beyond the simple descriptive statistics",
+  add_ons = add_on
+)
+```
+
+## Simpson's Paradox
+
+Mr. Miller describes Simpson's Paradox as...
+
+<blockquote>Simpson’s paradox is a well-known problem of correlation in which a correlation analysis, almost always done in a bivariate context, may reveal a relationship that is reversed upon the introduction of some third variable. </blockquote>
+
+Wikipedia describes Simpson's Paradox as...
+<blockquote>...a phenomenon in probability and statistics, in which a trend appears in several different groups of data but disappears or reverses when these groups are combined. </blockquote>
+
+### State expenditures versus average SAT score
+We illustrate Simpson's Paradox with data from the paper [Getting What You Pay For](https://www.uvm.edu/~dguber/research/JSE99.pdf) by Deborah Lynn Guber, The University of Vermont.
+
+1. Set up the data set:
+```{r}
+data_path <- file.path(current_dir, "Illustrate Some Correlation Limitations and Fallacies in R/data/Guber99.rda")
+load(file = data_path)
+guber_dt <- data.table::setDT(Guber99)
+guber_dt <- guber_dt[, .(State = state, Expenditure = expendpp, AvgSAT = total, PercTakers = perctakers)]
+```
+
+2. Define the OLS fits and confidence intervals:
+```{r}
+guber_ols_dt <- guber_dt[,{
+  Expenditure_vals = seq(min(Expenditure), max(Expenditure), 0.05)
+  ols_df = RregressPkg::ols_predict_calc(
+    df = guber_dt,
+    formula_obj = AvgSAT ~ Expenditure,
+    predictors_df = data.frame(Expenditure = Expenditure_vals)
+  )
+  .(Expenditure = Expenditure_vals, AvgSATFit = ols_df$fit, lwr = ols_df$lwr, upr = ols_df$upr)
+}]
+```
+
+3. Plot the points, fitted lines, and the confidence intervals:
+```{r}
+RplotterPkg::create_scatter_plot(
+  df = guber_ols_dt,
+  aes_x = "Expenditure",
+  aes_y = "AvgSATFit",
+  connect = T,
+  show_pts = F,
+  rot_y_tic_label = T,
+  CI_lwr = "lwr",
+  CI_upr = "upr",
+  CI_type = "ribbon",
+  CI_color = "purple",
+  line_color = "blue"
+) + geom_point(data = guber_dt, aes(x = Expenditure, y = AvgSAT)) +
+  ggrepel::geom_text_repel(data = guber_dt,aes(x = Expenditure, y = AvgSAT,label = State))
+```
+
+<div class="takeaway">Take Away: There appears to be a negetive relationship between `Expenditure` and `AvgSat`</div><br>
+
+### Does the relation hold up across levels of state percent SAT takers 
+
+1. Break out percent SAT takers into four levels:
+```{r}
+guber_dt[, rank_takers := dplyr::ntile(guber_dt$PercTakers,4)]
+guber_dt[, SAT_take := 
+   fifelse(rank_takers == 1, "Lowest Quartile",
+   fifelse(rank_takers == 2, "Second Quartile",
+   fifelse(rank_takers == 3, "Third Quartile", "Highest Quartile")))]  
+guber_dt[, SAT_take := ordered(SAT_take, levels = c("Lowest Quartile","Second Quartile","Third Quartile","Highest Quartile"))]
+```
+
+2. Compute and show the correlation between *Expenditure* and *AvgSAT* across levels of *SAT_take*:
+```{r}
+guber_cor_dt <- guber_dt[, {
+  exp_take_cor = cor(.SD$Expenditure, .SD$AvgSAT)
+  .(Pearson_r = round(exp_take_cor,3))
+}, by = SAT_take]
+
+RplotterPkg::create_table(
+  x = guber_cor_dt,
+  caption = "SAT Test-Taker Percentage Quartile",
+  head_bkgd = "purple",
+  head_col = "white",
+  full_width = T,
+  align_v = c("l","c")
+)
+```
+
+<div class="takeaway">Take Away: The correlation between `Expenditure` and `AvgSAT` are all positive instead of negative across the participation groups.</div><br>
+
+### Plot `Expenditure` versus `AvgSAT` across the participation groups
+
+1. Compute the OLS fits and confidence intervals across the groups
+```{r}
+takers_ols_dt <- guber_dt[,{
+  Expenditure_vals = seq(min(.SD$Expenditure), max(.SD$Expenditure), 0.05)
+  ols_df = RregressPkg::ols_predict_calc(
+    df = .SD,
+    formula_obj = AvgSAT ~ Expenditure,
+    predictors_df = data.frame(Expenditure = Expenditure_vals)
+  )
+  .(Expenditure_fit = Expenditure_vals, AvgSAT_fit = ols_df$fit, lwr_fit = ols_df$lwr, upr_fit = ols_df$upr)
+}, by = SAT_take]
+```
+
+
+2. Plot the groups:
+```{r,fig.height=10, fig.width=13}
+add_on <- c(
+  geom_point(data = guber_dt[SAT_take == "Lowest Quartile"], aes(x = Expenditure, y = AvgSAT)),
+  geom_point(data = guber_dt[SAT_take == "Second Quartile"], aes(x = Expenditure, y = AvgSAT)),
+  geom_point(data = guber_dt[SAT_take == "Third Quartile"], aes(x = Expenditure, y = AvgSAT)),
+  geom_point(data = guber_dt[SAT_take == "Highest Quartile"], aes(x = Expenditure, y = AvgSAT))
+)
+RplotterPkg::multi_scatter_plot(
+  df = takers_ols_dt,
+  factor_var = "SAT_take",
+  factor_x = "Expenditure_fit",
+  aes_y = "AvgSAT_fit",
+  CI_lwr = "lwr_fit",
+  CI_upr = "upr_fit",
+  CI_type = "ribbon",
+  CI_color = "purple",
+  connect = T,
+  show_pts = F,
+  col_width = 6,
+  x_limits = c(3,10),
+  x_major_breaks = seq(3,10,1),
+  y_limits = c(800,1150),
+  y_major_breaks = seq(800,1150,50),
+  show_minor_grids = F,
+  rot_y_tic_label = T,
+  line_color = "blue",
+  title = "Correlation Between Student Expenditures and Total Scores in 50 States, by Percent of Test-Takers",
+  subtitle = "The un-grouped data suggest a negative correlation whereas the grouping by test-takers is positive",
+  x_title = "Expenditure",
+  y_titles = rep("Avg SAT", 4),
+  add_ons = add_on
+)
+```
+
+## Ecological Fallacy
+
+Mr. Miller describes the ecological fallacy as ...
+
+<blockquote>...inferences and correlations at the individual-level need not be equivalent at the group level.</blockquote>
+
+### Illiteracy rates from the 1930 Census
+
+1. Set up the data set:
+```{r}
+data_path <- file.path(current_dir, "Illustrate Some Correlation Limitations and Fallacies in R/data/illiteracy30.rda")
+load(file = data_path)
+illit_dt <- data.table::setDT(illiteracy30)
+illit_dt <- illit_dt[, !c("state")]
+```
+
+2. Get the sums for each category:
+```{r}
+illit_sums_dt <- illit_dt[,lapply(illit_dt,sum)]
+```
+
+
+3. "Melt" *illit_sums_dt*:
+```{r}
+illit_melt_dt <- data.table::melt(illit_sums_dt, measure.vars = names(illit_sums_dt), variable.name = "Race", value.name = "Number")
+```
+
+4. Add a *category* and *literacy* columns:
+```{r}
+illit_melt_dt[, `:=`(category = c("Total Population", "Total Population",
+                      "Native White", "Native White",
+                      "White, Foreign/Mixed Parentage","White, Foreign/Mixed Parentage",
+                      "Foreign-Born White", "Foreign-Born White",
+                      "Black", "Black"),
+                     literacy = rep(c("Total","Illiterate"),5))
+              ]
+```
+
+5. Add *prop* for proportions:
+```{r}
+illit_melt_dt[, prop := round(.SD$Number/max(.SD$Number),3), by = category]
+```
+
+6. Show the proportions:
+```{r}
+RplotterPkg::create_table(
+  x = illit_melt_dt[literacy != "Total", .(category, prop)],
+  caption = "Illiteracy Rates in the 1930 U.S. Census",
+  col_names = c("Group", "Proportion That is Illiterate"),
+  head_bkgd = "purple",
+  head_col = "white",
+  full_width = T,
+  align_v = c("l","c")
+)
+```
+
+<div class="takeaway">Take Away: The `Foreign-Born White` group is showing nearly a 10% rate in illiteracy.</div><br>
+
+
+### Compare rates of illiteracy both in state foreign born and overall state
+
+1. Reread data:
+```{r}
+data_path <- file.path(current_dir, "Illustrate Some Correlation Limitations and Fallacies in R/data/illiteracy30.rda")
+load(file = data_path)
+illit_dt <- data.table::setDT(illiteracy30)
+```
+
+
+2. Create new columns from *illit_dt*:
+```{r}
+illit_dt <- illit_dt[, .(state, FB_prop = fbwhite/pop, Ill_All_prop = pop_il/pop, Ill_FB_prop = fbwhite_il/fbwhite)]
+```
+
+3. "Melt" *Ill_All_prop* and *Ill_FB_prop*:
+```{r}
+illit_melt_dt <- data.table::melt(illit_dt, measure.vars = c("Ill_All_prop", "Ill_FB_prop"), variable.name = "Ill_All_or_FB", value.name = "Ill_ALL_or_FB_prop")
+```
+
+4. Compute the correlation between *FB_prop* and *Ill_ALL_or_FB_prop* across *Ill_All_or_FB*
+```{r}
+cor_dt <- illit_melt_dt[,{
+  pearson_cor = cor(.SD$FB_prop, .SD$Ill_ALL_or_FB_prop)
+  .(Pearson_r = round(pearson_cor, 3))
+},by = Ill_All_or_FB]
+```
+
+5. Relabel *Ill_All_or_FB* values:
+```{r}
+overall_label <-  paste0("Overall State Illiterate R2 = ",cor_dt$Pearson_r[[1]])
+fb_label <- paste0("Foeign-Born State Illiterate R2 = ",cor_dt$Pearson_r[[2]])
+
+illit_melt_dt[, Ill_All_or_FB := fifelse(Ill_All_or_FB == "Ill_All_prop",overall_label, fb_label)]
+illit_melt_dt[, Ill_All_or_FB := as.factor(Ill_All_or_FB)]
+```
+
+6. Compute the OLS estimates for formula *Ill_ALL_or_FB_prop* ~ *FB_prop* across *Ill_All_or_FB*:
+```{r}
+ols_dt <- illit_melt_dt[, {
+  FB_prop_vals = seq(min(.SD$FB_prop), max(.SD$FB_prop), 0.005)
+  ols_df = RregressPkg::ols_predict_calc(
+    df = .SD,
+    formula_obj = Ill_ALL_or_FB_prop ~ FB_prop,
+    predictors_df = data.frame(FB_prop = FB_prop_vals)
+  )
+  .(FB_prop_fit = FB_prop_vals, Ill_ALL_or_FB_prop_fit = ols_df$fit, lwr_fit = ols_df$lwr, upr_fit = ols_df$upr)
+},by = Ill_All_or_FB]
+```
+
+7. Plot the OLS across the *Ill_All_or_FB* groups:
+```{r,fig.height=10, fig.width=13}
+add_on <- c(
+  geom_point(data = illit_melt_dt[Ill_All_or_FB == fb_label], aes(x = FB_prop, y = Ill_ALL_or_FB_prop)),
+  geom_point(data = illit_melt_dt[Ill_All_or_FB == overall_label], aes(x = FB_prop, y = Ill_ALL_or_FB_prop))
+)
+
+RplotterPkg::multi_scatter_plot(
+  df = ols_dt,
+  factor_var = "Ill_All_or_FB",
+  factor_x = "FB_prop_fit",
+  aes_y = "Ill_ALL_or_FB_prop_fit",
+  CI_lwr = "lwr_fit",
+  CI_upr = "upr_fit",
+  CI_type = "ribbon",
+  CI_color = "purple",
+  connect = T,
+  show_pts = F,
+  col_width = 6,
+  row_height = 8,
+  y_limits = c(-0.05,0.20),
+  y_major_breaks = seq(-0.05,0.20,0.05),
+  show_minor_grids = F,
+  rot_y_tic_label = T,
+  line_color = "blue",
+  title = "Ecological Fallacy of Foreign-Born American Residents and Illiteracy",
+  y_titles = rep("Illiterate Proportion",2),
+  x_title = "State Foreign Born Proportion",
+  add_ons = add_on
+)
+```
+

@@ -40,99 +40,103 @@ library(car)
 ## 3.1 Multiple Regression in Practice
 <div class="task">Task: Apply the `stats::lm()` function to determinants of College GPA `(Wooldridge, example 3.1, page 66)`.</div>  
 
-1. Create a data.table:
+1. Read the data:
 ```{r}
-gpa_1 <- data.table::setDT(wooldridge::gpa1)
-str(gpa_1)
+gpa1_dt <- data.table::setDT(wooldridge::gpa1)
+gpa1_dt <- gpa1_dt[, .(colGPA, hsGPA, ACT)]
 ```
 
 2. Apply `stats::lm()`:
 ```{r}
-gpa_model <- stats::lm(formula = colGPA ~ hsGPA + ACT, data = gpa_1)
+gpa_model <- stats::lm(formula = colGPA ~ hsGPA + ACT, data = gpa1_dt)
 summary(gpa_model)
 ```
 
 <div class="task">Task: Apply the `stats::lm()` function to determinants of hourly wage `(Wooldridge, example 3.2, page 67)`.</div> 
 
-1. Create a data.table:
+1. Read the data:
 ```{r}
-wage_1 <- data.table::setDT(wooldridge::wage1)
-str(wage_1)
+wage1_dt <- data.table::setDT(wooldridge::wage1)
+wage1_dt <- wage1_dt[, .(wage, educ, exper, tenure)]
 ```
 
 2. Apply `stats::lm()`:
 ```{r}
-wage_model <- stats::lm(formula = log(wage) ~ educ + exper + tenure, data = wage_1)
+wage_model <- stats::lm(formula = log(wage) ~ educ + exper + tenure, data = wage1_dt)
 summary(wage_model)
 ```
 <div class="task">Task: Repeat the estimate of *wage_model* with just the *educ* variable.</div>    
 ```{r}
-wage_model_educ <- stats::lm(formula = log(wage) ~ educ, data = wage_1)
+wage_model_educ <- stats::lm(formula = log(wage) ~ educ, data = wage1_dt)
 summary(wage_model_educ)
 ```
 
 
 <div class="task">Task: Apply the `stats::lm()` function to determinants of 401(k) participation rate `(Wooldridge, example 3.3, page 70)`.</div> 
 
-1. Create a data.table:
+1. Read the data:
 ```{r}
-k_401k <- data.table::setDT(wooldridge::k401k)
-str(k_401k)
+k401k_dt <- data.table::setDT(wooldridge::k401k)
+k401k_dt <- k401k_dt[, .(prate, mrate, age)]
 ```
 
 2. Apply `stats::lm()`:
 ```{r}
-k401k_model <- stats::lm(formula = prate ~ mrate + age, data = k_401k)
+k401k_model <- stats::lm(formula = prate ~ mrate + age, data = k401k_dt)
 summary(k401k_model)
 ```
 <div class="task">Task: Apply the `stats::lm()` function to determinants of arrest `(Wooldridge, example 3.5, page 72)`.</div>   
 
-1. Create a data.table:
+1. Read the data:
 ```{r}
-crime_1 <- data.table::setDT(wooldridge::crime1)
-str(crime_1)
+crime1_dt <- data.table::setDT(wooldridge::crime1)
+crime1_dt <- crime1_dt[, .(narr86, pcnv, ptime86, qemp86, avgsen)]
 ```
 
 2. Apply `stats::lm()`:
 ```{r}
-crime_model <- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86, data = crime_1)
+crime_model <- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86, data = crime1_dt)
 summary(crime_model)
 ```
 <div class="task">Task: Repeat the estimate of *crime_model* with *avgsen* (average sentence) variable.</div>   
 ```{r}
-crime_model_avgsen <- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86 + avgsen, data = crime_1)
+crime_model_avgsen <- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86 + avgsen, data = crime1_dt)
 summary(crime_model_avgsen)
 ```
 
 ## 3.2 OLS in Matrix Form
 The derivation of the OLS estimates via matrix operations is presented at `(Wooldridge, Appendix E, page 720)` and has the following form:
 
-<center>$\hat{\beta} = (X^\prime X)^{-1}X^\prime y$<span style="float:right;">[3.2]</span></center>
+<center>$\hat{\beta} = (X^\prime X)^{-1}X^\prime y$<span style="float:right;">[3.2 Heiss page 95]</span></center><br>
 
 The vector of residuals can be manually calculated as:
-<center>$\hat\mu = y - X\hat\beta$<span style="float:right;">[3.3]</span></center>
+
+<center>$\hat\mu = y - X\hat\beta$<span style="float:right;">[3.3 Heiss page 95]</span></center><br>
 
 The estimated variance of the error term $\hat\sigma^2$ is:
-<center>$\hat\sigma^2 = \frac{1}{n-k-1}\hat\mu^\prime \hat\mu$<span style="float:right;">[3.4]</span></center>
+
+<center>$\hat\sigma^2 = \frac{1}{n-k-1}\hat\mu^\prime \hat\mu$<span style="float:right;">[3.4 Heiss page 96]</span></center><br>
 
 The standard error of the regression (SER) is $\hat\sigma = \sqrt{\hat\sigma^2}$
 
 According to `(Wooldridge, Theorem E.2, page 724)` the variance-covariance matrix of the OLS estimators has the matrix form:
-<center>$\widehat{Var(\hat\beta)}=\hat\sigma^2(X^\prime X)^{-1}$<span style="float:right;">[3.5]</span></center>
+
+<center>$\widehat{Var(\hat\beta)}=\hat\sigma^2(X^\prime X)^{-1}$<span style="float:right;">[3.5 Heiss page 96]</span></center><br>
 
 <div class="task">Task: Using the *gpa1* data apply the above equations [3.2] - [3.5].</div> 
 
-1. Create a data.table:
+1. Read the data:
 ```{r}
-gpa_1 <- data.table::setDT(wooldridge::gpa1)
+gpa1_dt <- data.table::setDT(wooldridge::gpa1)
+gpa1_dt <- gpa1_dt[, .(colGPA,hsGPA,ACT)]
 ```
 
 2. Extract k, n, X, Y:
 ```{r}
 k <- 2
-n <- nrow(gpa_1)
-X <- cbind(1, gpa_1$hsGPA, gpa_1$ACT)
-Y <- gpa_1$colGPA
+n <- nrow(gpa1_dt)
+X <- cbind(1, gpa1_dt$hsGPA, gpa1_dt$ACT)
+Y <- gpa1_dt$colGPA
 head(X)
 ```
 
@@ -164,13 +168,14 @@ Coefficient standard errors: `r coefficient_se`
 ## 3.3 Ceteris Paribus Interpretation and Omitted Variable Bias
 <div class="task">Task: Using the college GPA data `(wooldridge::gpa1)`, repeat the regression of college GPA(*colGPA*) on high school GPA(*hsGPA*) and ACT achivement test(*ACT*).  Study the *ceteris paribus* effect of ACT on college GPA.</div>    
 
-1. Create a data.table:
+1. Read the data:
 ```{r}
-gpa_1 <- data.table::setDT(wooldridge::gpa1)
+gpa1_dt <- data.table::setDT(wooldridge::gpa1)
+gpa1_dt <- gpa1_dt[, .(colGPA, ACT, hsGPA)]
 ```
 2. Get the ACT and hsGPA coefficients from the full model:
 ```{r}
-gpa_model <- lm(colGPA ~ ACT + hsGPA, data = gpa_1)
+gpa_model <- lm(colGPA ~ ACT + hsGPA, data = gpa1_dt)
 ACT_full_coef <- coef(gpa_model)["ACT"]
 hsGPA_full_coef <- coef(gpa_model)["hsGPA"]
 ```
@@ -180,7 +185,7 @@ hsGPA full model coefficient: `r hsGPA_full_coef`
 
 3. Regress ACT on hsGPA and show the ACT coefficient:
 ```{r}
-ACT_hsGPA_coef <- coef(lm(hsGPA ~ ACT, data = gpa_1))["ACT"]
+ACT_hsGPA_coef <- coef(lm(hsGPA ~ ACT, data = gpa1_dt))["ACT"]
 ```
 
 Coefficient between ACT and hsGPA: `r ACT_hsGPA_coef`
@@ -194,21 +199,22 @@ Coefficient of ACT with hsGPA not fixed: `r ACT_unfixed_coef`
 
 5. Get the ACT coefficient with hsGPA omitted:
 ```{r}
-ACT_coef <- coef(lm(colGPA ~ ACT, data = gpa_1))["ACT"]
+ACT_coef <- coef(lm(colGPA ~ ACT, data = gpa1_dt))["ACT"]
 ```
 Coefficient of ACT with hsGPA omitted: `r ACT_coef`
 
 ## 3.4 Standard Errors, Multicollinearity, and VIF
 <div class="task">Task: Using the college GPA data `(wooldridge::gpa1)`, manually calculate *hsGPA*'s VIF (variance inflation factor) and its coefficient standard error.</div>  
 
-1. Create a data.table:
+1. Read the data:
 ```{r}
-gpa_1 <- data.table::setDT(wooldridge::gpa1)
+gpa1_dt <- data.table::setDT(wooldridge::gpa1)
+gpa1_dt <- gpa1_dt[, .(colGPA, ACT, hsGPA)]
 ```
 
 2. Get the ACT and hsGPA coefficients from the full model:
 ```{r}
-gpa_model <- lm(colGPA ~ ACT + hsGPA, data = gpa_1)
+gpa_model <- lm(colGPA ~ ACT + hsGPA, data = gpa1_dt)
 (gpa_model_summary <- summary(gpa_model))
 ```
 
@@ -219,7 +225,7 @@ SER <- gpa_model_summary$sigma
 
 4. Regress hsGPA on ACT for calculating hsGPA_R2 and hsGPA_VIF:
 ```{r}
-hsGPA_ACT_model <- lm(hsGPA ~ ACT, data = gpa_1)
+hsGPA_ACT_model <- lm(hsGPA ~ ACT, data = gpa1_dt)
 hsGPA_R2 <- summary(hsGPA_ACT_model)$r.squared
 hsGPA_VIF <- 1/(1 - hsGPA_R2)
 ```
@@ -231,7 +237,7 @@ hsGPA VIF = `r hsGPA_VIF`
 5. Using `(Heiss, Equation 3.11, page 99)` manually calculate the *se(hsGPA)*:
 ```{r}
 n <- nobs(gpa_model)
-hsGPA_se <- 1/sqrt(n-1) * SER/sd(gpa_1$hsGPA) * sqrt(hsGPA_VIF)
+hsGPA_se <- 1/sqrt(n-1) * SER/sd(gpa1_dt$hsGPA) * sqrt(hsGPA_VIF)
 ```
 
 The standard error for *hsGPA* is `r hsGPA_se`.
@@ -239,14 +245,15 @@ This is the same value we obtained in the matrix computation of the OLS in secti
 
 <div class="task">Task: Using the data set `wooldridge::wage1` for determining hourly wage `(Wooldridge, example 3.2, page 67)`, compute and compare the regressors VIF values as computed from the `car::vif()`.</div>    
 
-1. Create a data.table:
+1. Read the data:
 ```{r}
-wage_1 <- data.table::setDT(wooldridge::wage1)
+wage1_dt <- data.table::setDT(wooldridge::wage1)
+wage1_dt <- wage1_dt[, .(wage, educ, exper, tenure)]
 ```
 
 2. Regress *log(wage)* on *educ*, *exper*, *tenure*:
 ```{r}
-wage_model <- lm(log(wage) ~ educ + exper + tenure, data = wage_1)
+wage_model <- lm(log(wage) ~ educ + exper + tenure, data = wage1_dt)
 summary(wage_model)
 ```
 

@@ -26,10 +26,10 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
 library(knitr)
 library(here)
 library(data.table)
-library(magrittr)
-library(broom)
 library(kableExtra)
 library(RplotterPkg)
+library(RregressPkg)
+library(ggplot2)
 ```
 
 ## Prepare the data
@@ -103,7 +103,7 @@ RplotterPkg::create_histogram_plot(
 )
 ```
 
-<div class="note">Note: There appears to be a heaping of 0's and 30's.</div>
+<div class="takeaway">Take Away: There appears to be a heaping of 0's and 30's.</div><br>
 
 ## The true population mean
 
@@ -133,10 +133,12 @@ To compare the above regional means, compute the standard error of the estimated
 <blockquote>This is the interval through which 95% of all possible sample means would fall by chance, given what we know about the normal distribution</blockquote>
 
 ```{r}
+sent_n <- nrow(na.omit(data_dt))
 sent_mean <- round(mean(data_dt$ImmigSentiment, na.rm=T), 3)
 sent_sd <- round(sd(data_dt$ImmigSentiment, na.rm=T), 3)
 sent_se <- round(sent_sd/sqrt(nrow(data_dt)), 3)
 sent_se_dt <- data.table(
+  N = sent_n,
   mean = sent_mean,
   se = sent_se,
   lb95 = round(sent_mean - 1.96 * sent_se, 3),
@@ -144,16 +146,16 @@ sent_se_dt <- data.table(
 )
 RplotterPkg::create_table(
   x = sent_se_dt,
-  col_names = c("Sample Mean", "SE Sample Mean", "95% Lower CI", "95% Upper CI"),
+  col_names = c("Sample N", "Sample Mean", "SE Sample Mean", "95% Lower CI", "95% Upper CI"),
   caption = "Average Pro-Immigration Sentiment and Its 95% Confidence Interval",
   head_bkgd = "purple",
   head_col = "white",
   position = "center",
-  align_v = rep("c",3)
+  align_v = rep("c",5)
 )
 ```
 
-<div class="note">Note: ...if we took 100 samples of this size (n = 1,850), 95 of those random samples would, on average, have sample means between about 16.572 and 17.210.</div>
+<div class="takeaway">Take Away: ...if we took 100 samples of this size (n = 1,454), 95 of those random samples would, on average, have sample means between about 16.577 and 17.205.</div><br>
 
 If we have a proposed population mean of 14.65, compute the number of standard deviations the proposed mean is from our estimated population mean of 16.891. We can answer this question by computing the z-score which is the difference between the proposed and sample means divided by the standard error of the sample mean.
 
@@ -175,22 +177,24 @@ RplotterPkg::create_table(
 )
 ```
 
-<div class="note">Note: The proposed mean of 14.65 is about 14 standard errors away from the sample mean.</div>
+<div class="takeaway">Take Away: The proposed mean of 14.65 is about 14 standard errors away from the sample mean.</div><br>
 
 <blockquote>...we are not saying the true population mean is actually our sample mean. The true population mean in this context is ultimately unknowable, but inference in this context comes not in saying what “is” but in ruling out things as highly unlikely to be true. </blockquote>
 
-# Regression as more inference by "Ruling Things Out"
+## Regression as more inference by "Ruling Things Out"
 Set up a regression of immigration sentiment with the following linear model:
 
 $$ImmSentiment_{i} = \beta_{0}+\beta_{1}*Age_{i}+\beta_{2}*Female_{i}+\beta_{3}*Years Ed_{i}+\beta_{4}*Unemployed_{i}+\beta_{5}*HouseholdInc_{i}+\beta_{6}*Ideology_{i}+\epsilon_{i}$$
-```{r}
-model_1 <- stats::lm(formula = ImmigSentiment ~ Age + Female + YrsEdu + UnEmploy + HouseIncome + Ideology, data = data_dt)
-model_1_df <- broom::tidy(model_1)[2:7,]
 
+```{r}
+ols_sent_lst <- RregressPkg::ols_calc(
+  df = data_dt,
+  formula_obj = ImmigSentiment ~ Age + Female + YrsEdu + UnEmploy + HouseIncome + Ideology,
+  na_omit = T
+)
 RplotterPkg::create_table(
-  x = model_1_df,
-  col_names = c("Variable", "Coefficient", "SE", "t-Statistic", "p Value"),
-  caption = "Basic Statistics for the Pro-Immigration model",
+  x = ols_sent_lst$coef_df,
+  caption = "ImmigSentiment ~ Age + Female + YrsEdu + UnEmploy + HouseIncome + Ideology",
   head_bkgd = "purple",
   head_col = "white",
   position = "center",
@@ -198,12 +202,87 @@ RplotterPkg::create_table(
 )
 ```
 
-<div class="note">Note: Higher levels of education coincide with an increase in pro-immigration sentiment -- a positive coefficient and relationship.  Those with an ideology closer to the right have lower levels of pro-immigration sentiment -- a negative coefficient and relationship</div>
+<div class="takeaway">Take Away: Higher levels of education coincide with an increase in pro-immigration sentiment -- a positive coefficient and relationship.  Those with an ideology closer to the right have lower levels of pro-immigration sentiment -- a negative coefficient and relationship.</div><br>
 
-<div class="note">Note: The standard error is the estimate of the standard deviation of the coefficient.</div>
+<div class="takeaway">Take Away: As Steve Miller points out, the `(Intercept)` value is totally useless.</div><br>
 
+
+The $R^2$ = `r ols_sent_lst$rsquared`
+
+## Refine the regression by standardizing the non-binary predictors
 ```{r}
-summary(model_1)
+r2sd <- function(x, na = T) {
+    return((x - mean(x, na.rm = na)) / (2 * sd(x, na.rm = na)))
+}
+
+data_stand_dt <- data_dt[, .(
+  ImmigSentiment = ImmigSentiment, 
+  Age = r2sd(Age),
+  Female = Female,
+  YrsEdu = r2sd(YrsEdu),
+  UnEmploy = UnEmploy,
+  HouseIncome = r2sd(HouseIncome),
+  Ideology = r2sd(Ideology)
+)]
+
+ols_stand_sent_lst <- RregressPkg::ols_calc(
+  df = data_stand_dt,
+  formula_obj = ImmigSentiment ~ Age + Female + YrsEdu + UnEmploy + HouseIncome + Ideology,
+  na_omit = T
+)
+
+RplotterPkg::create_table(
+  x = ols_stand_sent_lst$coef_df,
+  caption = "ImmigSentiment ~ Age + Female + YrsEdu + UnEmploy + HouseIncome + Ideology",
+  head_bkgd = "purple",
+  head_col = "white",
+  position = "center",
+  align_v = c("l", rep("c",4))
+)
 ```
 
+<div class="takeaway">Take Away: As Steve Miller states:</div><br>
 
+<blockquote>When standardized, the 17.269 gives us the estimated value for an employed man of average age, education, income, and ideology. That y-intercept is much more useful the extent to which it conveys a quantity of interest for an observation that is much more likely to actually exist.</blockquote>
+
+<div class="takeaway">Take Away: *YrsEdu* has the strongest magnitude effect and the most precise.  *HouseIncome* and *Ideology* look more comparable in the standandized vs unstandandized.</div><br>
+
+## Constant variance for OLS residuals?
+
+Performing the Breusch-Pagan test for Heteroskedasticity:
+
+```{r}
+bp_test_df <- RregressPkg::ols_BP_test_calc(
+  df = data_stand_dt,
+  formula_obj = ImmigSentiment ~ Age + Female + YrsEdu + UnEmploy + HouseIncome + Ideology
+)
+
+RplotterPkg::create_table(
+  x = bp_test_df,
+  caption = "BP Homoskedasticity Test",
+  head_bkgd = "purple",
+  head_col = "white",
+  position = "center"
+)
+```
+
+The null hypothesis is that homoskedasticity holds and that the variance of the residuals $\mu_{i}$ are constant and uncorrelated with the predictors:
+$$H_{0}: Var(\mu|x_{1}, x_{2}...x_{k}) = \sigma^2$$
+
+<div class="takeaway">Take Away: It appears that with the small $p$-values the standard errors reported above may not be reliable and some transformation of the data may be necessary.</div><br>
+
+## Plot residuals versus fitted values
+```{r}
+resid_fit_dt <- data.table(
+  Fit = ols_stand_sent_lst$fitted_val,
+  Residuals = ols_stand_sent_lst$resid
+)
+RplotterPkg::create_scatter_plot(
+  df = resid_fit_dt,
+  aes_x = "Fit",
+  aes_y = "Residuals",
+  rot_y_tic_label = T
+)
+```
+
+<div class="takeaway">Take Away: The residuals do not appear to be random about zero, but show a definite pattern.</div><br>

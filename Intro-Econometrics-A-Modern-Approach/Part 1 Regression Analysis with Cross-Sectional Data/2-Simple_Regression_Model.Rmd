@@ -38,23 +38,26 @@ library(RplotterPkg)
 
 ## 2.1 Simple OLS Regression
 We want to estimate the population parameters $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ of the simple regression model:
-<center>$y = \hat{\beta_{0}} + \hat{\beta_{1}}x + \mu$<span style="float:right;">[2.1]</span></center> 
+<center>$y = \hat{\beta_{0}} + \hat{\beta_{1}}x + \mu$<span style="float:right;">[2.1 Heiss page 69]</span></center><br> 
 
 According to `(Wooldridge, Section 2.2, Equations 2.17, 2.19, page 26)` we can estimate the OLS regression line with:
-<center>$\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}}\bar{x}$<span style="float:right;">[2.2]</span></center>
-<center>$\hat{\beta_{1}} = \frac{Cov(x,y)}{Var(x)}$<span style="float:right;">[2.3]</span></center>
+<center>$\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}}\bar{x}$<span style="float:right;">[2.2 Heiss page 69]</span></center><br>
+<center>$\hat{\beta_{1}} = \frac{Cov(x,y)}{Var(x)}$<span style="float:right;">[2.3 Heiss page 69]</span></center><br>
 
-<div class="task">Task:  From the `wooldridge::ceosal1` data set involving CEO Salary (*salary*) and Return on Equity (*roe*) calculate the statistics for estimating the population parameters $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ for the *roe* variable to estimate *salary*.</div>
+<div class="task">Task:  From the `wooldridge::ceosal1` data set involving "CEO Salary" (*salary*) and "Return on Equity" (*roe*) calculate the statistics for estimating the population parameters $\beta_{0}$ and $\beta_{1}$ for the *roe* variable to estimate *salary*.</div>
 
-1. Review the *roe* and *salary* variables from the data set:
+In the "pedestrian" approach to estimating $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ both Heiss (in Equations 2.2 and 2.3) and Wooldridge (in Equations 2.17 and 2.19) point out that we "just need to calculate the four statistics $\bar{y}$, $\bar{x}$, $Cov(x,y)$, and $Var(x)$".
+
+1. Read the data set:
 ```{r}
 data(ceosal1, package = "wooldridge")
-str(ceosal1)
+ceosal1_dt <- data.table::setDT(ceosal1)
+ceosal1_dt <- ceosal1_dt[, .(roe, salary)]
 ```
-2. From `(Wooldridge, Equation 2.19 page 26)` use the pedestrian approach to estimate $\hat{\beta}_1$ where we need the Cov(*roe*,*salary*) and the Var(*roe*):
+2. From `(Wooldridge, Equation 2.19 page 26)` use the "pedestrian" approach to estimate $\hat{\beta}_1$ where we need the Cov(*roe*,*salary*) and the Var(*roe*):
 ```{r}
-cov_roe_salary <- stats::cov(ceosal1$roe, ceosal1$salary)
-var_roe <- stats::var(ceosal1$roe)
+cov_roe_salary <- stats::cov(ceosal1_dt$roe, ceosal1_dt$salary)
+var_roe <- stats::var(ceosal1_dt$roe)
 b1_hat <- cov_roe_salary/var_roe
 ```
 $Cov(salary,roe)$ = `r cov_roe_salary`
@@ -63,9 +66,9 @@ $Var(roe)$ = `r var_roe`
 
 $\hat{\beta}_1 = \frac{Cov(salary,roe)}{Var(roe)}$ = `r b1_hat`
 
-3. From `(Wooldridge, Equation 2.17 page 26)` estimate $\hat{\beta}_0$ where we need the means for *roe* and *salary* and $\hat{\beta}_1$:
+3. From `(Wooldridge, Equation 2.17 page 26)` estimate $\hat{\beta}_0$ where we need the means for *roe* ($\bar{x}$) and *salary* ($\bar{y}$) and our just computed $\hat{\beta}_1$:
 ```{r}
-b0_hat <- mean(ceosal1$salary) - b1_hat * mean(ceosal1$roe)
+b0_hat <- mean(ceosal1_dt$salary) - b1_hat * mean(ceosal1_dt$roe)
 ```
 
  $\hat{\beta}_0 = \bar{y} - \hat{\beta_{1}}\bar{x} =$ `r b0_hat`
@@ -74,15 +77,15 @@ b0_hat <- mean(ceosal1$salary) - b1_hat * mean(ceosal1$roe)
 
 1. Compute the coefficients via `stats::lm()`:
 ```{r}
-roe_salary_lm <- stats::lm(salary ~ roe, data = ceosal1)
+roe_salary_lm <- stats::lm(salary ~ roe, data = ceosal1_dt)
 ```
 Coefficients from `stats::lm()`: `r coef(roe_salary_lm)`
 
 2. Plot the linear fit:
 ```{r}
 df <- data.frame(
-  roe = ceosal1$roe,
-  salary = roe_salary_lm$model$salary,
+  roe = ceosal1_dt$roe,
+  salary = ceosal1_dt$salary,
   fit = roe_salary_lm$fitted.values
 )
 RplotterPkg::create_scatter_plot(
@@ -97,16 +100,38 @@ RplotterPkg::create_scatter_plot(
 ) + geom_line(aes(y = fit), color = "red", linetype = "twodash")
 ```
 
-<div class="task">Task: Find the relationship between wage and education `(Wooldridge, Example 2.4, page 30)` from the data set *wooldridge::wage1*.</div>  
+Wooldridge brings up another form of estimating $\beta_{1}$:
 
-1. Review the *wage* and *educ* variables from the data set:
+$$\hat{\beta}_{1} = \hat{\rho}_{xy} \cdot \left (\frac{\hat{\sigma}_{y}}{\hat{\sigma}_{x}}\right )$$
+where $\hat{\rho}_{xy}$ is the simple correlation between $x_{i}$ and $y_{i}$ and $\hat{\sigma}_{y}$ and $\hat{\sigma}_{x}$ are the sample standard deviations.
+Wooldridge brings up an important point in regard to this estimate:
+
+<blockquote>Recognition that $\beta_{i}$ is just a scaled version , $\rho_{xy}$, highlights an important limitation of simple regression when we do not have experimental data: In effect, simple regression is an analysis of correlation between two variables, and so one must be careful in inferring causality.</blockquote>
+
+Illustrating this second form:
+```{r}
+cor_salary_roe <- stats::cor(ceosal1_dt$salary,ceosal1_dt$roe)
+salary_sd <- stats::sd(ceosal1_dt$salary)
+roe_sd <- stats::sd(ceosal1_dt$roe)
+
+b1_hat_salary_roe <- cor_salary_roe * salary_sd / roe_sd
+```
+
+$\hat{\beta_{1}}$  = `r b1_hat_salary_roe`
+
+<div class="takeaway">Take Away: Both forms of estimating $\hat{\beta_{1}}$ are equal and is a scaled version of the correlation between $x_{i}$ and $y_{i}$.</div><br>
+
+<div class="task">Task: Find the relationship between wage and education `(Wooldridge, Example 2.4, page 30)` from the data set `wooldridge::wage1`.</div>  
+
+1. Read the data set:
 ```{r}
 data(wage1, package = "wooldridge")
-str(wage1)
+wage1_dt <- data.table::setDT(wage1)
+wage1_dt <- wage1_dt[, .(wage, educ)]
 ```
 2. Compute the OLS between *wage* and *educ*:
 ```{r}
-wage_educ_lm <- stats::lm(wage ~ educ, data = wage1)
+wage_educ_lm <- stats::lm(wage ~ educ, data = wage1_dt)
 ```
 The estimated $\hat{\beta}_0$ and $\hat{\beta}_1$ of the linear model are `r coef(wage_educ_lm)`
 
@@ -116,8 +141,8 @@ The estimated $\hat{\beta}_0$ and $\hat{\beta}_1$ of the linear model are `r coe
 
 ```{r}
 df <- data.frame(
-  educ = wage1$educ,
-  wage = wage_educ_lm$model$wage,
+  educ = wage1_dt$educ,
+  wage = wage1_dt$wage,
   fit = wage_educ_lm$fitted.values
 )
 RplotterPkg::create_scatter_plot(
@@ -137,11 +162,17 @@ RplotterPkg::create_scatter_plot(
 ## 2.2 Coeffcients, Fitted Values, and Residuals 
 `(Wooldridge, Section 2-3b, page 32)` presents three properties of OLS statistics. The three properties `(Heiss, page 76)`are:
 
-1. Sum and sample mean of the residuals: $\sum_{i=1}^n \hat{\mu_{i}} = 0 \Rightarrow \bar{\hat{\mu}}_{i} = 0$<span style="float:right;">[2.7]</span>
+1. Sum and sample mean of the residuals: 
 
-2. Sample covariance between the regressors and the OLS residuals: $\sum_{i=1}^n x_{i}\hat{\mu}_{i} = 0$   $\Rightarrow$   $Cov(x_{i}, \hat{\mu}_{i}) = 0$<span style="float:right;">[2.8]</span>
+<center>$\sum_{i=1}^n \hat{\mu_{i}} = 0 \Rightarrow \bar{\hat{\mu}}_{i} = 0$<span style="float:right;">[2.7 Heiss page 76]</span></center><br>
 
-3. The mean is always on the line: $\bar{y} = \hat{\beta}_0 + \hat{\beta}_1 \cdot \bar{x}$<span style="float:right;">[2.9]</span>
+2. Sample covariance between the regressors and the OLS residuals:
+
+<center>$\sum_{i=1}^n x_{i}\hat{\mu}_{i} = 0$   $\Rightarrow$   $Cov(x_{i}, \hat{\mu}_{i}) = 0$<span style="float:right;">[2.8 Heiss page 76]</span></center><br>
+
+3. The mean is always on the line: 
+
+<center>$\bar{y} = \hat{\beta}_0 + \hat{\beta}_1 \cdot \bar{x}$<span style="float:right;">[2.9 Heiss page 76]</span></center><br>
 
 <div class="task">Task: Take the above wage and education data set and confirm the three properties of OLS.</div>  
 
@@ -152,22 +183,22 @@ mu_hat_mean <- mean(mu_hat)
 ```
 Mean of $\hat{\mu_{i}}$ = `r mu_hat_mean`
 
-2. Property 2 -- The sample covariance between the regressors and the OLS residuals is zero. $Cov(x_{i},\hat{\mu}_{i}) = 0$
+2. Property 2 -- The sample covariance between the predictors and the OLS residuals is zero. $Cov(x_{i},\hat{\mu}_{i}) = 0$
 ```{r}
-cov_x_mu <- stats::cov(wage1$educ, mu_hat)
+cov_x_mu <- stats::cov(wage1_dt$educ, mu_hat)
 ```
 Cov of $Cov(x_{i},\hat{\mu}_{i})$ = `r cov_x_mu`
 
 3. Property 3 -- The point $(\bar{x},\bar{y})$ is always on the OLS regression line. $\bar{y} = \hat{\beta_{0}} + \hat{\beta_{1}} * \bar{x}$
 ```{r}
-y_mean <- mean(wage1$wage)
+y_mean <- mean(wage1_dt$wage)
 ```
 
 The $\bar{y}$ = `r y_mean`
 
 ```{r}
 lm_coef <- coef(wage_educ_lm)
-y_mean_lm <- lm_coef[1] + lm_coef[2] * mean(wage1$educ)
+y_mean_lm <- lm_coef[1] + lm_coef[2] * mean(wage1_dt$educ)
 ```
 
 $\hat{\beta_{0}} + \hat{\beta_{1}} * \bar{x}$ = `r y_mean_lm`
@@ -176,20 +207,20 @@ $\hat{\beta_{0}} + \hat{\beta_{1}} * \bar{x}$ = `r y_mean_lm`
 
 <div class="task">Task: Using the above data of *salary* on *roe* compute the $R^2$ or coefficient of determination three different ways where `(Wooldridge, Equations 2.33,2.34,2.35 page 34)` defines:.</div>  
 
-<br><center>Total sum of the squares (SST) = $\sum_{i=1}^n(y_{i} - \bar{y})^2 = (n - 1) \cdot Var(y)$<span style="float:right;">[2.10]</span></center>
+<br><center>Total sum of the squares (SST) = $\sum_{i=1}^n(y_{i} - \bar{y})^2 = (n - 1) \cdot Var(y)$<span style="float:right;">[2.10 Heiss page 77]</span></center><br>
 
-<br><center>Explained sum of the squares (SSE) = $\sum_{i=1}^n(\hat{y}_{i} - \bar{y})^2 = (n - 1) \cdot Var(\hat{y})$<span style="float:right;">[2.11]</span></center>
+<center>Explained sum of the squares (SSE) = $\sum_{i=1}^n(\hat{y}_{i} - \bar{y})^2 = (n - 1) \cdot Var(\hat{y})$<span style="float:right;">[2.11 Heiss page 77]</span></center><br>
 
-<br><center>Residual sum of the squares (SSR) = $\sum_{i=1}^n(\hat{\mu}_{i} - 0)^2 = (n - 1) \cdot Var(\hat{\mu})$<span style="float:right;">[2.12]</span></center><br>
+<center>Residual sum of the squares (SSR) = $\sum_{i=1}^n(\hat{\mu}_{i} - 0)^2 = (n - 1) \cdot Var(\hat{\mu})$<span style="float:right;">[2.12 Heiss page 77]</span></center><br>
 
-`(Wooldridge, Equation 2.38, page 35)`  defines $$R^2 = \frac{SSE}{SST} = 1 - \frac{SSR}{SST}$$
+`(Wooldridge, Equation 2.38, page 35)` defines $$R^2 = \frac{SSE}{SST} = 1 - \frac{SSR}{SST}$$
 or
 $$R^2 = \frac{Var(\hat{y})}{Var(y)} = 1 - \frac{Var(\hat{\mu})}{Var(y)}$$
 
 1. Compute the SST, SSE, SSR:
 ```{r}
-n <- length(ceosal1$salary)
-SST <- (n - 1) * stats::var(ceosal1$salary)
+n <- nrow(ceosal1_dt)
+SST <- (n - 1) * stats::var(ceosal1_dt$salary)
 SSE <- (n - 1) * stats::var(fitted(roe_salary_lm))
 SSR <- (n - 1) * stats::var(resid(roe_salary_lm))
 ```
@@ -213,7 +244,7 @@ $1 - Var(\hat{\mu})/Var(y)$ = `r R_2_2`
 
 4. Compute $R^2$ using `stats::cor()` function:
 ```{r}
-R_2_3 <- stats::cor(ceosal1$salary, fitted(roe_salary_lm))^2
+R_2_3 <- stats::cor(ceosal1_dt$salary, fitted(roe_salary_lm))^2
 ```
 `stats::cor()` = `r R_2_3`
 
@@ -226,20 +257,20 @@ According to `(Wooldridge, page 37)` "...it is rather easy to incorporate many n
 
 In taking the above example of *wage* regressed on *education* suppose we believe that each year of education increases wage by a constant **percentage**.  The percentage of wage change for one unit of education is the same at any starting value for years of education. A model that gives a constant percentage effect is:
 
-<center>$log(wage) = \beta_{0} - \beta_{1}educ + \mu$<span style="float:right;">[2.10]</span></center>
+<center>$log(wage) = \beta_{0} + \beta_{1}educ + \mu$<span style="float:right;">[2.42 Wooldridge page 37]</span></center><br>
 
-<div class="task">Task: Using equation [2.10] estimate the linear model of `log(wage)` (i.e. the natural log of *wage*) regressed on *educ*.</div>  
+<div class="task">Task: Using equation [2.42] estimate the linear model of `log(wage)` (i.e. the natural log of *wage*) regressed on *educ*.</div>  
 ```{r}
-log_wage_educ_lm <- stats::lm(log(wage) ~ educ, data = wage1)
+log_wage_educ_lm <- stats::lm(log(wage) ~ educ, data = wage1_dt)
 b0 <- coef(log_wage_educ_lm)[[1]]
 b1 <- coef(log_wage_educ_lm)[[2]]
 ```
 The regression of `log(wage)` on education is: $$\widehat{log(wage)} = 0.584 + 0.083 \cdot educ$$
 The model's estimate for $\hat{\beta}_{1}$ is 0.083 or multiplying by 100 we can say that $\widehat{log(wage)}$ increases by 8.3% for every additional year of education.
 
-<div class="task">Task: Exponentiate equation [2.10] and plot the nonlinear nature of how *wage* increases for every additional year of education.</div> 
+<div class="task">Task: Exponentiate equation [2.42] and plot the nonlinear nature of how *wage* increases for every additional year of education.</div> 
 
-1. By exponentiating [2.10], we can write an equation involving just *wage* and *educ*: $$\widehat{wage} = exp(\hat{\beta_{0}} + \hat{\beta_{1}}educ + \hat{\mu)}$$
+1. By exponentiating [2.42], we can write an equation involving just *wage* and *educ*: $$\widehat{wage} = exp(\hat{\beta_{0}} + \hat{\beta_{1}}educ + \hat{\mu)}$$
 ```{r}
 educ <- seq(0, 19, 1)
 log_wage <- b0 + b1 * educ
@@ -270,14 +301,14 @@ RplotterPkg::create_scatter_plot(
 `(Wooldridge, Section 2-6, page 50)` discusses models without an intercept.
 <div class="task">Task: Using the above data of *salary* on *roe* compute the model $\hat{y} = \hat{\beta}_{1} \cdot x$ (i.e. regression is through the origin; in the OLS model use 0 for the intercept value).</div>  
 ```{r}
-roe_salary_no_intercept_lm <- stats::lm(formula = salary ~ 0 + roe, data = ceosal1)
+roe_salary_no_intercept_lm <- stats::lm(formula = salary ~ 0 + roe, data = ceosal1_dt)
 ```
 
  $\hat{\beta}_{1} =$ `r coef(roe_salary_no_intercept_lm)[[1]]`
 
 <div class="task">Task: Using the above data of *salary* on *roe* compute the model $\hat{y} = \hat{\beta}_{0}$ (i.e. the regression is a constant).</div> 
 ```{r}
-roe_salary_constant_lm <- stats::lm(formula = salary ~ 1, data = ceosal1)
+roe_salary_constant_lm <- stats::lm(formula = salary ~ 1, data = ceosal1_dt)
 ```
 
  $\hat{\beta}_{0} =$ `r coef(roe_salary_constant_lm)[[1]]`
@@ -287,17 +318,17 @@ roe_salary_constant_lm <- stats::lm(formula = salary ~ 1, data = ceosal1)
 1. Create a data frame with *roe* and the three fitted values of *salary*:
 ```{r}
 df_obser <- data.frame(
-  roe = ceosal1$roe,
-  salary = roe_salary_lm$model$salary,
+  roe = ceosal1_dt$roe,
+  salary = ceosal1_dt$salary,
   type = "Observations"
 )
 df_no_intercept <- data.frame(
-  roe = ceosal1$roe,
+  roe = ceosal1_dt$roe,
   salary = roe_salary_no_intercept_lm$fitted.values,
   type = "No Intercept"
 )
 df_constant <- data.frame(
-  roe = ceosal1$roe,
+  roe = ceosal1_dt$roe,
   salary = roe_salary_constant_lm$fitted.values,
   type = "Constant"
 )
@@ -328,9 +359,9 @@ RplotterPkg::create_scatter_plot(
 ## 2.6 Expected Values, Variances, and Standard Errors
 `(Wooldridge, Section 2-5b, page 45)` presents Theorem 2.2 on the sampling variances of the OLS estimators $\hat{\beta}_{0}$ and $\hat{\beta}_{1}$.  `(Heiss, page 82)` gives the following equivalent formulas:
 
-<center>$se(\hat{\beta}_{0}) = \frac{1}{\sqrt{n-1}}\cdot\frac{\hat{\sigma}}{sd(x)}\cdot\sqrt{\bar{x^2}}$<span style="float:right;">[2.15]</span></center>
+<center>$se(\hat{\beta}_{0}) = \frac{1}{\sqrt{n-1}}\cdot\frac{\hat{\sigma}}{sd(x)}\cdot\sqrt{\bar{x^2}}$<span style="float:right;">[2.15 Heiss page 82]</span></center><br>
 
-<center>$se(\hat{\beta}_{1}) = \frac{1}{\sqrt{n-1}}\cdot\frac{\hat{\sigma}}{sd(x)}$<span style="float:right;">[2.16]</span></center>
+<center>$se(\hat{\beta}_{1}) = \frac{1}{\sqrt{n-1}}\cdot\frac{\hat{\sigma}}{sd(x)}$<span style="float:right;">[2.16 Heiss page 82]</span></center><br>
 
 where $\hat{\sigma}^2 = \frac{n-1}{n-2}\cdot Var(\hat{\mu}_{i})$ is the variance of the error term $\mu$. $\hat{\sigma}$ = $\sqrt{\hat{\sigma}^2}$ is known as
 the **standard error of the regression** (SER) or **residual standard error**
@@ -338,28 +369,29 @@ the **standard error of the regression** (SER) or **residual standard error**
 <div class="task">Task: Using the data set `Wooldridge::meap93`, compute the standard errors of the OLS estimators using the above equations.</div>  
 Note that from the data set we are regressing math performance scores of schools on the share of students eligible for a federally funded lunch program.
 
-1. Review the *lnchprg* and *math10* variables from the data set:
+1. Read the data set:
 ```{r}
 data("meap93", package = "wooldridge")
-str(meap93)
+meap93_dt <- data.table::setDT(meap93)
+meap93_dt <- meap93_dt[, .(math10, lnchprg)]
 ```
 
 2. Estimate the OLS model:
 ```{r}
-math_lunch_lm <- stats::lm(formula = math10 ~ lnchprg, data = meap93)
+math_lunch_lm <- stats::lm(formula = math10 ~ lnchprg, data = meap93_dt)
 ```
 
 3. Compute the **residual standard error** (SER):
 ```{r}
-n = stats::nobs(math_lunch_lm)
+n = nrow(meap93_dt)
 SER <- sd(resid(math_lunch_lm)) * sqrt((n-1)/(n-2))
 ```
 The *SER* = `r SER`
 
 4. Compute the standard errors for $\hat{\beta}_{0}$ and $\hat{\beta}_{1}$:
 ```{r}
-beta_0_se <- (SER/sd(meap93$lnchprg))/sqrt(n-1) * sqrt(mean(meap93$lnchprg^2))
-beta_1_se <- (SER/sd(meap93$lnchprg))/sqrt(n-1)
+beta_0_se <- (SER/sd(meap93_dt$lnchprg))/sqrt(n-1) * sqrt(mean(meap93_dt$lnchprg^2))
+beta_1_se <- (SER/sd(meap93_dt$lnchprg))/sqrt(n-1)
 ```
 $se(\hat{\beta}_{0}) =$ `r beta_0_se`
 $se(\hat{\beta}_{1}) =$ `r beta_1_se`

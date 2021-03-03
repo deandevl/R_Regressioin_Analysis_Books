@@ -42,7 +42,7 @@ library(RplotterPkg)
 ## 7.1 
 
 ### Dummy bi-variable for *female*
-Looking at the data set `wooldridge::wage1` which has a dummy variable for *female* of Example 7.1 `(Heiss)`.
+Looking at the data set `wooldridge::wage1` which has a dummy variable for *female* of Example 7.1 `(Heiss page 135)`.
 
 1. Set up the data set:
 ```{r}
@@ -66,10 +66,10 @@ RplotterPkg::create_table(
   caption = "OLS: wage ~ female + educ + exper + tenure"
 )
 ```
-A woman makes $1.81 per hour less than a man *with the same education, experience, and tenure*.
+<div class="takeaway">Take Away: A woman makes $1.81 per hour less than a man with the same education, experience, and tenure.</div>
 
 ### Qualitative variable with 4 outcomes
-Looking at at the data set `wooldridge::wage1` which has a qualitative variable that combines gender with martial status Example 7.2 `(Heiss)`.
+Looking at at the data set `wooldridge::wage1` which has a qualitative variable that combines gender with martial status Example 7.6 `(Heiss page 136)`.
 
 1. Estimate the OLS parameters: 
 ```{r}
@@ -94,7 +94,6 @@ RplotterPkg::create_table(
 1. Convert *female*:
 ```{r}
 wage1_dt[, female := as.logical(female)]
-
 ```
 
 2. Estimate the OLS parameters:
@@ -150,7 +149,7 @@ RplotterPkg::create_table(CPS1985_ols_lst$coef_df, caption = "log(wage) ~ educat
 ```
 
 ## 7.4 Breaking a numeric variable into categories
-Following `(Wooldridge)` Section 7-3a page 214 Example 7.8. Dividing the *rank* variable of law schools into numeric groups from the `wooldridge::lawsch85 dataset.
+Following `(Wooldridge)` Section 7-3a page 214 Example 7.8. Dividing the *rank* variable of law schools into numeric groups from the `wooldridge::lawsch85` dataset.
 
 1. Set up the data and cut points:
 ```{r}

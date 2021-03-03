@@ -80,7 +80,7 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="data:text/css,%2Emain%2Dcontainer%20%7Bmin%2Dwidth%3A%201000px%3Bmax%2Dwidth%3A%201000px%3Bmargin%2Dleft%3A%2015px%3Bmargin%2Dright%3A%2015px%3B%7Ddiv%20%7Bfont%2Dsize%3A%2013pt%3B%7Dp%20%7Bmargin%3A%200%200%2010px%3B%7Ddiv%2Eabstract%20%7Bmargin%3A%20auto%3Bwidth%3A%2090%25%3B%7Dp%2Eabstract%20%7Btext%2Dalign%3A%20center%3Bfont%2Dweight%3A%20bold%3B%7Dcaption%20%7Bfont%2Dsize%3A%200%2E9em%3Bfont%2Dstyle%3A%20italic%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20black%3B%7Dpre%20code%20%7Bfont%2Dfamily%3A%20Consolas%2C%20%22courier%20new%22%3B%7D%2Etask%20%7Bfont%2Dsize%3A%2015pt%3Bcolor%3A%20green%3B%7D%2Er%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Etable%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Enote%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20purple%3Bmargin%2Dtop%3A%2010px%3Bmargin%2Dbottom%3A%2010px%3B%7D%2Eexer%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20darkorange%3B%7D" type="text/css" />
+<link rel="stylesheet" href="data:text/css,%2Emain%2Dcontainer%20%7Bmin%2Dwidth%3A%201000px%3Bmax%2Dwidth%3A%201000px%3Bmargin%2Dleft%3A%2015px%3Bmargin%2Dright%3A%2015px%3B%7Ddiv%20%7Bfont%2Dsize%3A%2013pt%3B%7Dp%20%7Bmargin%3A%200%200%2010px%3B%7Ddiv%2Eabstract%20%7Bmargin%3A%20auto%3Bwidth%3A%2090%25%3B%7Dp%2Eabstract%20%7Btext%2Dalign%3A%20center%3Bfont%2Dweight%3A%20bold%3B%7Dcaption%20%7Bfont%2Dsize%3A%200%2E9em%3Bfont%2Dstyle%3A%20italic%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20black%3B%7Dpre%20code%20%7Bfont%2Dfamily%3A%20Consolas%2C%20%22courier%20new%22%3B%7D%2Etask%20%7Bfont%2Dsize%3A%2015pt%3Bcolor%3A%20green%3B%7D%2Er%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Etable%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Enote%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20purple%3Bmargin%2Dtop%3A%2010px%3Bmargin%2Dbottom%3A%2010px%3B%7D%2Eexer%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20darkorange%3B%7D%2Etakeaway%20%7Bfont%2Dsize%3A%2014pt%3Bfont%2Dweight%3A%20bold%3Bfont%2Dstyle%3A%20italic%3B%7D" type="text/css" />
 
 
 
@@ -209,7 +209,7 @@ summary {
 Author: Rick Dean
 </div>
 <div>
-Article date: 2021-02-13
+Article date: 2021-02-22
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -233,50 +233,18 @@ library(car)</code></pre>
 Task: Apply the <code>stats::lm()</code> function to determinants of College GPA <code>(Wooldridge, example 3.1, page 66)</code>.
 </div>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Read the data:</li>
 </ol>
-<pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)
-str(gpa_1)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   141 obs. of  29 variables:
-##  $ age     : int  21 21 20 19 20 20 22 22 22 19 ...
-##  $ soph    : int  0 0 0 1 0 0 0 0 0 1 ...
-##  $ junior  : int  0 0 1 0 1 0 0 0 0 0 ...
-##  $ senior  : int  1 1 0 0 0 1 0 0 0 0 ...
-##  $ senior5 : int  0 0 0 0 0 0 1 1 1 0 ...
-##  $ male    : int  0 0 0 1 0 1 0 0 0 0 ...
-##  $ campus  : int  0 0 0 1 0 1 0 0 0 0 ...
-##  $ business: int  1 1 1 1 1 1 1 0 0 1 ...
-##  $ engineer: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ colGPA  : num  3 3.4 3 3.5 3.6 ...
-##  $ hsGPA   : num  3 3.2 3.6 3.5 3.9 ...
-##  $ ACT     : int  21 24 26 27 28 25 25 22 21 27 ...
-##  $ job19   : int  0 0 1 1 0 0 0 1 1 1 ...
-##  $ job20   : int  1 1 0 0 1 0 0 0 0 0 ...
-##  $ drive   : int  1 1 0 0 0 0 0 1 1 0 ...
-##  $ bike    : int  0 0 0 0 1 0 1 0 0 0 ...
-##  $ walk    : int  0 0 1 1 0 1 0 0 0 1 ...
-##  $ voluntr : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ PC      : int  0 0 0 0 0 0 0 1 0 1 ...
-##  $ greek   : int  0 0 0 0 0 0 1 0 0 0 ...
-##  $ car     : int  1 1 1 0 1 1 1 0 1 0 ...
-##  $ siblings: int  1 0 1 1 1 1 1 1 1 1 ...
-##  $ bgfriend: int  0 1 0 0 1 0 0 1 1 0 ...
-##  $ clubs   : int  0 1 1 0 0 0 1 0 1 1 ...
-##  $ skipped : num  2 0 0 0 0 0 0 3 2 0.5 ...
-##  $ alcohol : num  1 1 1 0 1.5 0 2 3 2.5 0.75 ...
-##  $ gradMI  : int  1 1 1 0 1 0 1 1 1 1 ...
-##  $ fathcoll: int  0 1 1 0 1 1 0 1 1 0 ...
-##  $ mothcoll: int  0 1 1 0 0 0 1 1 1 1 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<pre class="r"><code>gpa1_dt &lt;- data.table::setDT(wooldridge::gpa1)
+gpa1_dt &lt;- gpa1_dt[, .(colGPA, hsGPA, ACT)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Apply <code>stats::lm()</code>:</li>
 </ol>
-<pre class="r"><code>gpa_model &lt;- stats::lm(formula = colGPA ~ hsGPA + ACT, data = gpa_1)
+<pre class="r"><code>gpa_model &lt;- stats::lm(formula = colGPA ~ hsGPA + ACT, data = gpa1_dt)
 summary(gpa_model)</code></pre>
 <pre><code>## 
 ## Call:
-## stats::lm(formula = colGPA ~ hsGPA + ACT, data = gpa_1)
+## stats::lm(formula = colGPA ~ hsGPA + ACT, data = gpa1_dt)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
@@ -297,45 +265,18 @@ summary(gpa_model)</code></pre>
 Task: Apply the <code>stats::lm()</code> function to determinants of hourly wage <code>(Wooldridge, example 3.2, page 67)</code>.
 </div>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Read the data:</li>
 </ol>
-<pre class="r"><code>wage_1 &lt;- data.table::setDT(wooldridge::wage1)
-str(wage_1)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   526 obs. of  24 variables:
-##  $ wage    : num  3.1 3.24 3 6 5.3 ...
-##  $ educ    : int  11 12 11 8 12 16 18 12 12 17 ...
-##  $ exper   : int  2 22 2 44 7 9 15 5 26 22 ...
-##  $ tenure  : int  0 2 0 28 2 8 7 3 4 21 ...
-##  $ nonwhite: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ female  : int  1 1 0 0 0 0 0 1 1 0 ...
-##  $ married : int  0 1 0 1 1 1 0 0 0 1 ...
-##  $ numdep  : int  2 3 2 0 1 0 0 0 2 0 ...
-##  $ smsa    : int  1 1 0 1 0 1 1 1 1 1 ...
-##  $ northcen: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ south   : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ west    : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ construc: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ ndurman : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ trcommpu: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ trade   : int  0 0 1 0 0 0 1 0 1 0 ...
-##  $ services: int  0 1 0 0 0 0 0 0 0 0 ...
-##  $ profserv: int  0 0 0 0 0 1 0 0 0 0 ...
-##  $ profocc : int  0 0 0 0 0 1 1 1 1 1 ...
-##  $ clerocc : int  0 0 0 1 0 0 0 0 0 0 ...
-##  $ servocc : int  0 1 0 0 0 0 0 0 0 0 ...
-##  $ lwage   : num  1.13 1.18 1.1 1.79 1.67 ...
-##  $ expersq : int  4 484 4 1936 49 81 225 25 676 484 ...
-##  $ tenursq : int  0 4 0 784 4 64 49 9 16 441 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<pre class="r"><code>wage1_dt &lt;- data.table::setDT(wooldridge::wage1)
+wage1_dt &lt;- wage1_dt[, .(wage, educ, exper, tenure)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Apply <code>stats::lm()</code>:</li>
 </ol>
-<pre class="r"><code>wage_model &lt;- stats::lm(formula = log(wage) ~ educ + exper + tenure, data = wage_1)
+<pre class="r"><code>wage_model &lt;- stats::lm(formula = log(wage) ~ educ + exper + tenure, data = wage1_dt)
 summary(wage_model)</code></pre>
 <pre><code>## 
 ## Call:
-## stats::lm(formula = log(wage) ~ educ + exper + tenure, data = wage_1)
+## stats::lm(formula = log(wage) ~ educ + exper + tenure, data = wage1_dt)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
@@ -356,11 +297,11 @@ summary(wage_model)</code></pre>
 <div class="task">
 Task: Repeat the estimate of <em>wage_model</em> with just the <em>educ</em> variable.
 </div>
-<pre class="r"><code>wage_model_educ &lt;- stats::lm(formula = log(wage) ~ educ, data = wage_1)
+<pre class="r"><code>wage_model_educ &lt;- stats::lm(formula = log(wage) ~ educ, data = wage1_dt)
 summary(wage_model_educ)</code></pre>
 <pre><code>## 
 ## Call:
-## stats::lm(formula = log(wage) ~ educ, data = wage_1)
+## stats::lm(formula = log(wage) ~ educ, data = wage1_dt)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
@@ -380,29 +321,18 @@ summary(wage_model_educ)</code></pre>
 Task: Apply the <code>stats::lm()</code> function to determinants of 401(k) participation rate <code>(Wooldridge, example 3.3, page 70)</code>.
 </div>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Read the data:</li>
 </ol>
-<pre class="r"><code>k_401k &lt;- data.table::setDT(wooldridge::k401k)
-str(k_401k)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   1534 obs. of  8 variables:
-##  $ prate  : num  26.1 100 97.6 100 82.5 ...
-##  $ mrate  : num  0.21 1.42 0.91 0.42 0.53 ...
-##  $ totpart: num  1653 262 166 257 591 ...
-##  $ totelg : num  6322 262 170 257 716 ...
-##  $ age    : int  8 6 10 7 28 7 31 13 21 10 ...
-##  $ totemp : num  8709 315 275 500 933 ...
-##  $ sole   : int  0 1 1 0 1 1 1 0 1 1 ...
-##  $ ltotemp: num  9.07 5.75 5.62 6.21 6.84 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<pre class="r"><code>k401k_dt &lt;- data.table::setDT(wooldridge::k401k)
+k401k_dt &lt;- k401k_dt[, .(prate, mrate, age)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Apply <code>stats::lm()</code>:</li>
 </ol>
-<pre class="r"><code>k401k_model &lt;- stats::lm(formula = prate ~ mrate + age, data = k_401k)
+<pre class="r"><code>k401k_model &lt;- stats::lm(formula = prate ~ mrate + age, data = k401k_dt)
 summary(k401k_model)</code></pre>
 <pre><code>## 
 ## Call:
-## stats::lm(formula = prate ~ mrate + age, data = k_401k)
+## stats::lm(formula = prate ~ mrate + age, data = k401k_dt)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
@@ -423,37 +353,18 @@ summary(k401k_model)</code></pre>
 Task: Apply the <code>stats::lm()</code> function to determinants of arrest <code>(Wooldridge, example 3.5, page 72)</code>.
 </div>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Read the data:</li>
 </ol>
-<pre class="r"><code>crime_1 &lt;- data.table::setDT(wooldridge::crime1)
-str(crime_1)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   2725 obs. of  16 variables:
-##  $ narr86 : int  0 2 1 2 1 0 2 5 0 0 ...
-##  $ nfarr86: int  0 2 1 2 1 0 2 3 0 0 ...
-##  $ nparr86: int  0 0 0 1 0 0 1 5 0 0 ...
-##  $ pcnv   : num  0.38 0.44 0.33 0.25 0 ...
-##  $ avgsen : num  17.6 0 22.8 0 0 ...
-##  $ tottime: num  35.2 0 22.8 0 0 ...
-##  $ ptime86: int  12 0 0 5 0 0 0 0 9 0 ...
-##  $ qemp86 : num  0 1 0 2 2 4 0 0 0 3 ...
-##  $ inc86  : num  0 0.8 0 8.8 8.1 ...
-##  $ durat  : num  0 0 11 0 1 ...
-##  $ black  : int  0 0 1 0 0 0 1 0 1 0 ...
-##  $ hispan : int  0 1 0 1 0 0 0 0 0 1 ...
-##  $ born60 : int  1 0 1 1 0 1 1 1 1 1 ...
-##  $ pcnvsq : num  0.1444 0.1936 0.1089 0.0625 0 ...
-##  $ pt86sq : int  144 0 0 25 0 0 0 0 81 0 ...
-##  $ inc86sq: num  0 0.64 0 77.44 65.61 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<pre class="r"><code>crime1_dt &lt;- data.table::setDT(wooldridge::crime1)
+crime1_dt &lt;- crime1_dt[, .(narr86, pcnv, ptime86, qemp86, avgsen)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Apply <code>stats::lm()</code>:</li>
 </ol>
-<pre class="r"><code>crime_model &lt;- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86, data = crime_1)
+<pre class="r"><code>crime_model &lt;- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86, data = crime1_dt)
 summary(crime_model)</code></pre>
 <pre><code>## 
 ## Call:
-## stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86, data = crime_1)
+## stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86, data = crime1_dt)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
@@ -474,12 +385,12 @@ summary(crime_model)</code></pre>
 <div class="task">
 Task: Repeat the estimate of <em>crime_model</em> with <em>avgsen</em> (average sentence) variable.
 </div>
-<pre class="r"><code>crime_model_avgsen &lt;- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86 + avgsen, data = crime_1)
+<pre class="r"><code>crime_model_avgsen &lt;- stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86 + avgsen, data = crime1_dt)
 summary(crime_model_avgsen)</code></pre>
 <pre><code>## 
 ## Call:
 ## stats::lm(formula = narr86 ~ pcnv + ptime86 + qemp86 + avgsen, 
-##     data = crime_1)
+##     data = crime1_dt)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
@@ -503,35 +414,40 @@ summary(crime_model_avgsen)</code></pre>
 <h2>3.2 OLS in Matrix Form</h2>
 <p>The derivation of the OLS estimates via matrix operations is presented at <code>(Wooldridge, Appendix E, page 720)</code> and has the following form:</p>
 <center>
-<span class="math inline">\(\hat{\beta} = (X^\prime X)^{-1}X^\prime y\)</span><span style="float:right;">[3.2]</span>
+<span class="math inline">\(\hat{\beta} = (X^\prime X)^{-1}X^\prime y\)</span><span style="float:right;">[3.2 Heiss page 95]</span>
 </center>
-The vector of residuals can be manually calculated as:
+<p><br></p>
+<p>The vector of residuals can be manually calculated as:</p>
 <center>
-<span class="math inline">\(\hat\mu = y - X\hat\beta\)</span><span style="float:right;">[3.3]</span>
+<span class="math inline">\(\hat\mu = y - X\hat\beta\)</span><span style="float:right;">[3.3 Heiss page 95]</span>
 </center>
-The estimated variance of the error term <span class="math inline">\(\hat\sigma^2\)</span> is:
+<p><br></p>
+<p>The estimated variance of the error term <span class="math inline">\(\hat\sigma^2\)</span> is:</p>
 <center>
-<span class="math inline">\(\hat\sigma^2 = \frac{1}{n-k-1}\hat\mu^\prime \hat\mu\)</span><span style="float:right;">[3.4]</span>
+<span class="math inline">\(\hat\sigma^2 = \frac{1}{n-k-1}\hat\mu^\prime \hat\mu\)</span><span style="float:right;">[3.4 Heiss page 96]</span>
 </center>
+<p><br></p>
 <p>The standard error of the regression (SER) is <span class="math inline">\(\hat\sigma = \sqrt{\hat\sigma^2}\)</span></p>
-According to <code>(Wooldridge, Theorem E.2, page 724)</code> the variance-covariance matrix of the OLS estimators has the matrix form:
+<p>According to <code>(Wooldridge, Theorem E.2, page 724)</code> the variance-covariance matrix of the OLS estimators has the matrix form:</p>
 <center>
-<span class="math inline">\(\widehat{Var(\hat\beta)}=\hat\sigma^2(X^\prime X)^{-1}\)</span><span style="float:right;">[3.5]</span>
+<span class="math inline">\(\widehat{Var(\hat\beta)}=\hat\sigma^2(X^\prime X)^{-1}\)</span><span style="float:right;">[3.5 Heiss page 96]</span>
 </center>
+<p><br></p>
 <div class="task">
 Task: Using the <em>gpa1</em> data apply the above equations [3.2] - [3.5].
 </div>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Read the data:</li>
 </ol>
-<pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)</code></pre>
+<pre class="r"><code>gpa1_dt &lt;- data.table::setDT(wooldridge::gpa1)
+gpa1_dt &lt;- gpa1_dt[, .(colGPA,hsGPA,ACT)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Extract k, n, X, Y:</li>
 </ol>
 <pre class="r"><code>k &lt;- 2
-n &lt;- nrow(gpa_1)
-X &lt;- cbind(1, gpa_1$hsGPA, gpa_1$ACT)
-Y &lt;- gpa_1$colGPA
+n &lt;- nrow(gpa1_dt)
+X &lt;- cbind(1, gpa1_dt$hsGPA, gpa1_dt$ACT)
+Y &lt;- gpa1_dt$colGPA
 head(X)</code></pre>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,]    1  3.0   21
@@ -568,20 +484,21 @@ coefficient_se &lt;- sqrt(diag(variance_beta_hat))</code></pre>
 Task: Using the college GPA data <code>(wooldridge::gpa1)</code>, repeat the regression of college GPA(<em>colGPA</em>) on high school GPA(<em>hsGPA</em>) and ACT achivement test(<em>ACT</em>). Study the <em>ceteris paribus</em> effect of ACT on college GPA.
 </div>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Read the data:</li>
 </ol>
-<pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)</code></pre>
+<pre class="r"><code>gpa1_dt &lt;- data.table::setDT(wooldridge::gpa1)
+gpa1_dt &lt;- gpa1_dt[, .(colGPA, ACT, hsGPA)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Get the ACT and hsGPA coefficients from the full model:</li>
 </ol>
-<pre class="r"><code>gpa_model &lt;- lm(colGPA ~ ACT + hsGPA, data = gpa_1)
+<pre class="r"><code>gpa_model &lt;- lm(colGPA ~ ACT + hsGPA, data = gpa1_dt)
 ACT_full_coef &lt;- coef(gpa_model)[&quot;ACT&quot;]
 hsGPA_full_coef &lt;- coef(gpa_model)[&quot;hsGPA&quot;]</code></pre>
 <p>ACT full model coefficient: 0.009426 hsGPA full model coefficient: 0.4534559</p>
 <ol start="3" style="list-style-type: decimal">
 <li>Regress ACT on hsGPA and show the ACT coefficient:</li>
 </ol>
-<pre class="r"><code>ACT_hsGPA_coef &lt;- coef(lm(hsGPA ~ ACT, data = gpa_1))[&quot;ACT&quot;]</code></pre>
+<pre class="r"><code>ACT_hsGPA_coef &lt;- coef(lm(hsGPA ~ ACT, data = gpa1_dt))[&quot;ACT&quot;]</code></pre>
 <p>Coefficient between ACT and hsGPA: 0.0388968</p>
 <ol start="4" style="list-style-type: decimal">
 <li>Get the ACT coefficient with hsGPA <strong>NOT</strong> being fixed using <code>(Heiss, Equation 3.8, page 97)</code>:</li>
@@ -591,7 +508,7 @@ hsGPA_full_coef &lt;- coef(gpa_model)[&quot;hsGPA&quot;]</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Get the ACT coefficient with hsGPA omitted:</li>
 </ol>
-<pre class="r"><code>ACT_coef &lt;- coef(lm(colGPA ~ ACT, data = gpa_1))[&quot;ACT&quot;]</code></pre>
+<pre class="r"><code>ACT_coef &lt;- coef(lm(colGPA ~ ACT, data = gpa1_dt))[&quot;ACT&quot;]</code></pre>
 <p>Coefficient of ACT with hsGPA omitted: 0.027064</p>
 </div>
 <div id="standard-errors-multicollinearity-and-vif" class="section level2">
@@ -600,17 +517,18 @@ hsGPA_full_coef &lt;- coef(gpa_model)[&quot;hsGPA&quot;]</code></pre>
 Task: Using the college GPA data <code>(wooldridge::gpa1)</code>, manually calculate <em>hsGPA</em>’s VIF (variance inflation factor) and its coefficient standard error.
 </div>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Read the data:</li>
 </ol>
-<pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)</code></pre>
+<pre class="r"><code>gpa1_dt &lt;- data.table::setDT(wooldridge::gpa1)
+gpa1_dt &lt;- gpa1_dt[, .(colGPA, ACT, hsGPA)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Get the ACT and hsGPA coefficients from the full model:</li>
 </ol>
-<pre class="r"><code>gpa_model &lt;- lm(colGPA ~ ACT + hsGPA, data = gpa_1)
+<pre class="r"><code>gpa_model &lt;- lm(colGPA ~ ACT + hsGPA, data = gpa1_dt)
 (gpa_model_summary &lt;- summary(gpa_model))</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = colGPA ~ ACT + hsGPA, data = gpa_1)
+## lm(formula = colGPA ~ ACT + hsGPA, data = gpa1_dt)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
@@ -634,7 +552,7 @@ Task: Using the college GPA data <code>(wooldridge::gpa1)</code>, manually calcu
 <ol start="4" style="list-style-type: decimal">
 <li>Regress hsGPA on ACT for calculating hsGPA_R2 and hsGPA_VIF:</li>
 </ol>
-<pre class="r"><code>hsGPA_ACT_model &lt;- lm(hsGPA ~ ACT, data = gpa_1)
+<pre class="r"><code>hsGPA_ACT_model &lt;- lm(hsGPA ~ ACT, data = gpa1_dt)
 hsGPA_R2 &lt;- summary(hsGPA_ACT_model)$r.squared
 hsGPA_VIF &lt;- 1/(1 - hsGPA_R2)</code></pre>
 <p>hsGPA <span class="math inline">\(R^2\)</span> = 0.1195815</p>
@@ -643,23 +561,24 @@ hsGPA_VIF &lt;- 1/(1 - hsGPA_R2)</code></pre>
 <li>Using <code>(Heiss, Equation 3.11, page 99)</code> manually calculate the <em>se(hsGPA)</em>:</li>
 </ol>
 <pre class="r"><code>n &lt;- nobs(gpa_model)
-hsGPA_se &lt;- 1/sqrt(n-1) * SER/sd(gpa_1$hsGPA) * sqrt(hsGPA_VIF)</code></pre>
+hsGPA_se &lt;- 1/sqrt(n-1) * SER/sd(gpa1_dt$hsGPA) * sqrt(hsGPA_VIF)</code></pre>
 <p>The standard error for <em>hsGPA</em> is 0.0958129. This is the same value we obtained in the matrix computation of the OLS in section 3.2 above.</p>
 <div class="task">
 Task: Using the data set <code>wooldridge::wage1</code> for determining hourly wage <code>(Wooldridge, example 3.2, page 67)</code>, compute and compare the regressors VIF values as computed from the <code>car::vif()</code>.
 </div>
 <ol style="list-style-type: decimal">
-<li>Create a data.table:</li>
+<li>Read the data:</li>
 </ol>
-<pre class="r"><code>wage_1 &lt;- data.table::setDT(wooldridge::wage1)</code></pre>
+<pre class="r"><code>wage1_dt &lt;- data.table::setDT(wooldridge::wage1)
+wage1_dt &lt;- wage1_dt[, .(wage, educ, exper, tenure)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Regress <em>log(wage)</em> on <em>educ</em>, <em>exper</em>, <em>tenure</em>:</li>
 </ol>
-<pre class="r"><code>wage_model &lt;- lm(log(wage) ~ educ + exper + tenure, data = wage_1)
+<pre class="r"><code>wage_model &lt;- lm(log(wage) ~ educ + exper + tenure, data = wage1_dt)
 summary(wage_model)</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = log(wage) ~ educ + exper + tenure, data = wage_1)
+## lm(formula = log(wage) ~ educ + exper + tenure, data = wage1_dt)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 

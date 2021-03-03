@@ -82,7 +82,7 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="data:text/css,%2Emain%2Dcontainer%20%7Bmin%2Dwidth%3A%201000px%3Bmax%2Dwidth%3A%201000px%3Bmargin%2Dleft%3A%2015px%3Bmargin%2Dright%3A%2015px%3B%7Ddiv%20%7Bfont%2Dsize%3A%2013pt%3B%7Dp%20%7Bmargin%3A%200%200%2010px%3B%7Ddiv%2Eabstract%20%7Bmargin%3A%20auto%3Bwidth%3A%2090%25%3B%7Dp%2Eabstract%20%7Btext%2Dalign%3A%20center%3Bfont%2Dweight%3A%20bold%3B%7Dcaption%20%7Bfont%2Dsize%3A%200%2E9em%3Bfont%2Dstyle%3A%20italic%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20black%3B%7Dpre%20code%20%7Bfont%2Dfamily%3A%20Consolas%2C%20%22courier%20new%22%3B%7D%2Etask%20%7Bfont%2Dsize%3A%2015pt%3Bcolor%3A%20green%3B%7D%2Er%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Etable%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Enote%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20purple%3Bmargin%2Dtop%3A%2010px%3Bmargin%2Dbottom%3A%2010px%3B%7D%2Eexer%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20darkorange%3B%7D" type="text/css" />
+<link rel="stylesheet" href="data:text/css,%2Emain%2Dcontainer%20%7Bmin%2Dwidth%3A%201000px%3Bmax%2Dwidth%3A%201000px%3Bmargin%2Dleft%3A%2015px%3Bmargin%2Dright%3A%2015px%3B%7Ddiv%20%7Bfont%2Dsize%3A%2013pt%3B%7Dp%20%7Bmargin%3A%200%200%2010px%3B%7Ddiv%2Eabstract%20%7Bmargin%3A%20auto%3Bwidth%3A%2090%25%3B%7Dp%2Eabstract%20%7Btext%2Dalign%3A%20center%3Bfont%2Dweight%3A%20bold%3B%7Dcaption%20%7Bfont%2Dsize%3A%200%2E9em%3Bfont%2Dstyle%3A%20italic%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20black%3B%7Dpre%20code%20%7Bfont%2Dfamily%3A%20Consolas%2C%20%22courier%20new%22%3B%7D%2Etask%20%7Bfont%2Dsize%3A%2015pt%3Bcolor%3A%20green%3B%7D%2Er%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Etable%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Enote%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20purple%3Bmargin%2Dtop%3A%2010px%3Bmargin%2Dbottom%3A%2010px%3B%7D%2Eexer%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20darkorange%3B%7D%2Etakeaway%20%7Bfont%2Dsize%3A%2014pt%3Bfont%2Dweight%3A%20bold%3Bfont%2Dstyle%3A%20italic%3B%7D" type="text/css" />
 
 
 
@@ -206,12 +206,13 @@ summary {
 <li><a href="#other-hypotheses">4.1.3 Other hypotheses</a></li>
 </ul></li>
 <li><a href="#confidence-intervals">4.2 Confidence Intervals</a></li>
-<li><a href="#a-testing-hypotheses-involving-more-than-one-coefficient">4.3a Testing hypotheses involving more than one coefficient</a>
+<li><a href="#a-testing-hypotheses-involving-a-pair-of-coefficient">4.3a Testing hypotheses involving a pair of coefficient</a>
 <ul>
-<li><a href="#alternative-1">Alternative 1</a></li>
+<li><a href="#alternative-analysis-1">Alternative analysis 1</a></li>
 <li><a href="#alternative-2">Alternative 2</a></li>
 </ul></li>
 <li><a href="#b-linear-restrictions-f-tests">4.3b Linear Restrictions: <span class="math inline">\(F\)</span> Tests</a></li>
+<li><a href="#c-testing-general-linear-restrictions">4.3c Testing general linear restrictions</a></li>
 </ul></li>
 </ul>
 </div>
@@ -220,7 +221,7 @@ summary {
 <p>Author: Rick Dean</p>
 </div>
 <div>
-<p>Article date: 2021-02-19</p>
+<p>Article date: 2021-02-22</p>
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -239,8 +240,8 @@ library(RplotterPkg)</code></pre>
 <div id="multiple-regression-analysis-inference" class="section level1">
 <h1>4 Multiple Regression Analysis: Inference</h1>
 <p>In <code>(Wooldridge, section 4.1, page 106)</code> is added assumption <strong>MLR.6 Normality of the error term</strong> to the previous assumptions <strong>MLR.1</strong> through <strong>MLR.5</strong>. Together these assumptions constitute the classical linear model (CLM). Under the CLM, <code>(Wooldridge, page 107)</code> presents Theorem 4.1 where: <span class="math display">\[\hat{\beta}_{j} \sim Normal[\beta_{j}, Var(\hat{\beta}_{j})]\]</span></p>
-<div class="take">
-<p><b>Take Away:</b> <em>Under CLM, the OLS estimators are normally distributed</em></p>
+<div class="takeaway">
+Take Away: Under CLM, the OLS estimators are normally distributed
 </div>
 <p>Also contained in Theorem 4.1 is a reference to the <span class="math inline">\(t\)</span> statistic where: <span class="math display">\[t = \frac{(\hat{\beta}_{j} - \beta_{j})}{sd(\hat{\beta}_{j})} \sim Normal(0,1)\]</span></p>
 <div id="the-t-test" class="section level2">
@@ -248,20 +249,21 @@ library(RplotterPkg)</code></pre>
 <div id="general-setup" class="section level3">
 <h3>4.1.1 General Setup</h3>
 <p><code>(Wooldridge, page 108)</code> presents Theorem 4.2 where: <span class="math display">\[\frac{(\hat{\beta}_{j} - \beta_{j})}{se(\hat{\beta}_{j})} \sim t_{n-k-1}\]</span></p>
-<div class="take">
-<p><b>Take Away:</b> <em>The <span class="math inline">\(t\)</span> distribution (with n-k-1 degrees of freedom) allows us to make inferences/hypothesis’ on the population <span class="math inline">\(\beta_{j}\)</span></em></p>
+<p>where <span class="math inline">\(k\)</span> = number of predictors (not including the intercept) and <span class="math inline">\(n\)</span> = number of observations</p>
+<div class="takeaway">
+Take Away: The <span class="math inline">\(t\)</span> distribution (with n-k-1 degrees of freedom) allows us to make inferences/hypothesis’ on the population <span class="math inline">\(\beta_{j}\)</span>
 </div>
 <p>An important type of hypotheses we are often interested in is of the form</p>
 <center>
-<p><span class="math inline">\(H_{0}: \beta_{j} = a_{j}\)</span><span style="float:right;">[Heiss, 4.1]</span></p>
+<span class="math inline">\(H_{0}: \beta_{j} = a_{j}\)</span><span style="float:right;">[4.1 Heiss page 103]</span>
 </center>
 <p>where <span class="math inline">\(a_{j}\)</span> is some number, very often <span class="math inline">\(a_{j} = 0\)</span>. For the most common case of two-tailed tests, the alternative hypothesis is</p>
 <center>
-<p><span class="math inline">\(H_{1}: \beta_{j} \neq a_{j}\)</span><span style="float:right;">[Heiss, 4.2]</span></p>
+<span class="math inline">\(H_{1}: \beta_{j} \neq a_{j}\)</span><span style="float:right;">[4.2 Heiss page 103]</span>
 </center>
-<p>By using Theorem 4.2, we can compute a <span class="math inline">\(t\)</span> statistic to compare an estimated <span class="math inline">\(\hat{\beta_{j}}\)</span> with a hypothesized value using the following form <code>(Wooldridge, Equation 4.13, page 116)</code>:</p>
+<p>By using Theorem 4.2, we can compute a <span class="math inline">\(t\)</span> statistic to compare an estimated <span class="math inline">\(\hat{\beta_{j}}\)</span> with a hypothesized value using the following form <code>(Wooldridge, Equ 4.13, page 116)</code>:</p>
 <center>
-<span class="math inline">\(t = \frac{\hat{\beta_{j}} - a_{j}}{se(\hat{\beta_{j}})}\)</span><span style="float:right;">[Wooldridge 4.13]</span>
+<span class="math inline">\(t = \frac{\hat{\beta_{j}} - a_{j}}{se(\hat{\beta_{j}})}\)</span><span style="float:right;">[4.13 Wooldridge page 116]</span>
 </center>
 <p>The rejection rule for <span class="math inline">\(H_{0}: \beta_{j} = a_{j}\)</span> is the absolute value of the <span class="math inline">\(t\)</span> statistic from the above equation greater than some critical value <span class="math inline">\(c\)</span> from the <span class="math inline">\(t\)</span> distribution: <span class="math display">\[|t_{\hat\beta_{j}}| &gt; c\]</span></p>
 </div>
@@ -271,7 +273,7 @@ library(RplotterPkg)</code></pre>
 <p>Task: Using the college GPA data <code>(wooldridge::gpa1)</code>, (where <em>colGPA</em> is regressed on <em>hsGPS</em>, <em>ACT</em>, and <em>skipped</em>) calculate the critical values of the <span class="math inline">\(t\)</span> two-tailed test from both the exact <span class="math inline">\(t\)</span> distribution and the normal approximation.</p>
 </div>
 <ol style="list-style-type: decimal">
-<li>Read in the <code>(Wolldridge::gpa1)</code> data set:</li>
+<li>Read in the <code>(Wooldridge::gpa1)</code> data set:</li>
 </ol>
 <pre class="r"><code>gpa_1 &lt;- data.table::setDT(wooldridge::gpa1)</code></pre>
 <ol start="2" style="list-style-type: decimal">
@@ -279,32 +281,29 @@ library(RplotterPkg)</code></pre>
 </ol>
 <pre class="r"><code>prob &lt;- c(0.05, 0.01)</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Compute the exact quartile values for these levels from the <span class="math inline">\(t\)</span> distribution:</li>
+<li>Compute the exact quartile values for these levels from the <span class="math inline">\(t\)</span> distribution where <span class="math inline">\(k\)</span> = number of predictors(not including the intercept), <span class="math inline">\(n\)</span> = number of observations:</li>
 </ol>
 <pre class="r"><code>n &lt;-  nrow(gpa_1)
 k &lt;-  3
 df &lt;- n - k - 1
-t_critical = qt(p = (1 - prob/2), df = df)</code></pre>
+t_c = qt(p = (1 - prob/2), df = df)</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Compute the quartile values approximated from a normal distribution:</li>
 </ol>
-<pre class="r"><code>normal_critical = qnorm(1 - prob/2)</code></pre>
+<pre class="r"><code>normal_c = qnorm(1 - prob/2)</code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>The critical values for the <code>(Wooldridge::gpal)</code> data set:</li>
+<li>Show the critical values for the <code>(Wooldridge::gpal)</code> data set:</li>
 </ol>
 <pre class="r"><code>critical_df &lt;- data.frame(
   probability = c(&quot;5%&quot;, &quot;1%&quot;),
-  t = t_critical,
-  normal = normal_critical
+  t = t_c,
+  normal = normal_c
 )
 RplotterPkg::create_table(
   x = critical_df,
-  caption = &quot;Table 4.1 Critical $t$ Values&quot;,
-  head_bkgd = &quot;blue&quot;,
-  head_col = &quot;white&quot;,
-  position = &quot;left&quot;
+  caption = &quot;Table 4.1 Critical $t$ Values&quot;
 )</code></pre>
-<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 <center>
 <div style="font-weight:bold;font-size:20px; color:black">
@@ -314,13 +313,13 @@ Table 4.1 Critical <span class="math inline">\(t\)</span> Values
 </caption>
 <thead>
 <tr>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 probability
 </th>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 t
 </th>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 normal
 </th>
 </tr>
@@ -350,10 +349,9 @@ normal
 </tr>
 </tbody>
 </table>
-<div class="note">
-<p>Note: The critical values are nearly the same.</p>
+<div class="takeaway">
+Take Away: The critical values are nearly the same.
 </div>
-<p><br></p>
 <div class="task">
 <p>Task: Apply the OLS estimation to the model for GPA data and compare the <code>stats::summary()</code> results of the <span class="math inline">\(t\)</span> and <span class="math inline">\(p\)</span> test estimation with manually computed values.</p>
 </div>
@@ -389,34 +387,61 @@ summary(gpa_model)</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Extract the <span class="math inline">\(\hat{\beta}_{j}\)</span> coefficients from the model <em>gpa_model</em>:</li>
 </ol>
-<pre class="r"><code>coefficients_gpa &lt;- coef(gpa_model)
-dt &lt;- data.table(
-  B = names(coefficients_gpa),
-  v = coefficients_gpa
+<pre class="r"><code>coefficients_gpa &lt;- coef(gpa_model)</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Compute the standard errors <span class="math inline">\(se(\hat{\beta}_{j})\)</span> manually from the model <em>gpa_model</em> using <code>stats::vcov()</code>:</li>
+</ol>
+<pre class="r"><code>standard_errors_gpa &lt;- sqrt(diag(vcov(gpa_model)))</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>With the coefficients and their standard errors compute their <span class="math inline">\(t\)</span> statistics using <code>[4.4 Heiss page 103]</code> where the hypothetical value of the coefficient <span class="math inline">\(a_{j} = 0\)</span> is being tested ([4.1] above):</li>
+</ol>
+<pre class="r"><code>t_coefficients_gpa &lt;- coefficients_gpa/standard_errors_gpa</code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>Using the manually computed <span class="math inline">\(t\)</span> statistic for the coefficients, compute the <span class="math inline">\(p\)</span> values:</li>
+</ol>
+<pre class="r"><code>n &lt;-  nrow(gpa_1)
+k &lt;-  3
+df &lt;- n - k - 1
+p_coeficients_gpa &lt;- 2 * pt(-abs(t_coefficients_gpa), df = df)</code></pre>
+<ol start="7" style="list-style-type: decimal">
+<li>Show the results:</li>
+</ol>
+<pre class="r"><code>dt &lt;- data.table(
+  coef_n = names(t_coefficients_gpa),
+  coef_v = coefficients_gpa,
+  se = standard_errors_gpa,
+  t = t_coefficients_gpa,
+  p = p_coeficients_gpa
 )
 RplotterPkg::create_table(
   x = dt,
-  caption = &quot;OLS Coefficients&quot;,
-  col_names = c(&quot;Predictor&quot;, &quot;$\\hat{\\beta}_{j}$&quot;),
-  head_bkgd = &quot;blue&quot;,
-  head_col = &quot;white&quot;,
-  position = &quot;left&quot;
+  caption = &quot;Predictor values, $se$, $t$, $p$, statistics&quot;,
+  col_names = c(&quot;Predictor&quot;, &quot;$\\beta_{j}$&quot;, &quot;$se(\\hat{\\beta}_{j})$&quot;, &quot;$t(\\hat{\\beta}_{j})$&quot;, &quot;$p(\\hat{\\beta}_{j})$&quot;)
 )</code></pre>
-<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 <center>
 <div style="font-weight:bold;font-size:20px; color:black">
-OLS Coefficients
+Predictor values, <span class="math inline">\(se\)</span>, <span class="math inline">\(t\)</span>, <span class="math inline">\(p\)</span>, statistics
 </div>
 </center>
 </caption>
 <thead>
 <tr>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 Predictor
 </th>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-<span class="math inline">\(\hat{\beta}_{j}\)</span>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+<span class="math inline">\(\beta_{j}\)</span>
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+<span class="math inline">\(se(\hat{\beta}_{j})\)</span>
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+<span class="math inline">\(t(\hat{\beta}_{j})\)</span>
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+<span class="math inline">\(p(\hat{\beta}_{j})\)</span>
 </th>
 </tr>
 </thead>
@@ -428,216 +453,11 @@ Predictor
 <td>
 1.38955383
 </td>
-</tr>
-<tr>
-<td>
-hsGPA
-</td>
-<td>
-0.41181617
-</td>
-</tr>
-<tr>
-<td>
-ACT
-</td>
-<td>
-0.01472023
-</td>
-</tr>
-<tr>
-<td>
-skipped
-</td>
-<td>
--0.08311314
-</td>
-</tr>
-</tbody>
-</table>
-<ol start="4" style="list-style-type: decimal">
-<li>Compute the standard errors <span class="math inline">\(se(\hat{\beta}_{j})\)</span> manually from the model <em>gpa_model</em> using <code>stats::vcov()</code>:</li>
-</ol>
-<pre class="r"><code>standard_errors_gpa &lt;- sqrt(diag(vcov(gpa_model)))
-dt &lt;- data.table(
-  B = names(standard_errors_gpa),
-  V = standard_errors_gpa
-)
-RplotterPkg::create_table(
-  x = dt,
-  caption = &quot;Standard Errors&quot;,
-  col_names = c(&quot;Predictor&quot;, &quot;$se(\\hat{\\beta}_{j})$&quot;),
-  head_bkgd = &quot;blue&quot;,
-  head_col = &quot;white&quot;,
-  position = &quot;left&quot;
-)</code></pre>
-<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
-<caption>
-<center>
-<div style="font-weight:bold;font-size:20px; color:black">
-Standard Errors
-</div>
-</center>
-</caption>
-<thead>
-<tr>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-Predictor
-</th>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-<span class="math inline">\(se(\hat{\beta}_{j})\)</span>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-(Intercept)
-</td>
 <td>
 0.33155354
 </td>
-</tr>
-<tr>
-<td>
-hsGPA
-</td>
-<td>
-0.09367422
-</td>
-</tr>
-<tr>
-<td>
-ACT
-</td>
-<td>
-0.01056487
-</td>
-</tr>
-<tr>
-<td>
-skipped
-</td>
-<td>
-0.02599853
-</td>
-</tr>
-</tbody>
-</table>
-<ol start="5" style="list-style-type: decimal">
-<li>With the coefficients and their standard errors compute their <span class="math inline">\(t\)</span> statistics using equation [Heiss, 4.4] where the hypothetical value of the coefficient <span class="math inline">\(a_{j} = 0\)</span> is being tested ([Heiss, 4.1]):</li>
-</ol>
-<pre class="r"><code>t_coefficients_gpa &lt;- coefficients_gpa/standard_errors_gpa
-dt &lt;- data.table(
-  B = names(t_coefficients_gpa),
-  V = t_coefficients_gpa
-)
-RplotterPkg::create_table(
-  x = dt,
-  caption = &quot;$t$ statistic&quot;,
-  col_names = c(&quot;Predictor&quot;, &quot;$t(\\hat{\\beta}_{j})$&quot;),
-  head_bkgd = &quot;blue&quot;,
-  head_col = &quot;white&quot;,
-  position = &quot;left&quot;
-)</code></pre>
-<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
-<caption>
-<center>
-<div style="font-weight:bold;font-size:20px; color:black">
-<span class="math inline">\(t\)</span> statistic
-</div>
-</center>
-</caption>
-<thead>
-<tr>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-Predictor
-</th>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-<span class="math inline">\(t(\hat{\beta}_{j})\)</span>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-(Intercept)
-</td>
 <td>
 4.191039
-</td>
-</tr>
-<tr>
-<td>
-hsGPA
-</td>
-<td>
-4.396260
-</td>
-</tr>
-<tr>
-<td>
-ACT
-</td>
-<td>
-1.393319
-</td>
-</tr>
-<tr>
-<td>
-skipped
-</td>
-<td>
--3.196840
-</td>
-</tr>
-</tbody>
-</table>
-<div class="note">
-<p>Note: The <span class="math inline">\(t\)</span> values for all the coefficients except <span class="math inline">\(\hat{\beta}_{act}\)</span> are larger in absolute value than the critical <span class="math inline">\(t\)</span> values in Table 4.1 <strong>Critical</strong> <span class="math inline">\(t\)</span> Values above. So we would reject <span class="math inline">\(H_{0}\)</span> for all the usual significance levels.</p>
-</div>
-<p><br></p>
-<ol start="6" style="list-style-type: decimal">
-<li>Using the manually computed <span class="math inline">\(t\)</span> statistic for the coefficients, compute the <span class="math inline">\(p\)</span> values:</li>
-</ol>
-<pre class="r"><code>n &lt;-  nrow(gpa_1)
-k &lt;-  3
-degFree &lt;- n - k - 1
-p_coeficients_gpa &lt;- 2 * pt(-abs(t_coefficients_gpa), df = degFree)
-dt &lt;- data.table(
-  B = names(p_coeficients_gpa),
-  V = p_coeficients_gpa
-)
-RplotterPkg::create_table(
-  x = dt,
-  caption = &quot;$p$ values&quot;,
-  col_names = c(&quot;Predictor&quot;, &quot;$p(\\hat{\\beta}_{j})$&quot;),
-  head_bkgd = &quot;blue&quot;,
-  head_col = &quot;white&quot;,
-  position = &quot;left&quot;
-)</code></pre>
-<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
-<caption>
-<center>
-<div style="font-weight:bold;font-size:20px; color:black">
-<span class="math inline">\(p\)</span> values
-</div>
-</center>
-</caption>
-<thead>
-<tr>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-Predictor
-</th>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-<span class="math inline">\(p(\hat{\beta}_{j})\)</span>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-(Intercept)
 </td>
 <td>
 4.950269e-05
@@ -648,12 +468,30 @@ Predictor
 hsGPA
 </td>
 <td>
+0.41181617
+</td>
+<td>
+0.09367422
+</td>
+<td>
+4.396260
+</td>
+<td>
 2.192050e-05
 </td>
 </tr>
 <tr>
 <td>
 ACT
+</td>
+<td>
+0.01472023
+</td>
+<td>
+0.01056487
+</td>
+<td>
+1.393319
 </td>
 <td>
 1.657799e-01
@@ -664,44 +502,45 @@ ACT
 skipped
 </td>
 <td>
+-0.08311314
+</td>
+<td>
+0.02599853
+</td>
+<td>
+-3.196840
+</td>
+<td>
 1.725431e-03
 </td>
 </tr>
 </tbody>
 </table>
-<div class="note">
-<p>Note: Compare the manual values to those computed from the above <code>stats::summary()</code>.</p>
+<div class="takeaway">
+Take Away: The <span class="math inline">\(t\)</span> values for all the coefficients except <span class="math inline">\(\hat{\beta}_{act}\)</span> are larger in absolute value than the critical <span class="math inline">\(t\)</span> values in <strong>Table 4.1 Critical <span class="math inline">\(t\)</span> Values</strong> above. So we would reject <span class="math inline">\(H_{0}\)</span> for all the usual significance levels.
 </div>
 </div>
 <div id="other-hypotheses" class="section level3">
 <h3>4.1.3 Other hypotheses</h3>
-<p>Although <span class="math inline">\(H_{0}: \beta_{j} = 0\)</span> is the most common null hypothesis, we sometimes want to test whether <span class="math inline">\(\beta_{j}\)</span> is equal to some other given constant. Two common examples are <span class="math inline">\(\beta_{i} = 1\)</span> and <span class="math inline">\(\beta_{j} = -1\)</span>. <code>(Wooldride, Example 4.4, page 116)</code> considers a simple model of campus crime regressed on student enrollment. The hypothesis is <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span>. This means that a 1% increase in enrollment results in a 1% increase in campus crime. The alternative hypothesis is <span class="math inline">\(H_{1}: \beta_{enroll} &gt; 1\)</span>, which implies that a 1% increase in enrollment increases crime by MORE than 1%.</p>
+We are skipping Heiss’ “Hourly Wage Equation” page 107 and going to Wooldridge’s Example 4.4 page 116 “Campus Crime and Enrollment”.
+</div>
+<p>Although <span class="math inline">\(H_{0}: \beta_{j} = 0\)</span> is the most common null hypothesis, we sometimes want to test whether <span class="math inline">\(\beta_{j}\)</span> is equal to some other given constant. Two common examples are <span class="math inline">\(\beta_{i} = 1\)</span> and <span class="math inline">\(\beta_{j} = -1\)</span>. <code>(Wooldride, Example 4.4, page 116)</code> considers a simple model of campus crime regressed on student enrollment. The hypothesis is <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span>. This means that a 1% increase in enrollment results in a 1% increase in campus crime. The alternative hypothesis is <span class="math inline">\(H_{1}: \beta_{enroll} &gt; 1\)</span>, which implies that a 1% increase in enrollment increases crime by <strong>MORE</strong> than 1%.</p>
 <div class="task">
 <p>Task: Perform a <span class="math inline">\(t\)</span> test on the enrollment parameter and investigate the alternative hypothesis that <span class="math inline">\(\beta_{enroll} &gt; 1\)</span>.</p>
 </div>
 <ol style="list-style-type: decimal">
 <li>Read in the data:</li>
 </ol>
-<pre class="r"><code>campus_crime &lt;- data.table::setDT(wooldridge::campus)
-str(campus_crime)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   97 obs. of  7 variables:
-##  $ enroll : num  21836 6485 2123 8240 19793 ...
-##  $ priv   : int  0 0 0 0 0 1 0 0 1 0 ...
-##  $ police : int  24 13 3 17 30 9 20 44 7 18 ...
-##  $ crime  : int  446 1 1 121 470 25 67 1327 43 484 ...
-##  $ lcrime : num  6.1 0 0 4.8 6.15 ...
-##  $ lenroll: num  9.99 8.78 7.66 9.02 9.89 ...
-##  $ lpolice: num  3.18 2.56 1.1 2.83 3.4 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<pre class="r"><code>crime_dt &lt;- data.table::setDT(wooldridge::campus)
+crime_dt &lt;- crime_dt[, .(crime, enroll)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Construct the OLS model estimate:</li>
 </ol>
-<pre class="r"><code>campus_crime_model &lt;- lm(log(crime) ~ log(enroll), data = campus_crime)
-summary(campus_crime_model)</code></pre>
+<pre class="r"><code>crime_model &lt;- lm(log(crime) ~ log(enroll), data = crime_dt)
+summary(crime_model)</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = log(crime) ~ log(enroll), data = campus_crime)
+## lm(formula = log(crime) ~ log(enroll), data = crime_dt)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
@@ -718,249 +557,75 @@ summary(campus_crime_model)</code></pre>
 ## Multiple R-squared:  0.5848, Adjusted R-squared:  0.5804 
 ## F-statistic: 133.8 on 1 and 95 DF,  p-value: &lt; 2.2e-16</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Compute the variance <span class="math inline">\(\hat{\sigma}^2\)</span> of the individual errors terms <span class="math inline">\(\mu_{i}\)</span> or standard error of the regression (SER). See <code>(Wooldridge, Equation 2.61, page 49)</code> and <code>(Heiss, Equation 2.14, page 82)</code>:</li>
+<li>Compute the unbiased variance <span class="math inline">\(\hat{\sigma}^2\)</span> of the individual errors terms <span class="math inline">\(\mu_{i}\)</span> (its square root is also called the <strong>Residual standard error</strong> in the above summary. See <code>(2.61 Wooldridge page 49)</code> and <code>(2.14 Heiss page 82)</code>.</li>
 </ol>
-<pre class="r"><code>n &lt;- nobs(campus_crime_model)
-k &lt;- 1
-mu &lt;- stats::resid(campus_crime_model)
-ser &lt;- sqrt((n-1)/(n-2) * stats::var(mu))</code></pre>
-<p>The standard error of the regression = 0.8946379. Note that this is labeled in the summary above as “Residual standard error:”.</p>
+<p>Note that from equation 2.14 there are two ways of estimating <span class="math inline">\(\hat{\sigma}^2\)</span>:</p>
+<ol style="list-style-type: lower-alpha">
+<li>By computing the variance of the residuals <span class="math inline">\(\mu_{i}\)</span>:</li>
+</ol>
+<pre class="r"><code>n &lt;- nrow(crime_dt)
+mu_i_v &lt;- stats::resid(crime_model)
+var_mu &lt;- stats::var(mu_i_v)
+rse_1 &lt;- sqrt((n - 1)*var_mu/(n - 2))
+rse_1</code></pre>
+<pre><code>## [1] 0.8946379</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>By summing the squares of <span class="math inline">\(\mu_{i}\)</span>:</li>
+</ol>
+<pre class="r"><code>n &lt;- nrow(crime_dt)
+mu_i_mt &lt;- as.matrix(stats::resid(crime_model))
+sum_sq_mu &lt;- sum(t(mu_i_mt) %*% mu_i_mt)
+rse_2 &lt;- sqrt(sum_sq_mu/(n - 2))
+rse_2</code></pre>
+<pre><code>## [1] 0.8946379</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Compute the the standard error for the estimated parameter <span class="math inline">\(\hat{\beta}_{enroll}\)</span>. See <code>(Wooldridge, Equation 2.57, page 47)</code> and <code>(Heiss, Equation 2.16, page 82)</code>:</li>
+<li>Compute the the standard error for the estimated parameter <span class="math inline">\(\hat{\beta}_{enroll}\)</span>. See <code>(2.57 Wooldridge page 47)</code> and <code>(2.16 Heiss page 82)</code>:</li>
 </ol>
-<pre class="r"><code>coef_enroll_se &lt;- 1/sqrt(n-1) * ser/stats::sd(log(campus_crime$enroll))</code></pre>
-<p><span class="math inline">\(\hat{\beta}_{enroll}\)</span> standard error = 0.109776</p>
+<pre class="r"><code>n &lt;- nrow(crime_dt)
+enroll_sd &lt;- stats::sd(log(crime_dt$enroll))
+beta_enroll_se &lt;- rse_1/(sqrt(n - 1) * enroll_sd)</code></pre>
+<p><span class="math inline">\(se(\hat{\beta}_{enroll})\)</span> = 0.109776</p>
 <ol start="5" style="list-style-type: decimal">
-<li>Compute the <span class="math inline">\(t\)</span> statistic for <span class="math inline">\(\hat{\beta}_{enroll}\)</span> using equation [Heiss, 4.4]:</li>
+<li>Compute the <span class="math inline">\(t\)</span> statistic <span class="math inline">\(\frac{\hat{\beta}_{enroll} - 1}{se(\hat{\beta}_{enroll})}\)</span>. See <code>(4.13 Wooldridge page 116)</code> and <code>(4.4 Heiss page 103)</code>:</li>
 </ol>
-<pre class="r"><code>t_enroll &lt;- (1.27 - 1)/coef_enroll_se</code></pre>
-<p><span class="math inline">\(\hat{\beta}_{enroll}\)</span> <span class="math inline">\(t\)</span> value = 2.4595538</p>
+<pre class="r"><code>beta_enroll &lt;- coef(crime_model)[[&quot;log(enroll)&quot;]]
+t_enroll &lt;- (beta_enroll - 1)/beta_enroll_se</code></pre>
+<p><span class="math inline">\(\hat{\beta}_{enroll}\)</span> <span class="math inline">\(t\)</span> value = 2.4573708</p>
 <ol start="6" style="list-style-type: decimal">
 <li>Compute the one-sided 5% critical value for the <span class="math inline">\(t\)</span> distribution:</li>
 </ol>
-<pre class="r"><code>c_95 &lt;- stats::qt(p = .95, df = n-k-1)</code></pre>
+<pre class="r"><code>n &lt;- nrow(crime_dt)
+k &lt;- 1
+c_95 &lt;- stats::qt(p = .95, df = n - k - 1)</code></pre>
 <p>One-sided critical <span class="math inline">\(t\)</span> value at the 95% probability level = 1.6610518</p>
-<div class="note">
-<p>Note: With the <span class="math inline">\(t\)</span> statistic for <span class="math inline">\(\hat{\beta}_{enroll}\)</span> greater than the critical <span class="math inline">\(t\)</span> value, we reject the null hypothesis <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span></p>
+<div class="takeaway">
+Take Away: With the <span class="math inline">\(t\)</span> statistic for <span class="math inline">\(\hat{\beta}_{enroll}\)</span> greater than the critical <span class="math inline">\(t\)</span> value, we reject the null hypothesis <span class="math inline">\(H_{0}: \beta_{enroll} = 1\)</span>
 </div>
-<p><br></p>
-<div class="task">
-<p>Task: Test the effect of job training on scrap rates from the <code>(Wooldridge::jtrain)</code> data set. See <code>(Wooldridge, Example 4.7, page 121)</code></p>
-</div>
-<ol style="list-style-type: decimal">
-<li>Read in the data:</li>
-</ol>
-<pre class="r"><code>jtrain &lt;- data.table::setDT(wooldridge::jtrain)
-jtrain_1987 &lt;- jtrain[year == 1987 &amp; union == 0]
-str(jtrain_1987)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   126 obs. of  30 variables:
-##  $ year    : int  1987 1987 1987 1987 1987 1987 1987 1987 1987 1987 ...
-##  $ fcode   : num  410032 410440 410495 410500 410501 ...
-##  $ employ  : int  100 12 20 200 NA NA 15 48 17 70 ...
-##  $ sales   : num  47000000 1560000 750000 23741000 6000000 ...
-##  $ avgsal  : num  35000 10500 17680 13729 NA ...
-##  $ scrap   : num  NA NA NA NA NA ...
-##  $ rework  : num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ tothrs  : int  12 12 50 0 0 0 0 14 150 40 ...
-##  $ union   : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ grant   : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ d89     : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ d88     : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ totrain : int  100 12 15 0 10 0 0 3 5 35 ...
-##  $ hrsemp  : num  12 12 37.5 0 NA ...
-##  $ lscrap  : num  NA NA NA NA NA ...
-##  $ lemploy : num  4.61 2.48 3 5.3 NA ...
-##  $ lsales  : num  17.7 14.3 13.5 17 15.6 ...
-##  $ lrework : num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ lhrsemp : num  2.56 2.56 3.65 0 NA ...
-##  $ lscrap_1: num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ grant_1 : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ clscrap : num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ cgrant  : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ clemploy: num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ clsales : num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ lavgsal : num  10.46 9.26 9.78 9.53 NA ...
-##  $ clavgsal: num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ cgrant_1: int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ chrsemp : num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ clhrsemp: num  NA NA NA NA NA NA NA NA NA NA ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Estimate the OLS parameters for the model <em>scrap</em> = scrap rate <em>hrsemp</em> = annual hours of training per employee <em>sales</em> = annual firm sales in dollars <em>employ</em> = number of firm employees</li>
-</ol>
-<pre class="r"><code>jtrain_model &lt;- lm(log(scrap) ~ hrsemp + log(sales) + log(employ), data = jtrain_1987)
-summary(jtrain_model)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = log(scrap) ~ hrsemp + log(sales) + log(employ), 
-##     data = jtrain_1987)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -2.6301 -0.7523 -0.4016  0.8697  2.8273 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept) 12.45837    5.68677   2.191   0.0380 *
-## hrsemp      -0.02927    0.02280  -1.283   0.2111  
-## log(sales)  -0.96203    0.45252  -2.126   0.0436 *
-## log(employ)  0.76147    0.40743   1.869   0.0734 .
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 1.376 on 25 degrees of freedom
-##   (97 observations deleted due to missingness)
-## Multiple R-squared:  0.2624, Adjusted R-squared:  0.1739 
-## F-statistic: 2.965 on 3 and 25 DF,  p-value: 0.05134</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Compute the standard error of the regression (SER):</li>
-</ol>
-<pre class="r"><code>n &lt;- nobs(jtrain_model)
-k &lt;- 4
-mu &lt;- stats::resid(jtrain_model)
-ser &lt;- sqrt((n-1)/(n-2) * stats::var(mu)) </code></pre>
-<p>SER = 1.3240918</p>
-<ol start="4" style="list-style-type: decimal">
-<li>Create a matrix of predictor values and add a column of ones for the intercept (showing the first 6 rows):</li>
-</ol>
-<pre class="r"><code>predict_mat &lt;- cbind(1, jtrain_model$model$hrsemp, jtrain_model$model$`log(sales)`, jtrain_model$model$`log(employ)`)
-colnames(predict_mat) &lt;- names(coef(jtrain_model))
-head(predict_mat)</code></pre>
-<pre><code>##      (Intercept)    hrsemp log(sales) log(employ)
-## [1,]           1 20.000000   15.89495    4.248495
-## [2,]           1  6.857143   14.55820    2.639057
-## [3,]           1  0.000000   14.91412    3.688879
-## [4,]           1  1.200000   15.37366    4.317488
-## [5,]           1  0.000000   15.06827    1.609438
-## [6,]           1 10.000000   13.80586    2.079442</code></pre>
-<ol start="5" style="list-style-type: decimal">
-<li>Compute the variance-covariance matrix according to `(Wooldridge, Theorem E.2, page 724):</li>
-</ol>
-<pre class="r"><code>jtrain_var_cov &lt;- ser^2 * solve(t(predict_mat) %*% predict_mat)
-jtrain_var_cov</code></pre>
-<pre><code>##             (Intercept)        hrsemp   log(sales)  log(employ)
-## (Intercept) 29.94385903  0.0330014651 -2.352337625  1.474507125
-## hrsemp       0.03300147  0.0004815376 -0.002997974  0.002333821
-## log(sales)  -2.35233762 -0.0029979742  0.189604382 -0.134740169
-## log(employ)  1.47450713  0.0023338212 -0.134740169  0.153705149</code></pre>
-<ol start="6" style="list-style-type: decimal">
-<li>The standard errors of <span class="math inline">\(\hat{\beta}_{j}\)</span> are the square roots of the main diagonal of the variance-covariance matrix <em>jtrain_var_cov</em>:</li>
-</ol>
-<pre class="r"><code>jtrain_se &lt;- sqrt(diag(jtrain_var_cov))
-names(jtrain_se) &lt;- names(coef(jtrain_model))
- 
-RplotterPkg::create_table(
-  x = data.frame(Coefficient = names(jtrain_se), se = jtrain_se),
-  caption = &quot;Standard Errors&quot;,
-  col_names = c(&quot;Coefficient&quot;, &quot;se($\\hat{\\beta}_{j}$)&quot;),
-  head_bkgd = &quot;blue&quot;,
-  head_col = &quot;white&quot;,
-  position = &quot;left&quot;
-)</code></pre>
-<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; ">
-<caption>
-<center>
-<div style="font-weight:bold;font-size:20px; color:black">
-Standard Errors
-</div>
-</center>
-</caption>
-<thead>
-<tr>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-Coefficient
-</th>
-<th style="font-weight: bold;color: white !important;background-color: blue !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-se(<span class="math inline">\(\hat{\beta}_{j}\)</span>)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-(Intercept)
-</td>
-<td>
-5.47209823
-</td>
-</tr>
-<tr>
-<td>
-hrsemp
-</td>
-<td>
-0.02194396
-</td>
-</tr>
-<tr>
-<td>
-log(sales)
-</td>
-<td>
-0.43543585
-</td>
-</tr>
-<tr>
-<td>
-log(employ)
-</td>
-<td>
-0.39205248
-</td>
-</tr>
-</tbody>
-</table>
-<ol start="7" style="list-style-type: decimal">
-<li>Compute the <span class="math inline">\(t\)</span> statistic for <em>hrsemp</em>:</li>
-</ol>
-<pre class="r"><code>t_hrsemp &lt;- coef(jtrain_model)[[&quot;hrsemp&quot;]]/jtrain_se[[&quot;hrsemp&quot;]]</code></pre>
-<p>The <span class="math inline">\(t\)</span> statistic for <em>hrsemp</em> is -1.3338033</p>
-<ol start="8" style="list-style-type: decimal">
-<li>Compute the critical <span class="math inline">\(t\)</span> statistic for the alternative hypothesis <span class="math inline">\(H_{1}: \beta_{hrsemp} &lt; 0\)</span> at the 5% probability:</li>
-</ol>
-<pre class="r"><code>t_5 &lt;- qt(p = 0.05, df = n-k)</code></pre>
-<p>The critical <span class="math inline">\(t\)</span> statistic at 5% probability value is -1.7081408</p>
-<div class="note">
-<p>Note: Since the <span class="math inline">\(t\)</span> statistic for <em>hrsemp</em> does not fall beyond the critical <span class="math inline">\(t\)</span> value, we conclude that the coefficient value is not statistically significant.</p>
-</div>
-<p><br></p>
 </div>
 </div>
 <div id="confidence-intervals" class="section level2">
 <h2>4.2 Confidence Intervals</h2>
-<p>By <code>(Wooldridge, Equation 4.16, page 123)</code> confidence intervals for the regression parameters are:</p>
+<p>By <code>(4.16 Wooldridge page 123)</code> and <code>(4.8 Heiss page 108)</code> confidence intervals for the regression parameters are:</p>
 <center>
-<p><span class="math inline">\(\hat{\beta}_{j} \pm c \cdot se(\hat{\beta}_{j})\)</span><span style="float:right;">[Heiss 4.8]</span></p>
+<span class="math inline">\(\hat{\beta}_{j} \pm c \cdot se(\hat{\beta}_{j})\)</span><span style="float:right;">[4.8 Heiss page 108]</span>
 </center>
 <p>where <span class="math inline">\(c\)</span> is the critical value for the two-sided <span class="math inline">\(t\)</span> test at a 5% or 1% significance level.</p>
 <div class="task">
-<p>Task: Using the <code>wooldridge::rdchem</code> data set compute the 5% confidence intervals for the regression variables (<code>Wooldridge, Example 4.8, page 123)</code>.</p>
+<p>Task: Using the <code>wooldridge::rdchem</code> data set manually compute the 5% confidence intervals for the regression variables of an OLS model.(<code>Example 4.8 Wooldridge page 123)</code>.</p>
 </div>
 <ol style="list-style-type: decimal">
 <li>Read in the data:</li>
 </ol>
-<pre class="r"><code>rdchem &lt;- data.table::setDT(wooldridge::rdchem)
-str(rdchem)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   32 obs. of  8 variables:
-##  $ rd      : num  430.6 59 23.5 3.5 1.7 ...
-##  $ sales   : num  4570 2830 597 134 42 ...
-##  $ profits : num  186.9 467 107.4 -4.3 8 ...
-##  $ rdintens: num  9.42 2.08 3.94 2.62 4.05 ...
-##  $ profmarg: num  4.09 16.5 18 -3.22 19.05 ...
-##  $ salessq : num  20886730 8008900 356170 17849 1764 ...
-##  $ lsales  : num  8.43 7.95 6.39 4.89 3.74 ...
-##  $ lrd     : num  6.065 4.078 3.157 1.253 0.531 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<pre class="r"><code>rdchem_dt &lt;- data.table::setDT(wooldridge::rdchem)
+rdchem_dt &lt;- rdchem_dt[, .(rd, sales, profmarg)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Estimate an OLS model that regresses <em>rd</em> with <em>sales</em> and <em>profmarg</em>:</li>
 </ol>
-<pre class="r"><code>rdchem_model &lt;- lm(log(rd) ~ log(sales) + profmarg, data = rdchem)
+<pre class="r"><code>rdchem_model &lt;- lm(log(rd) ~ log(sales) + profmarg, data = rdchem_dt)
 summary(rdchem_model)</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = log(rd) ~ log(sales) + profmarg, data = rdchem)
+## lm(formula = log(rd) ~ log(sales) + profmarg, data = rdchem_dt)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
@@ -978,64 +643,85 @@ summary(rdchem_model)</code></pre>
 ## Multiple R-squared:  0.918,  Adjusted R-squared:  0.9123 
 ## F-statistic: 162.2 on 2 and 29 DF,  p-value: &lt; 2.2e-16</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Compute the standard errors of the coefficients:</li>
+<li>Compute the residual standard error <span class="math inline">\(\hat{\sigma}^2\)</span>:</li>
 </ol>
-<pre class="r"><code>n = nobs(rdchem_model)
-k = 3
-mu &lt;- stats::resid(rdchem_model) # rdchem_model residuals
-ser &lt;- sqrt((n-1)/(n-2) * stats::var(mu)) # standard error of the regression
-X &lt;- cbind(1, rdchem_model$model$`log(sales)`, rdchem_model$model$profmarg)
-rdchem_var_cov &lt;- ser^2 * solve(t(X) %*% X) # variance-covariance matrix of coefficients
-rdchem_se &lt;- sqrt(diag(rdchem_var_cov))
-names(rdchem_se) = names(coef(rdchem_model))</code></pre>
-<p>The standard errors for the coefficients are: 0.460152, 0.0591833, 0.0125678</p>
+<pre class="r"><code># number of observations
+n = nrow(rdchem_dt)
+# the models residuals
+mu_i_v &lt;- stats::resid(rdchem_model) 
+# the variance of mu_i_v
+var_mu &lt;- stats::var(mu_i_v)
+# the residual standard error
+sigma_hat &lt;- sqrt((n - 1)*var_mu/(n - 2))</code></pre>
 <ol start="4" style="list-style-type: decimal">
+<li>Compute the variance-covariance matrix of the predictors <span class="math inline">\(Var(\hat{\beta_{j}}|X)\)</span>. See <code>(E.14 Wooldridge page 724)</code> and <code>(3.5 Heiss page 96)</code>.</li>
+</ol>
+<pre class="r"><code># create predictor matrix
+X &lt;- cbind(1, rdchem_model$model$`log(sales)`, rdchem_model$model$profmarg)
+beta_var_cov &lt;- sigma_hat^2 * solve(t(X) %*% X)</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Compute the <span class="math inline">\(se(\hat{\beta}_{j})\)</span>:</li>
+</ol>
+<pre class="r"><code>beta_se &lt;- sqrt(diag(beta_var_cov))
+names(beta_se) = names(coef(rdchem_model))</code></pre>
+<p>The standard errors for the coefficients are: 0.460152, 0.0591833, 0.0125678</p>
+<ol start="6" style="list-style-type: decimal">
 <li>Considering the <em>sales</em> coefficient, from a two-sided <span class="math inline">\(t\)</span> test compute the critical <span class="math inline">\(t\)</span> statistic (<span class="math inline">\(c\)</span> in Equation [4.8] above) at the 97.5% level of probability:</li>
 </ol>
-<pre class="r"><code>c_975 &lt;- stats::qt(p = 0.975, df = n - k - 1)</code></pre>
-<p>The critical two-sided <span class="math inline">\(t\)</span> value at the 97.5% probability is 2.0484071</p>
-<ol start="5" style="list-style-type: decimal">
+<pre class="r"><code>n = nrow(rdchem_dt)
+k = 2
+c_975 &lt;- stats::qt(p = 0.975, df = n - k - 1)</code></pre>
+<p>The critical two-sided <span class="math inline">\(t\)</span> value at the 97.5% probability is 2.0452296</p>
+<ol start="7" style="list-style-type: decimal">
 <li>Using equation [4.8] above, compute the confidence intervals for the <em>sales</em> coefficient <span class="math inline">\(\beta_{log(sales)}\)</span>:</li>
 </ol>
-<pre class="r"><code>sales_upper_ci &lt;- coef(rdchem_model)[[&quot;log(sales)&quot;]] + c_975 * rdchem_se[[&quot;log(sales)&quot;]]
-sales_lower_ci &lt;- coef(rdchem_model)[[&quot;log(sales)&quot;]] - c_975 * rdchem_se[[&quot;log(sales)&quot;]]</code></pre>
-<p>The lower/upper confidence values for <span class="math inline">\(\beta_{log(sales)}\)</span> are 0.9629885 and 1.2054513</p>
-<ol start="6" style="list-style-type: decimal">
+<pre class="r"><code>sales_upper_ci &lt;- coef(rdchem_model)[[&quot;log(sales)&quot;]] + c_975 * beta_se[[&quot;log(sales)&quot;]]
+sales_lower_ci &lt;- coef(rdchem_model)[[&quot;log(sales)&quot;]] - c_975 * beta_se[[&quot;log(sales)&quot;]]</code></pre>
+<p>The lower/upper confidence values for <span class="math inline">\(\beta_{log(sales)}\)</span> are 0.9631765 and 1.2052632</p>
+<ol start="8" style="list-style-type: decimal">
 <li>Using equation [4.8] above, compute the confidence intervals for the <em>profmarg</em> coefficient <span class="math inline">\(\beta_{profmarg}\)</span>:</li>
 </ol>
-<pre class="r"><code>profmarg_upper_ci &lt;- coef(rdchem_model)[[&quot;profmarg&quot;]] + c_975 * rdchem_se[[&quot;profmarg&quot;]]
-profmarg_lower_ci &lt;- coef(rdchem_model)[[&quot;profmarg&quot;]] - c_975 * rdchem_se[[&quot;profmarg&quot;]]</code></pre>
-<p>The lower/upper confidence values for <span class="math inline">\(\beta_{profmarg}\)</span> are -0.0040882 and 0.0473996</p>
+<pre class="r"><code>profmarg_upper_ci &lt;- coef(rdchem_model)[[&quot;profmarg&quot;]] + c_975 * beta_se[[&quot;profmarg&quot;]]
+profmarg_lower_ci &lt;- coef(rdchem_model)[[&quot;profmarg&quot;]] - c_975 * beta_se[[&quot;profmarg&quot;]]</code></pre>
+<p>The lower/upper confidence values for <span class="math inline">\(\beta_{profmarg}\)</span> are -0.0040483 and 0.0473597</p>
 </div>
-<div id="a-testing-hypotheses-involving-more-than-one-coefficient" class="section level2">
-<h2>4.3a Testing hypotheses involving more than one coefficient</h2>
-<p><code>(Wooldridge, sections 4.4 and 4.5, page 124 - 136)</code> discusses more general tests than those for the null hypotheses in Equation [Heiss 4.1] above.</p>
+<div id="a-testing-hypotheses-involving-a-pair-of-coefficient" class="section level2">
+<h2>4.3a Testing hypotheses involving a pair of coefficient</h2>
+<p>Wooldridge, sections 4.4 and 4.5, page 124 - 136 discusses more general tests than those for the null hypotheses in Equation [4.1] above.</p>
+<p>This section will consider hypotheses involving a pair predictors which Heiss does not include. We will return to following Heiss in the next section <code>(4.3b Linear Restrictions: $F$ Tests)</code> for testing multiple predictors.</p>
 <div class="task">
-<p>Task: Follow the example in <code>(Wooldridge, sections 4.4, page 124)</code> for testing a single hypotheses on a combination of <span class="math inline">\(\hat{\beta}_{j}\)</span>. Use the <code>wooldridge::twoyear</code> data set and test the null hypothesis for the difference in two coefficients.</p>
+<p>Task: Follow the example in <code>(Wooldridge, sections 4.4, page 124)</code> for testing a single hypothesis on a pair of <span class="math inline">\(\hat{\beta}_{j}\)</span>. Use the <code>wooldridge::twoyear</code> data set and test the null hypothesis for the difference in two coefficients.</p>
 </div>
-The example’s OLS model is the following: <span class="math display">\[log(wage) = \beta_{intercept} + \beta_{jc} + \beta_{univ} + \beta_{exper} + \mu\]</span> The hypothesis of interest is whether one year at a junior college is worth one year at a university:
+<p>The example’s full OLS model is the following:</p>
 <center>
-<span class="math inline">\(H_{0}: \beta_{jc} = \beta_{univ}\)</span><span style="float:right;">[Wooldridge 4.18]</span>
+<span class="math inline">\(log(wage) = \beta_{0} + \beta_{1}jc + \beta_{2}univ + \beta_{3}exper + \mu\)</span><span style="float:right;">[4.17 Wooldridge page 124]</span>
 </center>
-<p>Under <span class="math inline">\(H_{0}\)</span>, another year at a junior college and another year at a university lead to the same percentage increase in <em>wage</em>.</p>
+<p><br></p>
+<p>The hypothesis of interest is whether one year at a junior college is worth one year at a university. Under <span class="math inline">\(H_{0}\)</span>, another year at a junior college and another year at a university lead to the same percentage increase in <em>wage</em>.</p>
+<center>
+<span class="math inline">\(H_{0}: \beta_{1} = \beta_{2}\)</span><span style="float:right;">[4.18 Wooldridge page 125]</span>
+</center>
+<p><br></p>
 The alternative hypothesis is that a year at a junior college is worth less than a year at a university:
 <center>
-<span class="math inline">\(H_{1}: \beta_{jc} &lt; \beta_{univ}\)</span><span style="float:right;">[Wooldridge 4.19]</span>
+<span class="math inline">\(H_{1}: \beta_{1} &lt; \beta_{2}\)</span><span style="float:right;">[4.19 Wooldridge page 125]</span>
 </center>
-<div id="alternative-1" class="section level3">
-<h3>Alternative 1</h3>
-<p>We now have two parameters <span class="math inline">\(\beta_{jc}\)</span> and <span class="math inline">\(\beta_{univ}\)</span> in the null hypothesis. Wooldridge rewrites this hypothesis to follow the form in Equation [Heiss 4.1] above as: <span class="math display">\[H_{0}: \beta_{jc} - \beta_{univ} = 0\]</span> and the hypothesis alternative: <span class="math display">\[H_{1}: \beta_{jc} - \beta_{univ} &lt; 0\]</span> Following Equation [Wooldridge 4.13] above, we can now estimate our <span class="math inline">\(t\)</span>-statistic as:</p>
+<div id="alternative-analysis-1" class="section level3">
+<h3>Alternative analysis 1</h3>
+<p>We now have two parameters <span class="math inline">\(\beta_{1}\)</span> and <span class="math inline">\(\beta_{2}\)</span> in the null hypothesis. Wooldridge rewrites this hypothesis to follow the form in Equation 4.1 above as: <span class="math display">\[H_{0}: \beta_{1} - \beta_{2} = 0\]</span> and the hypothesis alternative: <span class="math display">\[H_{1}: \beta_{1} - \beta_{2} &lt; 0\]</span> Following Equation 4.13 above, we can now estimate our <span class="math inline">\(t\)</span>-statistic as:</p>
 <center>
-<span class="math inline">\(t = \frac{\hat{\beta}_{jc} - \hat{\beta}_{univ}}{se(\hat{\beta}_{jc} - \hat{\beta}_{univ})}\)</span><span style="float:right;">[Wooldridge 4.20]</span>
+<span class="math inline">\(t = \frac{\hat{\beta}_{1} - \hat{\beta}_{2}}{se(\hat{\beta}_{1} - \hat{\beta}_{2})}\)</span><span style="float:right;">[4.20 Wooldridge page 125]</span>
 </center>
-<p>The question is how we estimate the standard error in the denominator of [Wooldridge 4.20]. Let’s get some numbers for <span class="math inline">\(\hat{\beta}_{jc}\)</span> and <span class="math inline">\(\hat{\beta}_{univ}\)</span> and then return to this question:</p>
+<p><br></p>
+<p>The question is how we estimate the standard error in the denominator of Equation 4.20. Let’s compute the OLS for the full model (Equation [4.1] above) and get some numbers for <span class="math inline">\(\hat{\beta}_{1}\)</span> and <span class="math inline">\(\hat{\beta}_{2}\)</span> and then return to this question:</p>
 <ol style="list-style-type: decimal">
 <li>Set up the data:</li>
 </ol>
 <pre class="r"><code>data(&quot;twoyear&quot;,package = &quot;wooldridge&quot;)
-twoyear_dt &lt;- data.table::setDT(twoyear)</code></pre>
+twoyear_dt &lt;- data.table::setDT(twoyear)
+twoyear_dt &lt;- twoyear_dt[, .(lwage, jc, univ, exper)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Estimate the OLS:</li>
+<li>Estimate the full model OLS:</li>
 </ol>
 <pre class="r"><code>twoyear_ols_lst &lt;- RregressPkg::ols_calc(
   df = twoyear_dt,
@@ -1143,13 +829,13 @@ exper
 </tr>
 </tbody>
 </table>
-<p>Both <span class="math inline">\(\hat{\beta}_{jc}\)</span> and <span class="math inline">\(\hat{\beta}_{univ}\)</span> are quite significant with a difference of <span class="math inline">\(\hat{\beta}_{jc}\)</span> - <span class="math inline">\(\hat{\beta}_{univ}\)</span>:</p>
-<pre class="r"><code>diff_jc_univ &lt;- twoyear_ols_lst$coef[&quot;jc&quot;] - twoyear_ols_lst$coef[&quot;univ&quot;]
+<p>Both <span class="math inline">\(\hat{\beta}_{1}\)</span> and <span class="math inline">\(\hat{\beta}_{2}\)</span> are quite significant with a difference of <span class="math inline">\(\hat{\beta}_{1}\)</span> - <span class="math inline">\(\hat{\beta}_{2}\)</span>:</p>
+<pre class="r"><code>diff_jc_univ &lt;- as.numeric(twoyear_ols_lst$coef[&quot;jc&quot;] - twoyear_ols_lst$coef[&quot;univ&quot;])
 diff_jc_univ</code></pre>
-<pre><code>##          jc 
-## -0.01017953</code></pre>
-<p>Returning to our above question in computing the <span class="math inline">\(t\)</span>-statistic, we need the standard error for the difference in these two coefficients. Wooldridge provides Equation [Wooldridge 4.22] where:</p>
-<p><span class="math display">\[Var(\hat{\beta}_{jc} - \hat{\beta}_{univ}) = Var(\hat{\beta}_{jc}) + Var(\hat{\beta}_{univ}) - 2Cov(\hat{\beta}_{jc}, \hat{\beta}_{univ})\]</span> The square root of <span class="math inline">\(Var(\hat{\beta}_{jc} - \hat{\beta}_{univ})\)</span> would give us the standard error we are looking for. Following through with <em>twoyear_ols_lst</em> which has the variance-covariance matrix:</p>
+<pre><code>## [1] -0.01017953</code></pre>
+<p>So the return on a year at junior college is about one percentage point less than one year at a university. Again, is this a significant difference.</p>
+<p>Returning to our above question in computing the <span class="math inline">\(t\)</span>-statistic, we need the standard error for the difference in these two coefficients. Wooldridge provides an answer in [4.22 Wooldridge page 125] where:</p>
+<p><span class="math display">\[Var(\hat{\beta}_{1} - \hat{\beta}_{2}) = Var(\hat{\beta}_{1}) + Var(\hat{\beta}_{2}) - 2Cov(\hat{\beta}_{1}, \hat{\beta}_{2})\]</span> The square root of <span class="math inline">\(Var(\hat{\beta}_{1} - \hat{\beta}_{2})\)</span> would give us the standard error we are looking for. Following through with <em>twoyear_ols_lst</em> which has the variance-covariance matrix:</p>
 <pre class="r"><code>twoyear_ols_lst$var_cov</code></pre>
 <pre><code>##               (Intercept)            jc          univ         exper
 ## (Intercept)  4.435993e-04 -1.741689e-05 -1.573705e-05 -3.105216e-06
@@ -1164,197 +850,237 @@ se_jc_univ</code></pre>
 <p>And the <span class="math inline">\(t\)</span>-statistic for the coefficient difference is:</p>
 <pre class="r"><code>t_jc_univ &lt;- diff_jc_univ/se_jc_univ
 t_jc_univ</code></pre>
-<pre><code>##        jc 
-## -1.467548</code></pre>
-<p>As Wooldridge comments on page 126, “there is some, but not strong, evidence against Equation [Wooldridge 4.18].”</p>
+<pre><code>## [1] -1.467548</code></pre>
+<div class="takeaway">
+Take Away: As Wooldridge later comments on page 126, “there is some, but not strong, evidence against Equation [4.18] above.”
+</div>
 </div>
 <div id="alternative-2" class="section level3">
 <h3>Alternative 2</h3>
-<p><code>(Wooldridge, page 126)</code> restates <span class="math inline">\(H_{0}\)</span> as: <span class="math display">\[H_{0}: \theta_{1} = 0\]</span> against <span class="math display">\[H_{1}: \theta_{1} &lt; 0\]</span> where <span class="math inline">\(\theta_{1} = \beta_{1} - \beta_{2}\)</span></p>
+<p>Wooldridge continues on page 126 by defining a new predictor <span class="math inline">\(\theta_{1}\)</span> where <span class="math inline">\(\theta_{1} = \beta_{1} - \beta_{2}\)</span>. Then our null hypothesis becomes:</p>
+<p><span class="math display">\[H_{0}: \theta_{1} = 0\]</span> against <span class="math display">\[H_{1}: \theta_{1} &lt; 0\]</span></p>
+<p>Wooldridge continues by writing <span class="math inline">\(\beta_{1} = \theta_{1} - \beta_{2}\)</span> and substituting this expression for <span class="math inline">\(\beta_{1}\)</span> into our full model above [4.17] we get:</p>
+<center>
+<span class="math inline">\(log(wage) = \beta_{0} + \theta_{1}jc + \beta_{2}(jc +univ) + \beta_{3}exper + \mu\)</span><span style="float:right;">[4.25 Wooldridge page 126]</span>
+</center>
+<p><br></p>
+<p>We still have the same full model and a predictor <span class="math inline">\(\theta_{1}\)</span> that reflects the difference in <span class="math inline">\(\beta_{1}\)</span> and <span class="math inline">\(\beta_{2}\)</span>. When we estimate the OLS for this model we have a single coefficient and its standard error that reflects the difference between <em>jc</em> and <em>univ</em>.</p>
 <ol style="list-style-type: decimal">
 <li>Read in the data:</li>
 </ol>
 <pre class="r"><code>twoyear_dt &lt;- data.table::setDT(wooldridge::twoyear)
-str(twoyear_dt)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   6763 obs. of  23 variables:
-##  $ female  : int  1 1 1 1 1 0 0 0 0 0 ...
-##  $ phsrank : int  65 97 44 34 80 59 81 50 8 56 ...
-##  $ BA      : int  0 0 0 0 0 0 1 0 0 1 ...
-##  $ AA      : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ black   : int  0 0 0 0 0 0 0 1 0 1 ...
-##  $ hispanic: int  0 0 0 1 0 0 0 0 0 0 ...
-##  $ id      : num  19 93 96 119 132 156 163 188 199 200 ...
-##  $ exper   : int  161 119 81 39 141 165 127 161 138 64 ...
-##  $ jc      : num  0 0 0 0.267 0 ...
-##  $ univ    : num  0 7.03 0 0 0 ...
-##  $ lwage   : num  1.93 2.8 1.63 2.22 1.64 ...
-##  $ stotal  : num  -0.442 0 -1.357 -0.19 0 ...
-##  $ smcity  : int  0 1 0 1 0 1 1 0 1 0 ...
-##  $ medcity : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ submed  : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ lgcity  : int  0 0 0 0 0 0 0 1 0 0 ...
-##  $ sublg   : int  1 0 1 0 0 0 0 0 0 0 ...
-##  $ vlgcity : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ subvlg  : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ ne      : int  1 0 1 0 0 0 0 0 0 0 ...
-##  $ nc      : int  0 1 0 0 0 0 1 0 0 0 ...
-##  $ south   : int  0 0 0 0 1 1 0 1 0 1 ...
-##  $ totcoll : num  0 7.033 0 0.267 0 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+twoyear_dt &lt;- twoyear_dt[, .(lwage, jc, univ, exper)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Regress <em>lwage</em> on <em>jc</em>, <em>univ</em>, and <em>exper</em>:</li>
-</ol>
-<pre class="r"><code>wage_model &lt;- lm(lwage ~ jc + univ + exper, data = twoyear_dt)
-summary(wage_model)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = lwage ~ jc + univ + exper, data = twoyear_dt)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.10362 -0.28132  0.00551  0.28518  1.78167 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 1.4723256  0.0210602  69.910   &lt;2e-16 ***
-## jc          0.0666967  0.0068288   9.767   &lt;2e-16 ***
-## univ        0.0768762  0.0023087  33.298   &lt;2e-16 ***
-## exper       0.0049442  0.0001575  31.397   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.4301 on 6759 degrees of freedom
-## Multiple R-squared:  0.2224, Adjusted R-squared:  0.2221 
-## F-statistic: 644.5 on 3 and 6759 DF,  p-value: &lt; 2.2e-16</code></pre>
-<ol start="3" style="list-style-type: decimal">
 <li>Construct a new variable <em>totcoll</em> as <em>jc</em> + <em>univ</em>:</li>
 </ol>
-<pre class="r"><code>twoyear_dt[,`:=`(totcoll = jc + univ)]
-str(twoyear_dt)</code></pre>
-<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   6763 obs. of  23 variables:
-##  $ female  : int  1 1 1 1 1 0 0 0 0 0 ...
-##  $ phsrank : int  65 97 44 34 80 59 81 50 8 56 ...
-##  $ BA      : int  0 0 0 0 0 0 1 0 0 1 ...
-##  $ AA      : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ black   : int  0 0 0 0 0 0 0 1 0 1 ...
-##  $ hispanic: int  0 0 0 1 0 0 0 0 0 0 ...
-##  $ id      : num  19 93 96 119 132 156 163 188 199 200 ...
-##  $ exper   : int  161 119 81 39 141 165 127 161 138 64 ...
-##  $ jc      : num  0 0 0 0.267 0 ...
-##  $ univ    : num  0 7.03 0 0 0 ...
-##  $ lwage   : num  1.93 2.8 1.63 2.22 1.64 ...
-##  $ stotal  : num  -0.442 0 -1.357 -0.19 0 ...
-##  $ smcity  : int  0 1 0 1 0 1 1 0 1 0 ...
-##  $ medcity : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ submed  : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ lgcity  : int  0 0 0 0 0 0 0 1 0 0 ...
-##  $ sublg   : int  1 0 1 0 0 0 0 0 0 0 ...
-##  $ vlgcity : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ subvlg  : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ ne      : int  1 0 1 0 0 0 0 0 0 0 ...
-##  $ nc      : int  0 1 0 0 0 0 1 0 0 0 ...
-##  $ south   : int  0 0 0 0 1 1 0 1 0 1 ...
-##  $ totcoll : num  0 7.033 0 0.267 0 ...
-##  - attr(*, &quot;time.stamp&quot;)= chr &quot;25 Jun 2011 23:03&quot;
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Regress <em>lwage</em> on a new model involving <em>jc</em>, <em>totcoll</em>, and <em>exper</em>:</li>
-</ol>
-<pre class="r"><code>wage_model_totcoll &lt;- lm(lwage ~ jc + totcoll + exper, data = twoyear_dt)
-summary(wage_model_totcoll)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = lwage ~ jc + totcoll + exper, data = twoyear_dt)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.10362 -0.28132  0.00551  0.28518  1.78167 
-## 
-## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  1.4723256  0.0210602  69.910   &lt;2e-16 ***
-## jc          -0.0101795  0.0069359  -1.468    0.142    
-## totcoll      0.0768762  0.0023087  33.298   &lt;2e-16 ***
-## exper        0.0049442  0.0001575  31.397   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.4301 on 6759 degrees of freedom
-## Multiple R-squared:  0.2224, Adjusted R-squared:  0.2221 
-## F-statistic: 644.5 on 3 and 6759 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="note">
-<p>Note: The coefficient for <em>jc</em> is the difference in <span class="math inline">\(\beta_{jc} - \beta_{univ}\)</span> from the original model <em>wage_model</em>.</p>
-</div>
-<p><br></p>
-<ol start="5" style="list-style-type: decimal">
-<li>Compute the <span class="math inline">\(t\)</span> statistic for <span class="math inline">\(\beta_{jc} - \beta_{univ}\)</span> i.e(<span class="math inline">\(\frac{\beta_{jc}}{se(\beta_{jc})}\)</span>)</li>
-</ol>
-<pre class="r"><code>t_beta_jc_univ &lt;- -0.010179/0.00693</code></pre>
-<p>The <span class="math inline">\(t\)</span> statistic for <span class="math inline">\(\beta_{jc} - \beta_{univ}\)</span> is -1.4688312</p>
-<ol start="6" style="list-style-type: decimal">
-<li>Compute the critical <span class="math inline">\(t\)</span> value for the one-sided hypothesis <span class="math inline">\(H_{1}: \beta_{jc} &lt; \beta_{univ}\)</span>. In words, a year at a junior college is worth less than a year at a university.</li>
-</ol>
-<pre class="r"><code>n &lt;- 6763
-k &lt;- 3
-t_critical_jc_univ &lt;-  stats::qt(p = 0.05, df = n - k - 1)</code></pre>
-<p>The critical <span class="math inline">\(t\)</span> value is -1.6450791</p>
-<div class="note">
-<p>Note: It appears that the estimate <span class="math inline">\(t\)</span> value does not go beyond the critical value so we do not reject the null hypothesis <span class="math inline">\(H_{0}: \beta_{jc} = \beta_{univ}\)</span>.</p>
-</div>
-<p><br></p>
-<div class="take">
-<p><b>Take Away:</b> <em>Single hypothesis tests concerning more than one <span class="math inline">\(\beta_{j}\)</span> can always be tested by rewriting the model to contain the parameter of interest. Then, a standard <span class="math inline">\(t\)</span> statistic can be used.</em></p>
-</div>
-<p><br></p>
-<div class="task">
-<p>Task: Using data set <em>MLB1</em> analyze major league baseball players’ salaries as it relates to batting average (<em>bavg</em>), home runs per year (<em>hrunsyr</em>) and runs batted in per year (<em>rbisyr</em>), controlling for the number of years (<em>years</em>) and number of games played (<em>gamesyr</em>).</p>
-</div>
-<p>The regression model takes the following form:</p>
-<center>
-<span class="math inline">\(log(salary) = \beta_{0} + \beta_{1} \cdot years + \beta_{2} \cdot gamesyr + \beta_{3} \cdot bavg + \beta_{4} \cdot hrunsyr + \beta_{5} \cdot rbisyr + \mu\)</span><span style="float:right;">[Heiss, 4.9]</span>
-</center>
-<p>The null hypothesis’: <span class="math display">\[H_{0}: \beta_{bavg} = 0, \beta_{hrunsyr} = 0, \beta_{rbisyr} = 0\]</span></p>
-<center>
-<span class="math inline">\(H_{1}:\)</span> at least one of the performance measures matters
-</center>
-</div>
-</div>
-<div id="b-linear-restrictions-f-tests" class="section level2">
-<h2>4.3b Linear Restrictions: <span class="math inline">\(F\)</span> Tests</h2>
-<p>We’ve been using the <span class="math inline">\(t\)</span>-statistic to test hypothesis for a single predictor. Now we want to test a hypothesis involving a <strong>group</strong> of predictors. <code>[Heiss]</code> and <code>[Wooldridge]</code> start with an example data set <em>wooldridge::mlb1</em> that looks at a goup of baseball related predictors and their influence on a player’s salary.</p>
-<ol style="list-style-type: decimal">
-<li>Set the data set:</li>
-</ol>
-<pre class="r"><code>data(&quot;mlb1&quot;, package = &quot;wooldridge&quot;)
-mlb1_dt &lt;- data.table::setDT(mlb1)
-mlb1_dt &lt;- mlb1_dt[,.(salary, years, gamesyr, bavg, hrunsyr, rbisyr)]</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Define both the unrestricted and restricted models:</li>
-</ol>
-<pre class="r"><code>ur_formula_obj &lt;- log(salary) ~ years + gamesyr + bavg + hrunsyr + rbisyr
-r_formula_obj &lt;- log(salary) ~ years + gamesyr</code></pre>
+<pre class="r"><code>twoyear_dt[,`:=`(totcoll = jc + univ)]</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Using <code>RregressPkg::ols_F_calc()</code> compute the F statistic for the null hypothesis: <span class="math display">\[H_{0}: \beta_{bavg} = \beta_{hrunsyr} = \beta_{rbisyr} = 0\]</span></li>
+<li>Estimate the OLS for the new model with response <em>lwage</em> and predictors <em>jc</em>, <em>totcoll</em>, and <em>exper</em>:</li>
 </ol>
-<p>with the alternative hypothesis that at least one of the predictors matters. From the equation for the <span class="math inline">\(F\)</span>-statistic we see that it reflects the degree of residual increase in applying the restrictive model to the response.</p>
-<pre class="r"><code>mlb1_F_df &lt;- RregressPkg::ols_F_calc(
-  df = mlb1,
-  ur_formula_obj = ur_formula_obj,
-  r_formula_obj = r_formula_obj
+<pre class="r"><code>new_ols &lt;- RregressPkg::ols_calc(
+  df = twoyear_dt,
+  formula_obj = lwage ~ jc + totcoll + exper
 )</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Display the results:</li>
+<li>Show the new model’s coefficients:</li>
 </ol>
 <pre class="r"><code>RplotterPkg::create_table(
-  x = mlb1_F_df,
-  caption = &quot;Predictor Hypothesis: bavg = hrunsyr = rbisyr = 0&quot;
+  x = new_ols$coef_df,
+  caption = &quot;lwage ~ jc + totcoll + exper&quot;
 )</code></pre>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 <center>
 <div style="font-weight:bold;font-size:20px; color:black">
-Predictor Hypothesis: bavg = hrunsyr = rbisyr = 0
+lwage ~ jc + totcoll + exper
+</div>
+</center>
+</caption>
+<thead>
+<tr>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Coef
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Value
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+SE
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+t_value
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+p_Value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+(Intercept)
+</td>
+<td>
+1.472325579
+</td>
+<td>
+0.0210617974
+</td>
+<td>
+69.905030
+</td>
+<td>
+0.000000e+00
+</td>
+</tr>
+<tr>
+<td>
+jc
+</td>
+<td>
+-0.010179530
+</td>
+<td>
+0.0069364197
+</td>
+<td>
+-1.467548
+</td>
+<td>
+1.422736e-01
+</td>
+</tr>
+<tr>
+<td>
+totcoll
+</td>
+<td>
+0.076876249
+</td>
+<td>
+0.0023088998
+</td>
+<td>
+33.295619
+</td>
+<td>
+3.188663e-225
+</td>
+</tr>
+<tr>
+<td>
+exper
+</td>
+<td>
+0.004944224
+</td>
+<td>
+0.0001574852
+</td>
+<td>
+31.394852
+</td>
+<td>
+4.413517e-202
+</td>
+</tr>
+</tbody>
+</table>
+<p>The coefficient for <em>jc</em> is <span class="math inline">\(\theta_{1}\)</span> which represents the difference <span class="math inline">\(\beta_{1} - \beta_{2}\)</span> and has an associated standard error that we were missing.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>Compute the <span class="math inline">\(t\)</span> statistic for <span class="math inline">\(\beta_{1} - \beta_{2}\)</span> i.e. <span class="math inline">\(\frac{\theta_{1}}{se(\theta_{1})}\)</span></li>
+</ol>
+<pre class="r"><code>theta &lt;- new_ols$coef[[&quot;jc&quot;]]
+theta_se &lt;- new_ols$coef_se[[&quot;jc&quot;]]
+t_theta &lt;- theta/theta_se</code></pre>
+<div class="takeaway">
+Take Away: Comparing <em>t_jc_unit</em> in <code>Alternative 1</code> above with <em>t_theta</em> in this <code>Alternative 2</code>, they are the same.
+</div>
+<ol start="6" style="list-style-type: decimal">
+<li>Compute the critical <span class="math inline">\(t\)</span> value for the one-sided hypothesis <span class="math inline">\(H_{1}: \beta_{1} &lt; \beta_{2}\)</span>. In words, a year at a junior college is worth less than a year at a university.</li>
+</ol>
+<pre class="r"><code>n &lt;- 6763
+k &lt;- 3
+t_c &lt;-  stats::qt(p = 0.05, df = n - k - 1)</code></pre>
+<p>The critical <span class="math inline">\(t\)</span> value is -1.6450791</p>
+<div class="takeaway">
+Take Away: It appears that the estimate <span class="math inline">\(t\)</span> value does not go beyond the critical value so we do not reject the null hypothesis <span class="math inline">\(H_{0}: \beta_{1} = \beta_{2}\)</span>.
+</div>
+<div class="takeaway">
+Take Away: Single hypothesis tests concerning more than one <span class="math inline">\(\beta_{j}\)</span> can always be tested by rewriting the model to contain the parameter of interest. Then, a standard <span class="math inline">\(t\)</span> statistic can be used.
+</div>
+</div>
+</div>
+<div id="b-linear-restrictions-f-tests" class="section level2">
+<h2>4.3b Linear Restrictions: <span class="math inline">\(F\)</span> Tests</h2>
+<p>We’ve been using the <span class="math inline">\(t\)</span>-statistic to test hypothesis for a single predictor. Now we want to test a hypothesis involving a <strong>group</strong> of predictors. <code>(Heiss, Sec 4.3, page 109)</code> and <code>(Wooldridge, Sec 4.5, page 127)</code> start with an example data set <em>wooldridge::mlb1</em> that looks at a group of baseball related predictors and their influence on a player’s salary.</p>
+<p>The regression model takes the following form:</p>
+<center>
+<span class="math inline">\(log(salary) = \beta_{0} + \beta_{1} \cdot years + \beta_{2} \cdot gamesyr + \beta_{3} \cdot bavg + \beta_{4} \cdot hrunsyr + \beta_{5} \cdot rbisyr + \mu\)</span><span style="float:right;">[Heiss, 4.9]</span>
+</center>
+<p><br></p>
+<p>This is our unrestricted model and has 5 predictors (k = 5)</p>
+<p>Our null hypothesis involves 3 predictors related to performance that we test has no effect:</p>
+<p><span class="math display">\[H_{0}: \beta_{bavg} = 0, \beta_{hrunsyr} = 0, \beta_{rbisyr} = 0\]</span> The alternative hypothesis is that at least one of the performance measures matters.</p>
+<p>From our null hypothesis <span class="math inline">\(H_{0}\)</span> we can form our restricted model:</p>
+<p><span class="math display">\[log(salary) = \beta_{0} + \beta{1} \cdot years + \beta_{2} \cdot gamesyr + \mu\]</span></p>
+<p>The restricted model has 2 predictors. The difference in predictors between the two models is 3 (q = 5 - 2)</p>
+<p>By computing the OLS estimates for both the unrestricted and restricted models, we can conduct the <span class="math inline">\(F\)</span>-Test: 1. Set the data set:</p>
+<pre class="r"><code>data(&quot;mlb1&quot;, package = &quot;wooldridge&quot;)
+mlb1_dt &lt;- data.table::setDT(mlb1)
+mlb1_dt &lt;- mlb1_dt[,.(salary, years, gamesyr, bavg, hrunsyr, rbisyr)]</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Compute the OLS for the unrestricted model and get sum of squares residuals (SSR_ur):</li>
+</ol>
+<pre class="r"><code>ur_formula_obj &lt;- log(salary) ~ years + gamesyr + bavg + hrunsyr + rbisyr
+
+ur_ols &lt;- RregressPkg::ols_calc(
+  df = mlb1,
+  formula_obj = ur_formula_obj
+)
+SSR_ur &lt;- ur_ols$sse</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Compute the OLS for the restricted model and get sum of squares residuals (SSR_r):</li>
+</ol>
+<pre class="r"><code>r_formula_obj &lt;- log(salary) ~ years + gamesyr
+r_ols &lt;- RregressPkg::ols_calc(
+  df = mlb1,
+  formula_obj = r_formula_obj
+)
+SSR_r &lt;- r_ols$sse</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Calculate the <span class="math inline">\(F\)</span>-statistic using [4.37 Wooldridge page 129]:</li>
+</ol>
+<pre class="r"><code>n = nrow(mlb1_dt) # number of observations
+k = 5 # predictors in unrestricted model
+q = k - 2 # difference in predictors of the two models
+
+F_val &lt;- ((SSR_r - SSR_ur)/q)/(SSR_ur/(n - k - 1))
+F_val</code></pre>
+<pre><code>## [1] 9.550254</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>From the <span class="math inline">\(F\)</span> distribution calculate the critical value <span class="math inline">\(c\)</span> with <em>q</em> for the numerator and <em>n - k - 1</em> for the denominator:</li>
+</ol>
+<pre class="r"><code>c &lt;- stats::qf(1 - 0.01, q, n - k - 1)
+c</code></pre>
+<pre><code>## [1] 3.83852</code></pre>
+<p>With <em>F_val</em> greater than <em>c</em> we reject the above null hypothesis and believe that at least one of the performance has an influence on salary. From the equation for the <span class="math inline">\(F\)</span>-statistic we see that it reflects the degree of residual increase in applying the restrictive model to the response.</p>
+<p>The function <code>RregressPkg::ols_F_calc()</code> provides a easy way to compute the <span class="math inline">\(F\)</span> value:</p>
+<pre class="r"><code>mlb1_F_df &lt;- RregressPkg::ols_F_calc(
+  df = mlb1,
+  ur_formula_obj = ur_formula_obj,
+  r_formula_obj = r_formula_obj
+)</code></pre>
+<p>Displaying the results:</p>
+<pre class="r"><code>RplotterPkg::create_table(
+  x = mlb1_F_df,
+  caption = &quot;Null Hypothesis: bavg = hrunsyr = rbisyr = 0&quot;
+)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
+Null Hypothesis: bavg = hrunsyr = rbisyr = 0
 </div>
 </center>
 </caption>
@@ -1427,6 +1153,214 @@ SSR_r
 </tr>
 </tbody>
 </table>
+</div>
+<div id="c-testing-general-linear-restrictions" class="section level2">
+<h2>4.3c Testing general linear restrictions</h2>
+<p>The following is from <code>(Wooldridge, Section 4-5f, page 136)</code> as another example in using the <span class="math inline">\(F\)</span>-statistic.</p>
+<p>Wooldridge shows an example where restrictions can be placed not only on the subset of predictors we include, but also in making algebraic transformations to the response variable and still perform a standard <span class="math inline">\(F\)</span> test on the restricted and unrestricted models.</p>
+<p>The unrestricted model: <span class="math display">\[log(price) = \beta_{0} + \beta_{1}log(assess) + \beta_{2}log(lotsize) + \beta_{3}log(sqrft) + \beta_{4}bdrms + \mu\]</span></p>
+<p>Our null hypothesis suggest our restricted model:</p>
+<p><span class="math display">\[H_{0}: \beta_{1} = 1, \beta_{2} = 0, \beta_{3} = 0, \beta_{4} = 0\]</span></p>
+<p>Wooldridge states that four restrictions have to be tested; three are exclusion restrictions, but <span class="math inline">\(\beta_{1} = 1\)</span> is not. He informs us that forming the restricted model can be “tricky”. Rewriting the full model: <span class="math display">\[y = \beta_{0} + \beta_{1}x_{1}+\beta_{2}x_{2}+\beta_{3}x_{3}+\beta_{4}x_{4}\]</span> Then from our null hypothesis we have for the restricted model: <span class="math display">\[y = \beta_{0} + x_{1} + \mu\]</span> And to impose that <span class="math inline">\(\beta_{1}\)</span> is unity we have: <span class="math display">\[y - x_{1} = \beta_{0} + \mu\]</span> We have now made a change in the response variable. Wooldridge suggests that we can now perform the <span class="math inline">\(F\)</span> test with this restricted model and our original unrestricted model. Continuing with the example–</p>
+<ol style="list-style-type: decimal">
+<li>Set up the data:</li>
+</ol>
+<pre class="r"><code>data(&quot;hprice1&quot;, package = &quot;wooldridge&quot;)
+hprice1_dt &lt;- data.table::setDT(hprice1)
+hprice1_dt &lt;- hprice1_dt[, .(price = log(price), assess = log(assess), lotsize = log(lotsize), sqrft = log(sqrft), bdrms)]</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Estimate the OLS for the unrestricted model:</li>
+</ol>
+<pre class="r"><code>ur_ols &lt;- RregressPkg::ols_calc(
+  df = hprice1_dt,
+  formula_obj = price ~ assess + lotsize + sqrft + bdrms
+)
+RplotterPkg::create_table(ur_ols$coef_df, caption = &quot;price ~ assess + lotsize + sqrft + bdrms&quot;)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
+price ~ assess + lotsize + sqrft + bdrms
+</div>
+</center>
+</caption>
+<thead>
+<tr>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Coef
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Value
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+SE
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+t_value
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+p_Value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+(Intercept)
+</td>
+<td>
+0.263743475
+</td>
+<td>
+0.57312781
+</td>
+<td>
+0.4601827
+</td>
+<td>
+6.466031e-01
+</td>
+</tr>
+<tr>
+<td>
+assess
+</td>
+<td>
+1.043065558
+</td>
+<td>
+0.15236672
+</td>
+<td>
+6.8457572
+</td>
+<td>
+1.275393e-09
+</td>
+</tr>
+<tr>
+<td>
+lotsize
+</td>
+<td>
+0.007437863
+</td>
+<td>
+0.03879591
+</td>
+<td>
+0.1917177
+</td>
+<td>
+8.484373e-01
+</td>
+</tr>
+<tr>
+<td>
+sqrft
+</td>
+<td>
+-0.103238513
+</td>
+<td>
+0.13927200
+</td>
+<td>
+-0.7412726
+</td>
+<td>
+4.606458e-01
+</td>
+</tr>
+<tr>
+<td>
+bdrms
+</td>
+<td>
+0.033839204
+</td>
+<td>
+0.02223265
+</td>
+<td>
+1.5220500
+</td>
+<td>
+1.318437e-01
+</td>
+</tr>
+</tbody>
+</table>
+<ol start="3" style="list-style-type: decimal">
+<li>Estimate the OLS for the restricted model:</li>
+</ol>
+<pre class="r"><code>price_assess_dt &lt;- data.table(price_assess = hprice1_dt$price - hprice1_dt$assess)
+r_ols &lt;- RregressPkg::ols_calc(
+  df = price_assess_dt,
+  formula_obj = price_assess ~ 1
+)
+RplotterPkg::create_table(r_ols$coef_df, caption = &quot;price-assess ~ (Intercept)&quot;)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
+price-assess ~ (Intercept)
+</div>
+</center>
+</caption>
+<thead>
+<tr>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Coef
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Value
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+SE
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+t_value
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+p_Value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+(Intercept)
+</td>
+<td>
+-0.08481351
+</td>
+<td>
+0.01576179
+</td>
+<td>
+-5.380957
+</td>
+<td>
+6.309655e-07
+</td>
+</tr>
+</tbody>
+</table>
+<ol start="4" style="list-style-type: decimal">
+<li>Calculate the <span class="math inline">\(F\)</span>-statistic using [4.37 Wooldridge page 129]:</li>
+</ol>
+<pre class="r"><code>q &lt;- 4 - 0 # 4 unrestricted predictors - 0 restricted predictor
+n &lt;- 88 # number of observations
+k &lt;- 4 # 4 unrestricted predictors
+SSR_r &lt;- r_ols$sse
+SSR_ur &lt;- ur_ols$sse
+
+F_val &lt;- ((SSR_r - SSR_ur)/q)/(SSR_ur/(n - k - 1))
+c &lt;- stats::qf(1 - 0.01, q, n - k - 1)</code></pre>
+<p><span class="math inline">\(F\)</span> = 0.6677726</p>
+<p><span class="math inline">\(c\)</span> = 3.5539341</p>
+<p>With <em>F_val</em> less than <em>c</em> we do not reject the null hypothesis.</p>
 </div>
 </div>
 

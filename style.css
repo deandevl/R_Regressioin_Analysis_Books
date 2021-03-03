@@ -64,3 +64,8 @@ pre code {
   color: darkorange;
 }
 
+.takeaway {
+  font-size: 14pt;
+  font-weight: bold;
+  font-style: italic;
+}
