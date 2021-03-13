@@ -221,7 +221,7 @@ summary {
 <p>Author: Rick Dean</p>
 </div>
 <div>
-<p>Article date: 2021-02-22</p>
+<p>Article date: 2021-03-13</p>
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -767,10 +767,10 @@ p_Value
 1.472325579
 </td>
 <td>
-0.0210617974
+0.0210602393
 </td>
 <td>
-69.905030
+69.910202
 </td>
 <td>
 0.000000e+00
@@ -784,13 +784,13 @@ jc
 0.066696719
 </td>
 <td>
-0.0068292993
+0.0068287940
 </td>
 <td>
-9.766261
+9.766984
 </td>
 <td>
-2.208637e-22
+2.193055e-22
 </td>
 </tr>
 <tr>
@@ -801,13 +801,13 @@ univ
 0.076876249
 </td>
 <td>
-0.0023088998
+0.0023087290
 </td>
 <td>
-33.295619
+33.298083
 </td>
 <td>
-3.188663e-225
+2.955236e-225
 </td>
 </tr>
 <tr>
@@ -818,13 +818,13 @@ exper
 0.004944224
 </td>
 <td>
-0.0001574852
+0.0001574735
 </td>
 <td>
-31.394852
+31.397175
 </td>
 <td>
-4.413517e-202
+4.122772e-202
 </td>
 </tr>
 </tbody>
@@ -832,25 +832,25 @@ exper
 <p>Both <span class="math inline">\(\hat{\beta}_{1}\)</span> and <span class="math inline">\(\hat{\beta}_{2}\)</span> are quite significant with a difference of <span class="math inline">\(\hat{\beta}_{1}\)</span> - <span class="math inline">\(\hat{\beta}_{2}\)</span>:</p>
 <pre class="r"><code>diff_jc_univ &lt;- as.numeric(twoyear_ols_lst$coef[&quot;jc&quot;] - twoyear_ols_lst$coef[&quot;univ&quot;])
 diff_jc_univ</code></pre>
-<pre><code>## [1] -0.01017953</code></pre>
+<pre><code>## numeric(0)</code></pre>
 <p>So the return on a year at junior college is about one percentage point less than one year at a university. Again, is this a significant difference.</p>
 <p>Returning to our above question in computing the <span class="math inline">\(t\)</span>-statistic, we need the standard error for the difference in these two coefficients. Wooldridge provides an answer in [4.22 Wooldridge page 125] where:</p>
 <p><span class="math display">\[Var(\hat{\beta}_{1} - \hat{\beta}_{2}) = Var(\hat{\beta}_{1}) + Var(\hat{\beta}_{2}) - 2Cov(\hat{\beta}_{1}, \hat{\beta}_{2})\]</span> The square root of <span class="math inline">\(Var(\hat{\beta}_{1} - \hat{\beta}_{2})\)</span> would give us the standard error we are looking for. Following through with <em>twoyear_ols_lst</em> which has the variance-covariance matrix:</p>
 <pre class="r"><code>twoyear_ols_lst$var_cov</code></pre>
 <pre><code>##               (Intercept)            jc          univ         exper
-## (Intercept)  4.435993e-04 -1.741689e-05 -1.573705e-05 -3.105216e-06
-## jc          -1.741689e-05  4.663933e-05  1.928214e-06 -1.718550e-08
-## univ        -1.573705e-05  1.928214e-06  5.331018e-06  3.934073e-08
-## exper       -3.105216e-06 -1.718550e-08  3.934073e-08  2.480159e-08</code></pre>
+## (Intercept)  4.435337e-04 -1.741432e-05 -1.573472e-05 -3.104756e-06
+## jc          -1.741432e-05  4.663243e-05  1.927929e-06 -1.718296e-08
+## univ        -1.573472e-05  1.927929e-06  5.330230e-06  3.933491e-08
+## exper       -3.104756e-06 -1.718296e-08  3.933491e-08  2.479792e-08</code></pre>
 <p>Doing the arithmetic, the standard error is:</p>
 <pre class="r"><code>vc &lt;- twoyear_ols_lst$var_cov
 se_jc_univ &lt;- sqrt(vc[&quot;jc&quot;,&quot;jc&quot;] + vc[&quot;univ&quot;,&quot;univ&quot;] - 2 * vc[&quot;jc&quot;,&quot;univ&quot;])
 se_jc_univ</code></pre>
-<pre><code>## [1] 0.00693642</code></pre>
+<pre><code>## [1] 0.006935907</code></pre>
 <p>And the <span class="math inline">\(t\)</span>-statistic for the coefficient difference is:</p>
 <pre class="r"><code>t_jc_univ &lt;- diff_jc_univ/se_jc_univ
 t_jc_univ</code></pre>
-<pre><code>## [1] -1.467548</code></pre>
+<pre><code>## numeric(0)</code></pre>
 <div class="takeaway">
 Take Away: As Wooldridge later comments on page 126, “there is some, but not strong, evidence against Equation [4.18] above.”
 </div>
@@ -924,10 +924,10 @@ p_Value
 1.472325579
 </td>
 <td>
-0.0210617974
+0.0210602393
 </td>
 <td>
-69.905030
+69.910202
 </td>
 <td>
 0.000000e+00
@@ -941,13 +941,13 @@ jc
 -0.010179530
 </td>
 <td>
-0.0069364197
+0.0069359066
 </td>
 <td>
--1.467548
+-1.467657
 </td>
 <td>
-1.422736e-01
+1.422440e-01
 </td>
 </tr>
 <tr>
@@ -958,13 +958,13 @@ totcoll
 0.076876249
 </td>
 <td>
-0.0023088998
+0.0023087290
 </td>
 <td>
-33.295619
+33.298083
 </td>
 <td>
-3.188663e-225
+2.955236e-225
 </td>
 </tr>
 <tr>
@@ -975,13 +975,13 @@ exper
 0.004944224
 </td>
 <td>
-0.0001574852
+0.0001574735
 </td>
 <td>
-31.394852
+31.397175
 </td>
 <td>
-4.413517e-202
+4.122772e-202
 </td>
 </tr>
 </tbody>
@@ -1061,19 +1061,19 @@ F_val</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>From the <span class="math inline">\(F\)</span> distribution calculate the critical value <span class="math inline">\(c\)</span> with <em>q</em> for the numerator and <em>n - k - 1</em> for the denominator:</li>
 </ol>
-<pre class="r"><code>c &lt;- stats::qf(1 - 0.01, q, n - k - 1)
-c</code></pre>
+<pre class="r"><code>cr_val &lt;- stats::qf(1 - 0.01, q, n - k - 1)
+cr_val</code></pre>
 <pre><code>## [1] 3.83852</code></pre>
-<p>With <em>F_val</em> greater than <em>c</em> we reject the above null hypothesis and believe that at least one of the performance has an influence on salary. From the equation for the <span class="math inline">\(F\)</span>-statistic we see that it reflects the degree of residual increase in applying the restrictive model to the response.</p>
+<p>With <em>F_val</em> greater than <em>cr_val</em> we reject the above null hypothesis and believe that at least one of the performance has an influence on salary. From the equation for the <span class="math inline">\(F\)</span>-statistic we see that it reflects the degree of residual increase in applying the restrictive model to the response.</p>
 <p>The function <code>RregressPkg::ols_F_calc()</code> provides a easy way to compute the <span class="math inline">\(F\)</span> value:</p>
-<pre class="r"><code>mlb1_F_df &lt;- RregressPkg::ols_F_calc(
+<pre class="r"><code>mlb1_F_lst &lt;- RregressPkg::ols_F_calc(
   df = mlb1,
   ur_formula_obj = ur_formula_obj,
   r_formula_obj = r_formula_obj
 )</code></pre>
 <p>Displaying the results:</p>
 <pre class="r"><code>RplotterPkg::create_table(
-  x = mlb1_F_df,
+  x = mlb1_F_lst$F_df,
   caption = &quot;Null Hypothesis: bavg = hrunsyr = rbisyr = 0&quot;
 )</code></pre>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
@@ -1096,7 +1096,7 @@ crit
 p_val
 </th>
 <th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-prob
+confid_level
 </th>
 <th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
 df_1
@@ -1124,13 +1124,13 @@ SSR_r
 9.5503
 </td>
 <td>
-3.8385
+2.6306
 </td>
 <td>
-4e-06
+4.5e-06
 </td>
 <td>
-0.99
+0.95
 </td>
 <td>
 3
@@ -1212,13 +1212,13 @@ p_Value
 0.263743475
 </td>
 <td>
-0.57312781
+0.56966477
 </td>
 <td>
-0.4601827
+0.4629801
 </td>
 <td>
-6.466031e-01
+6.445902e-01
 </td>
 </tr>
 <tr>
@@ -1229,13 +1229,13 @@ assess
 1.043065558
 </td>
 <td>
-0.15236672
+0.15144606
 </td>
 <td>
-6.8457572
+6.8873731
 </td>
 <td>
-1.275393e-09
+1.011499e-09
 </td>
 </tr>
 <tr>
@@ -1246,13 +1246,13 @@ lotsize
 0.007437863
 </td>
 <td>
-0.03879591
+0.03856149
 </td>
 <td>
-0.1917177
+0.1928832
 </td>
 <td>
-8.484373e-01
+8.475217e-01
 </td>
 </tr>
 <tr>
@@ -1263,13 +1263,13 @@ sqrft
 -0.103238513
 </td>
 <td>
-0.13927200
+0.13843047
 </td>
 <td>
--0.7412726
+-0.7457789
 </td>
 <td>
-4.606458e-01
+4.579080e-01
 </td>
 </tr>
 <tr>
@@ -1280,13 +1280,13 @@ bdrms
 0.033839204
 </td>
 <td>
-0.02223265
+0.02209831
 </td>
 <td>
-1.5220500
+1.5313027
 </td>
 <td>
-1.318437e-01
+1.294973e-01
 </td>
 </tr>
 </tbody>
@@ -1336,13 +1336,13 @@ p_Value
 -0.08481351
 </td>
 <td>
-0.01576179
+0.01567094
 </td>
 <td>
--5.380957
+-5.412151
 </td>
 <td>
-6.309655e-07
+5.427984e-07
 </td>
 </tr>
 </tbody>
@@ -1357,10 +1357,10 @@ SSR_r &lt;- r_ols$sse
 SSR_ur &lt;- ur_ols$sse
 
 F_val &lt;- ((SSR_r - SSR_ur)/q)/(SSR_ur/(n - k - 1))
-c &lt;- stats::qf(1 - 0.01, q, n - k - 1)</code></pre>
+cr_val &lt;- stats::qf(1 - 0.05, q, n - k - 1)</code></pre>
 <p><span class="math inline">\(F\)</span> = 0.6677726</p>
-<p><span class="math inline">\(c\)</span> = 3.5539341</p>
-<p>With <em>F_val</em> less than <em>c</em> we do not reject the null hypothesis.</p>
+<p><span class="math inline">\(c\)</span> = 2.4816614</p>
+<p>With <em>F_val</em> less than <em>cr_val</em> we do not reject the null hypothesis.</p>
 </div>
 </div>
 

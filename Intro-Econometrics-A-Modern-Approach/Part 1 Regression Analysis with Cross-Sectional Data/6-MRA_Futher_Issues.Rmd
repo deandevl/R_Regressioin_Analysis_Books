@@ -177,7 +177,7 @@ gpa_2_dt <- gpa_2_dt[, .(colgpa, sat, hsperc, hsize)]
 
 2. Define the predictor data points to estimate responses:
 ```{r}
-predictors_df <- data.frame(
+predictor_vals_df <- data.frame(
   sat = c(1200, 900, 1400),
   hsperc = c(30, 20, 5),
   hsize = c(5, 3, 1)
@@ -189,7 +189,8 @@ predictors_df <- data.frame(
 gpa_2_response_df <- RregressPkg::ols_predict_calc(
   df = gpa_2_dt,
   formula_obj = colgpa ~ sat + hsperc + hsize + I(hsize^2),
-  predictors_df = predictors_df
+  predictor_vals_df = predictor_vals_df,
+  confid_level = 0.99
 )
 ```
 
@@ -211,15 +212,16 @@ hprice2_dt <- hprice2_dt[, .(price, nox, dist, rooms, stratio)]
 ```
 
 2. Call `RregressPkg::plot_predictor()`:
-```{r}
-response_lst <- RregressPkg::plot_predictor(
+```{r, fig.width=12, fig.height=8}
+rooms_effect_lst <- RregressPkg::plot_predictor(
   df = hprice2_dt,
   formula_obj = log(price) ~ log(nox)+log(dist)+rooms+I(rooms^2)+stratio,
-  predictor_df =  data.frame(rooms = seq(4, 8, 0.1)),
+  predictor_vals_df = data.frame(rooms = seq(4, 8, 0.1)),
   title = "Influence of 'rooms' on 'log(price)'",
   subtitle = "Formula: log(price) ~ log(nox) + log(dist) + rooms + rooms^2 + stratio",
   x_title = "rooms",
-  y_title = "log(price)"
+  y_title = "log(price)",
+  rot_y_tic_label = T
 )
-response_lst$plot
+rooms_effect_lst$effect_plot
 ```

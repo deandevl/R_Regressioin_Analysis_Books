@@ -212,20 +212,13 @@ RplotterPkg::create_table(
 
 The plot of fitted values versus residuals:
 ```{r}
-residuals_df <- data.frame(
-  Fitted = crime_ols$fitted_val,
-  Residuals = crime_ols$resid,
-  State = crime_dt$State
-)
-RplotterPkg::create_scatter_plot(
-  df = residuals_df,
-  aes_x = "Fitted",
-  aes_y = "Residuals",
-  aes_label = "State",
-  title = "Fitted versus Residuals",
-  subtitle = "ViolentC ~ Poverty + Single + Metro + White + HSGrad",
-  rot_y_tic_label = T,
-  pts_size = 2.5
+RregressPkg::plot_fit_residuals(
+  df = crime_dt,
+  formula_obj = ViolentC ~ Poverty + Single + Metro + White + HSGrad,
+  label_threshold = 0,
+  id_col = "State",
+  label_color = "black",
+  rot_y_tic_label = T
 )
 ```
 

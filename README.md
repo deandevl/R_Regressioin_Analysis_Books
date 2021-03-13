@@ -22,4 +22,6 @@ The repository contains notes/scripts/inspiration from the following articles/bo
 
 10. [Illustrate Some Correlation Limitations and Fallacies in R](http://svmiller.com/blog/2020/01/illustrate-correlation-fallacies-limitations-in-r/) by Steve Miller
 
-    
+11. [How to Make the Most of Regression: Standardization and Post-Estimation Simulation](http://svmiller.com/blog/2020/04/post-estimation-simulation-trump-vote-midwest/) by Steve Miller
+
+      

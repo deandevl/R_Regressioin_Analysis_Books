@@ -541,16 +541,16 @@ F_val
 
 5. From the $F$ distribution calculate the critical value $c$ with *q* for the numerator and *n - k - 1* for the denominator:
 ```{r}
-c <- stats::qf(1 - 0.01, q, n - k - 1)
-c
+cr_val <- stats::qf(1 - 0.01, q, n - k - 1)
+cr_val
 ```
 
-With *F_val* greater than *c* we reject the above null hypothesis and believe that at least one of the performance has an influence on salary.
-From the equation for the $F$-statistic we see that it reflects the  degree of residual increase in applying the restrictive model to the response.
+With *F_val* greater than *cr_val* we reject the above null hypothesis and believe that at least one of the performance has an influence on salary.
+From the equation for the $F$-statistic we see that it reflects the degree of residual increase in applying the restrictive model to the response.
 
 The function `RregressPkg::ols_F_calc()` provides a easy way to compute the $F$ value:
 ```{r}
-mlb1_F_df <- RregressPkg::ols_F_calc(
+mlb1_F_lst <- RregressPkg::ols_F_calc(
   df = mlb1,
   ur_formula_obj = ur_formula_obj,
   r_formula_obj = r_formula_obj
@@ -560,7 +560,7 @@ mlb1_F_df <- RregressPkg::ols_F_calc(
 Displaying the results:
 ```{r}
 RplotterPkg::create_table(
-  x = mlb1_F_df,
+  x = mlb1_F_lst$F_df,
   caption = "Null Hypothesis: bavg = hrunsyr = rbisyr = 0"
 )
 ```
@@ -622,13 +622,13 @@ SSR_r <- r_ols$sse
 SSR_ur <- ur_ols$sse
 
 F_val <- ((SSR_r - SSR_ur)/q)/(SSR_ur/(n - k - 1))
-c <- stats::qf(1 - 0.01, q, n - k - 1)
+cr_val <- stats::qf(1 - 0.05, q, n - k - 1)
 ```
 
 $F$ = `r F_val`
 
-$c$ = `r c`
+$c$ = `r cr_val`
 
-With *F_val* less than *c* we do not reject the null hypothesis.
+With *F_val* less than *cr_val* we do not reject the null hypothesis.
 
 

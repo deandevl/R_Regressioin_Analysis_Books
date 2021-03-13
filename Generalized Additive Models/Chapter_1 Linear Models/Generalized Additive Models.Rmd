@@ -1,0 +1,233 @@
+---
+title: "Chapter 1 - Linear Models"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 4
+    css: ../../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+The following are notes, graphics, and R scripts from the text [Generalized Additive Models, An Introduction with R, Second Edition](https://www.routledge.com/Generalized-Add-itive-Models-An-Introduction-with-R-Second-Edition/Wood/p/book/9781498728331) by Simon N. Wood.
+</div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(gamair)
+library(RplotterPkg)
+library(RregressPkg)
+```
+
+## 1.3 The theory of linear models
+### 1.3.1 Least squares estimation of $\beta$
+We will be using the `gamair::sperm.comp1` data set to illustrate the derivartion.
+
+1. Load the data and define the predictor(**X**) and response(**Y**) matrices:
+```{r}
+data("sperm.comp1", package = "gamair")
+sperm1_dt <- data.table::setDT(sperm.comp1)
+data.table::setnames(sperm1_dt,c("time.ipc","prop.partner"), c("time_ipc","prop_partner"))
+
+n = 15
+p = 3 # including the intercept
+
+intercept_dt <- data.table(Intercept = 1)
+X_dt <- sperm1_dt[, .(time_ipc, prop_partner)]
+X_dt <- cbind(intercept_dt, X_dt)
+
+X_mt <- as.matrix(X_dt)
+Y_mt <- as.matrix(sperm1_dt[, .(count)])
+```
+
+2. Perform QR factorization using a defined function:
+```{r}
+get_qr <- function(X, complete = FALSE){
+  A <- X
+  n <- nrow(A)
+  p <- ncol(A)
+  Q <- diag(n)
+  
+  for(k in 1:p){
+    # extract the kth column of the matrix
+    col <- A[k:n, k]
+    # calculation of the norm of the column in order to create the vector r
+    norm1 <- sqrt(drop(crossprod(col)))
+    # calculate the reflection vector  a_r
+    a_r <- col
+    a_r[1] <- a_r[1] + sign(a_r[1]) * norm1
+    # beta <- 2 / ||a_r||^2
+    beta <- 2 / drop(crossprod(a_r))
+    # update matrix Q (trailing matrix only) by Householder reflection
+    Q[,k:n] <- Q[,k:n] - tcrossprod(Q[,k:n] %*% a_r, beta * a_r)
+    # update matrix A (trailing matrix only) by Householder reflection
+    A[k:n, k:p] <- A[k:n,k:p] - tcrossprod(beta * a_r, crossprod(A[k:n,k:p], a_r))
+  }
+  
+  if(complete){
+    #A[lower.tri(A)] <- 0
+    R <- A[1:p, ]
+    R[lower.tri(R)] <- 0
+    return(list(Q = Q, R = R))
+  }else{
+    R <- A[1:p, ]
+    R[lower.tri(R)] <- 0
+    return(list(Q = Q[,1:p], R = R))
+  }
+}
+
+
+qr_fun_lst <- get_qr(X = X_mt, complete = T)
+Q_mt <- qr_fun_lst$Q
+R_mt <- qr_fun_lst$R
+```
+
+
+2. Decompose **X** and assign **Q**, **Qf** and **R** (Equation 1.5 page 12):
+**Qf** is an n x p orthogonal matrix; **R** is a p x p upper trianglar matrix
+```{r}
+# decompose X
+# qr_lst <- base::qr(X_mt)
+# 
+# Qf_mt <- base::qr.Q(qr_lst) # n x p
+# R_mt <- base::qr.R(qr_lst) # p x p
+# 
+# X_check_mt <- Qf_mt %*% R_mt  # Equation 1.5 page 12
+# 
+# Q_mt <- base::qr.Q(qr_lst, complete = T) # orthogonal matrix n x n
+# Q_check_mt <- t(Q_mt) %*% Q_mt # should get identity matrix
+```
+
+3. Compute the t(**Q**) * **Y** and assign vectors **f** and **r**:
+```{r}
+#tQY_mt <- base::qr.qty(qr_lst, Y_mt)
+
+tQY_mt <- t(Q_mt) %*% Y_mt
+
+f_v <- tQY_mt[1:p,]   # p
+r_v <- tQY_mt[(p+1):n,] # n - p
+```
+
+4. Estimate the  $\beta$'s (Equation 1.6 page 12):
+```{r}
+R_inv_mt <- solve(R_mt) # p x p
+beta_hat_v <- (R_inv_mt %*% f_v)[,1] # p x 1
+
+# alternative
+#beta_hat_v_alt <- (base::qr.coef(qr_lst, Y_mt))[,1]
+```
+
+5. Compute residual sum of squares:
+```{r}
+sse <- (t(r_v) %*% r_v)[1,1]
+
+#resid_mt <- base::qr.resid(qr_lst, Y_mt)
+#sse_alt <- (t(resid_mt) %*% resid_mt)[1,1]
+```
+
+
+### 1.3.2 The distribution of $\hat{\beta}$
+### 1.3.3 $(\hat{\beta_{i}} - \beta_{i})/\hat{\sigma}_{\hat{\beta_{i}}} \sim t_{n-p}$
+
+1. Estimate $\sigma^2$ (Equation 1.8 page 13):
+```{r}
+sigma_sq <- (t(r_v) %*% r_v)[1,1]/(n - p)
+```
+
+2. Compute covariance matrix of $\hat{\sigma}$ (Equation 1.7 page 13):
+```{r}
+var_cov_beta <- R_inv_mt %*% t(R_inv_mt) * sigma_sq # p x p
+```
+
+3. Compute the standard error of $\hat{\sigma}$ (page 14)
+```{r}
+var_beta_v <- diag(var_cov_beta)
+se_beta_v <- sqrt(var_beta_v)
+```
+
+### 1.3.4 $F$-ratio results
+
+Testing if $\beta_{time_ipc}$ and $\beta_{prop_partner}$  = 0 (i.e. **$\beta_{1}$** = 0)
+
+$H_{0}:\beta_{1} = 0$ versus  $H_{1}: \beta_{1} \ne 0$
+
+1. Partition **X** into **X_0** and **X_1**:
+```{r}
+p = 3
+q = 2
+
+X_0_mt <- X_mt[,1]
+X_1_mt <- X_mt[,2:3]
+```
+
+2. Partition **f** and compute the increase in residual sum of squares that results from dropping **X_1**:
+
+```{r}
+f_0_v <- f_v[1]
+f_1_v <- f_v[2:3]
+
+sse_minus_beta_1 <- (t(f_1_v) %*% f_1_v)[1,1]
+```
+
+3. Compute $F$ which follows an $F$ distribution with *q* (2) and *n - p* (12) degrees of freedom:
+```{r}
+F_val <- (sse_minus_beta_1/q)/sigma_sq
+```
+
+4. Compute the $F$ critical value with 2 and 12 df at 1% level
+```{r}
+F_cv <- qf(1 - 0.01, 2,12)
+```
+<div class="takeaway">Take Away: The $F$ is less than the critical value, so we do not reject the hypothesis that *time_ipc* and *prop_partner* are zero. We need more predictors than just the intercept alone in our model. </div><br>
+
+
+
+## 1.5 Practical linear modeling
+
+### 1.5.1 Model fitting and model checking
+#### 1.5.1.1 Loading the data
+```{r}
+data("sperm.comp1")
+sperm1_dt <- data.table::setDT(sperm.comp1)
+data.table::setnames(sperm1_dt, c("time.ipc", "prop.partner"), c("time_ipc", "prop_partner"))
+```
+
+#### 1.5.1.2 Plot the raw data
+```{r, fig.width=11, fig.height=10}
+RregressPkg::plot_matrix_scatter(
+  df = sperm1_dt[,!c("subject")],
+  rot_y_tic_label = T,
+  plot_dim = 10
+)
+```
+
+<div class="takeaway">Take Away: There appears to some decrease in sperm count (*count*) as proportion of time spent together increases (*prop.partner*)</div><br>
+
+#### 1.5.1.3 Initial OLS model
+```{r}
+sperm_model_1_dt <- RregressPkg::ols_calc(
+  df = sperm1_dt[,!c("subject")],
+  formula_obj = count ~ time_ipc + prop_partner
+)
+RplotterPkg::create_table(
+  x = sperm_model_1_dt$coef_df
+)
+```
+
+```{r}
+model_1_lm <- lm(count ~ time_ipc + prop_partner, data = sperm1_dt)
+summary(model_1_lm)
+```
+

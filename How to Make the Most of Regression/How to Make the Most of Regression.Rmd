@@ -1,0 +1,63 @@
+---
+title: "How to Make the Most of Regression: Standardization and Post-Estimation Simulation"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+The following are notes and R scripts inspired by the article [How to Make the Most of Regression: Standardization and Post-Estimation Simulation](http://svmiller.com/blog/2020/04/post-estimation-simulation-trump-vote-midwest/) by Steve Miller.    
+</div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(ggrepel)
+library(RplotterPkg)
+library(RregressPkg)
+library(here)
+
+current_dir <- here()
+```
+
+## The data and first model
+
+We'll be using the 2016 Cooperative Congressional Election Study (CCES) data.
+
+1. Load the data:
+```{r}
+data_path <- file.path(current_dir, "How to Make the Most of Regression/data/TV16.rda")
+load(file = data_path)
+tv16_dt <-  data.table::setDT(TV16)
+```
+
+2. Using a subset of midwest states (Indiana, Michigan, Ohio, Pennsylvania, Wisconsin) amd white respondents:
+```{r}
+tv16_dt <- tv16_dt[state %in% c("Indiana","Michigan","Ohio","Pennsylvania","Wisconsin") & racef == "White", .(TrumpVote = votetrump, Age = age, Female = female, CollegeEdu = collegeed, HouseholdInc = famincr, Partisanship = pid7na, Ideology = ideo, BornAgainChris = bornagain, CognitiveRace = lcograc, EmpatheticRace = lemprac)]
+```
+
+3. Create the first model:
+```{r}
+model_1 <- stats::glm(TrumpVote ~ Age + Female + CollegeEdu + HouseholdInc + Partisanship + Ideology + BornAgainChris + CognitiveRace + EmpatheticRace, data = tv16_dt, family = binomial(link = "logit"), na.action = na.exclude)
+```
+
+
+
+
+
+
+

@@ -274,8 +274,8 @@ $$H_{0}: Var(\mu|x_{1}, x_{2}...x_{k}) = \sigma^2$$
 ## Plot residuals versus fitted values
 ```{r}
 resid_fit_dt <- data.table(
-  Fit = ols_stand_sent_lst$fitted_val,
-  Residuals = ols_stand_sent_lst$resid
+  Fit = ols_stand_sent_lst$fitted_vals,
+  Residuals = ols_stand_sent_lst$residual_vals
 )
 RplotterPkg::create_scatter_plot(
   df = resid_fit_dt,
