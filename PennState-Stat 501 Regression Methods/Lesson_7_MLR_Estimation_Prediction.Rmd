@@ -41,6 +41,7 @@ library(knitr)
 library(here)
 library(data.table)
 library(RregressPkg)
+library(RplotterPkg)
 
 current_dir <- here::here("PennState-Stat 501 Regression Methods")
 ```
@@ -84,8 +85,8 @@ iqsize_ols_lst <- RregressPkg::ols_calc(
 3.  Compute the fitted value $\hat{y}_{h}$:
 
 ```{r}
-coef_vals <- iqsize_ols_lst$coef_df$Value
-y_h <- coef_vals[[1]] + coef_vals[[2]] * 90.0 + coef_vals[[3]] * 70.0
+coef_vals <- iqsize_ols_lst$coef_vals
+y_h <- coef_vals[["(Intercept)"]] + coef_vals[["Brain"]] * 90.0 + coef_vals[["Height"]] * 70.0
 y_h
 ```
 
@@ -132,13 +133,29 @@ iqsize_lm
 ```
 2. Define one set of predictor values:
 ```{r}
-X_h <- data.frame(Brain = 90.0, Height = 70.0)
+predictors_df <- data.frame(
+  Brain = 90.0,
+  Height = 70.0
+)
 ```
 
-3. Compute the fit and the 95% CI:
+3. Compute the fit and the 95% confidence interval:
 ```{r}
-iqsize_predict <- stats::predict(iqsize_lm, X_h, interval = "confidence", se.fit = T)
-iqsize_predict
+iqsize_confidence <- stats::predict(iqsize_lm, predictors_df, interval = "confidence", se.fit = T)
+iqsize_confidence
+```
+4. Estimate the confidence intervals using `RregressPkg::ols_predict_calc()`:
+```{r}
+iq_confidence_df <- RregressPkg::ols_predict_calc(
+  df = iqsize_dt,
+  formula_obj = PIQ ~ Brain + Height,
+  predictor_vals_df = data.frame(Brain = 90.0, Height = 70.0)
+)
+
+RplotterPkg::create_table(
+  x = iq_confidence_df,
+  caption = "IQ 95% Confidence Interval"
+)
 ```
 
 
@@ -153,6 +170,8 @@ Using `RregressPkg::ols_predict_calc()`.
 data_path <- file.path(current_dir, "data/iqsize.txt")
 iqsize_dt <- data.table::fread(data_path)
 iqsize_dt <- iqsize_dt[, !c("Weight")]
+
+iqsize_lm <- lm(data = iqsize_dt, formula = PIQ ~ Brain + Height)
 ```
 
 2. Define the predictor values:
@@ -163,17 +182,23 @@ predictors_df <- data.frame(
 )
 ```
 
-3. Call `RregressPkg::ols_predict_calc()`:
+3. Compute the fit and the 95% prediction interval:
 ```{r}
-iqsize_respones_df <- RregressPkg::ols_predict_calc(
-  df = iqsize_dt,
-  formula_obj = PIQ ~ Brain + Height,
-  predictors_df = predictors_df
-)
+iqsize_prediction <- stats::predict(iqsize_lm, predictors_df, interval = "prediction", se.fit = F)
+iqsize_prediction
 ```
 
-4. Display the predictions:
+4. Estimate the confidence intervals using `RregressPkg::ols_predict_calc()`:
 ```{r}
-RplotterPkg::create_table(x = iqsize_respones_df, caption = "IQ Predictions")
+iqsize_prediction_df <- RregressPkg::ols_predict_calc(
+  df = iqsize_dt,
+  formula_obj = PIQ ~ Brain + Height,
+  predictor_vals_df = predictors_df,
+  interval = "prediction"
+)
+
+RplotterPkg::create_table(x = iqsize_prediction_df, caption = "IQ Predictions")
 ```
+
+
 

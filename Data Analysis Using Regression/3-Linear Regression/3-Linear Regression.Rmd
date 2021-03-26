@@ -1,0 +1,164 @@
+---
+title: "3-Linear Regression"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+Chapter 3 Linear Regression: the basics from [Data Analysis Using Regression and Multilevel-Hierarchical Models](http://www.stat.columbia.edu/~gelman/arm/)  
+</div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+library(data.table)
+library(ggplot2)
+library(foreign)
+library(here)
+library(RregressPkg)
+library(RplotterPkg)
+
+current_dir <- here()
+```
+
+## 3.1 One predictor
+1. Read the data:
+```{r}
+file_path <- file.path(current_dir, "Data Analysis Using Regression", "kidiq.dta")
+kid_score_df <- foreign::read.dta(file_path)
+kid_score_dt <- data.table::setDT(kid_score_df)
+kid_score_dt <- kid_score_dt[, .(kid_score, mom_hs, mom_iq)]
+kid_score_dt[, mom_hs := as.factor(mom_hs)]
+```
+
+2. Regress *kid_score* on *mom_hs*:
+```{r}
+formula_obj <- kid_score ~ mom_hs
+one_predict_ols <- RregressPkg::ols_calc(
+  df = kid_score_dt,
+  formula_obj = formula_obj
+)
+RplotterPkg::create_table(
+  x = one_predict_ols$coef_df
+)
+```
+
+3. Plot the regression:
+```{r}
+plot_dt <- data.table(
+  hs = kid_score_dt$mom_hs,
+  score = kid_score_dt$kid_score,
+  fit = one_predict_ols$fitted_vals
+)
+RplotterPkg::create_scatter_plot(
+  df = plot_dt,
+  aes_x = "hs",
+  aes_y = "score",
+  x_title = "Mother completed high school",
+  y_title = "Child test score",
+  x_major_breaks = c(0,1),
+  position = position_jitter(width = 0.01, height = 0.01)
+) + geom_line(aes(y = fit), color="blue")
+```
+
+## 3.2 Multiple predictors
+
+1.  Regress *kid_score* on *mom_hs* and *mom_iq*:
+```{r}
+formula_obj <- kid_score ~ mom_hs + mom_iq
+multi_predict_ols <- RregressPkg::ols_calc(
+  df = kid_score_dt,
+  formula_obj = formula_obj
+)
+RplotterPkg::create_table(
+  x = multi_predict_ols$coef_df
+)
+```
+
+2. Plot the regression grouped by *mom_hs*:
+```{r}
+plot_dt <- data.table(
+  hs = kid_score_dt$mom_hs,
+  iq = kid_score_dt$mom_iq,
+  score = kid_score_dt$kid_score,
+  fit = multi_predict_ols$fitted_vals 
+)
+RplotterPkg::create_scatter_plot(
+  df = plot_dt,
+  aes_x = "iq",
+  aes_y = "score",
+  aes_fill = "hs",
+  x_title = "Mother IQ score",
+  y_title = "Child test score",
+  palette_colors = c("blue","green"),
+  pts_size = 2.0
+) + geom_line(data = plot_dt[hs == 0], aes(y = fit), color = "blue", alpha = 0.5, size = 2.0) +
+  geom_line(data = plot_dt[hs == 1], aes(y = fit), color = "green", alpha = 0.5, size = 2.0)
+```
+
+## 3.3 Interactions
+1.  Regress *kid_score* on *mom_hs*, *mom_iq* and *mom_hs x mom_iq*:
+```{r}
+formula_obj <- kid_score ~ mom_hs + mom_iq + mom_hs * mom_iq
+inter_predict_ols <- RregressPkg::ols_calc(
+  df = kid_score_dt,
+  formula_obj = formula_obj
+)
+RplotterPkg::create_table(
+  x = inter_predict_ols$coef_df
+)
+```
+
+2. Plot the regression grouped by *mom_hs*:
+```{r}
+plot_dt <- data.table(
+  hs = kid_score_dt$mom_hs,
+  iq = kid_score_dt$mom_iq,
+  score = kid_score_dt$kid_score,
+  fit = inter_predict_ols$fitted_vals 
+)
+RplotterPkg::create_scatter_plot(
+  df = plot_dt,
+  aes_x = "iq",
+  aes_y = "score",
+  aes_fill = "hs",
+  x_title = "Mother IQ score",
+  y_title = "Child test score",
+  palette_colors = c("blue","green"),
+  pts_size = 2.0
+) + geom_line(data = plot_dt[hs == 0], aes(y = fit), color = "blue", alpha = 0.5, size = 2.0) +
+  geom_line(data = plot_dt[hs == 1], aes(y = fit), color = "green", alpha = 0.5, size = 2.0)
+```
+
+## 3.6 Assumptions and diagnostics
+
+<div class="task">Task: Plot residuals versus fitted values.</div>
+```{r}
+RregressPkg::plot_fit_residuals(
+  df =  kid_score_dt,
+  formula_obj =  kid_score ~ mom_iq,
+  label_sd = 1.0,
+  x_title = "Fitted Mother IQ score",
+  y_title = "Model Residuals",
+  y_limits = c(-60.0,50.0),
+  y_major_breaks = seq(-60, 50, 10)
+)
+```
+
+ 
+
+

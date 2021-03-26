@@ -82,7 +82,7 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="data:text/css,%2Emain%2Dcontainer%20%7Bmin%2Dwidth%3A%201000px%3Bmax%2Dwidth%3A%201000px%3Bmargin%2Dleft%3A%2015px%3Bmargin%2Dright%3A%2015px%3B%7Ddiv%20%7Bfont%2Dsize%3A%2013pt%3B%7Dp%20%7Bmargin%3A%200%200%2010px%3B%7Ddiv%2Eabstract%20%7Bmargin%3A%20auto%3Bwidth%3A%2090%25%3B%7Dp%2Eabstract%20%7Btext%2Dalign%3A%20center%3Bfont%2Dweight%3A%20bold%3B%7Dcaption%20%7Bfont%2Dsize%3A%200%2E9em%3Bfont%2Dstyle%3A%20italic%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20black%3B%7Dpre%20code%20%7Bfont%2Dfamily%3A%20Consolas%2C%20%22courier%20new%22%3B%7D%2Etask%20%7Bfont%2Dsize%3A%2015pt%3Bcolor%3A%20green%3B%7D%2Er%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Etable%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Enote%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20purple%3Bmargin%2Dtop%3A%2010px%3Bmargin%2Dbottom%3A%2010px%3B%7D%2Eexer%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20darkorange%3B%7D" type="text/css" />
+<link rel="stylesheet" href="data:text/css,%2Emain%2Dcontainer%20%7Bmin%2Dwidth%3A%201000px%3Bmax%2Dwidth%3A%201000px%3Bmargin%2Dleft%3A%2015px%3Bmargin%2Dright%3A%2015px%3B%7Ddiv%20%7Bfont%2Dsize%3A%2013pt%3B%7Dp%20%7Bmargin%3A%200%200%2010px%3B%7Ddiv%2Eabstract%20%7Bmargin%3A%20auto%3Bwidth%3A%2090%25%3B%7Dp%2Eabstract%20%7Btext%2Dalign%3A%20center%3Bfont%2Dweight%3A%20bold%3B%7Dcaption%20%7Bfont%2Dsize%3A%200%2E9em%3Bfont%2Dstyle%3A%20italic%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20black%3B%7Dpre%20code%20%7Bfont%2Dfamily%3A%20Consolas%2C%20%22courier%20new%22%3B%7D%2Etask%20%7Bfont%2Dsize%3A%2015pt%3Bcolor%3A%20green%3B%7D%2Er%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Etable%20%7Bwidth%3A%201100px%3Bmax%2Dwidth%3A%201100px%3B%7D%2Enote%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20purple%3Bmargin%2Dtop%3A%2010px%3Bmargin%2Dbottom%3A%2010px%3B%7D%2Eexer%20%7Bfont%2Dsize%3A14pt%3Bfont%2Dweight%3A%20bold%3Bcolor%3A%20darkorange%3B%7D%2Etakeaway%20%7Bfont%2Dsize%3A%2014pt%3Bfont%2Dweight%3A%20bold%3Bfont%2Dstyle%3A%20italic%3B%7D" type="text/css" />
 
 
 
@@ -214,7 +214,7 @@ summary {
 <p>Author: Rick Dean</p>
 </div>
 <div>
-<p>Article date: 2021-02-18</p>
+<p>Article date: 2021-03-18</p>
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -226,6 +226,7 @@ summary {
 library(here)
 library(data.table)
 library(RregressPkg)
+library(RplotterPkg)
 
 current_dir &lt;- here::here(&quot;PennState-Stat 501 Regression Methods&quot;)</code></pre>
 <div id="confidence-interval-for-the-mean-response" class="section level2">
@@ -260,8 +261,8 @@ iqsize_dt &lt;- iqsize_dt[, !c(&quot;Weight&quot;)]</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Compute the fitted value <span class="math inline">\(\hat{y}_{h}\)</span>:</li>
 </ol>
-<pre class="r"><code>coef_vals &lt;- iqsize_ols_lst$coef_df$Value
-y_h &lt;- coef_vals[[1]] + coef_vals[[2]] * 90.0 + coef_vals[[3]] * 70.0
+<pre class="r"><code>coef_vals &lt;- iqsize_ols_lst$coef_vals
+y_h &lt;- coef_vals[[&quot;(Intercept)&quot;]] + coef_vals[[&quot;Brain&quot;]] * 90.0 + coef_vals[[&quot;Height&quot;]] * 70.0
 y_h</code></pre>
 <pre><code>## [1] 105.6391</code></pre>
 <ol start="4" style="list-style-type: decimal">
@@ -311,12 +312,15 @@ iqsize_lm</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Define one set of predictor values:</li>
 </ol>
-<pre class="r"><code>X_h &lt;- data.frame(Brain = 90.0, Height = 70.0)</code></pre>
+<pre class="r"><code>predictors_df &lt;- data.frame(
+  Brain = 90.0,
+  Height = 70.0
+)</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Compute the fit and the 95% CI:</li>
+<li>Compute the fit and the 95% confidence interval:</li>
 </ol>
-<pre class="r"><code>iqsize_predict &lt;- stats::predict(iqsize_lm, X_h, interval = &quot;confidence&quot;, se.fit = T)
-iqsize_predict</code></pre>
+<pre class="r"><code>iqsize_confidence &lt;- stats::predict(iqsize_lm, predictors_df, interval = &quot;confidence&quot;, se.fit = T)
+iqsize_confidence</code></pre>
 <pre><code>## $fit
 ##        fit      lwr     upr
 ## 1 105.6391 98.23722 113.041
@@ -329,6 +333,60 @@ iqsize_predict</code></pre>
 ## 
 ## $residual.scale
 ## [1] 19.50957</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Estimate the confidence intervals using <code>RregressPkg::ols_predict_calc()</code>:</li>
+</ol>
+<pre class="r"><code>iq_confidence_df &lt;- RregressPkg::ols_predict_calc(
+  df = iqsize_dt,
+  formula_obj = PIQ ~ Brain + Height,
+  predictor_vals_df = data.frame(Brain = 90.0, Height = 70.0)
+)
+
+RplotterPkg::create_table(
+  x = iq_confidence_df,
+  caption = &quot;IQ 95% Confidence Interval&quot;
+)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<center>
+<div style="font-weight:bold;font-size:20px; color:black">
+IQ 95% Confidence Interval
+</div>
+</center>
+</caption>
+<thead>
+<tr>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+fit
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+lwr
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+upr
+</th>
+<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+se
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+105.6391
+</td>
+<td>
+98.22943
+</td>
+<td>
+113.0488
+</td>
+<td>
+3.646064
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="prediction-interval-for-a-new-response" class="section level2">
@@ -341,7 +399,9 @@ iqsize_predict</code></pre>
 </ol>
 <pre class="r"><code>data_path &lt;- file.path(current_dir, &quot;data/iqsize.txt&quot;)
 iqsize_dt &lt;- data.table::fread(data_path)
-iqsize_dt &lt;- iqsize_dt[, !c(&quot;Weight&quot;)]</code></pre>
+iqsize_dt &lt;- iqsize_dt[, !c(&quot;Weight&quot;)]
+
+iqsize_lm &lt;- lm(data = iqsize_dt, formula = PIQ ~ Brain + Height)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Define the predictor values:</li>
 </ol>
@@ -350,17 +410,23 @@ iqsize_dt &lt;- iqsize_dt[, !c(&quot;Weight&quot;)]</code></pre>
   Height = 70.0
 )</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Call <code>RregressPkg::ols_predict_calc()</code>:</li>
+<li>Compute the fit and the 95% prediction interval:</li>
 </ol>
-<pre class="r"><code>iqsize_respones_df &lt;- RregressPkg::ols_predict_calc(
+<pre class="r"><code>iqsize_prediction &lt;- stats::predict(iqsize_lm, predictors_df, interval = &quot;prediction&quot;, se.fit = F)
+iqsize_prediction</code></pre>
+<pre><code>##        fit      lwr      upr
+## 1 105.6391 65.34688 145.9314</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Estimate the confidence intervals using <code>RregressPkg::ols_predict_calc()</code>:</li>
+</ol>
+<pre class="r"><code>iqsize_prediction_df &lt;- RregressPkg::ols_predict_calc(
   df = iqsize_dt,
   formula_obj = PIQ ~ Brain + Height,
-  predictors_df = predictors_df
-)</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Display the predictions:</li>
-</ol>
-<pre class="r"><code>RplotterPkg::create_table(x = iqsize_respones_df, caption = &quot;IQ Predictions&quot;)</code></pre>
+  predictor_vals_df = predictors_df,
+  interval = &quot;prediction&quot;
+)
+
+RplotterPkg::create_table(x = iqsize_prediction_df, caption = &quot;IQ Predictions&quot;)</code></pre>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 <center>
@@ -391,13 +457,13 @@ se
 105.6391
 </td>
 <td>
-98.23722
+58.11871
 </td>
 <td>
-113.041
+153.1595
 </td>
 <td>
-3.646064
+23.38322
 </td>
 </tr>
 </tbody>

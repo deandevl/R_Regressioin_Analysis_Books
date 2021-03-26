@@ -221,7 +221,7 @@ summary {
 <p>Author: Rick Dean</p>
 </div>
 <div>
-<p>Article date: 2021-03-13</p>
+<p>Article date: 2021-03-21</p>
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -1065,90 +1065,71 @@ F_val</code></pre>
 cr_val</code></pre>
 <pre><code>## [1] 3.83852</code></pre>
 <p>With <em>F_val</em> greater than <em>cr_val</em> we reject the above null hypothesis and believe that at least one of the performance has an influence on salary. From the equation for the <span class="math inline">\(F\)</span>-statistic we see that it reflects the degree of residual increase in applying the restrictive model to the response.</p>
-<p>The function <code>RregressPkg::ols_F_calc()</code> provides a easy way to compute the <span class="math inline">\(F\)</span> value:</p>
-<pre class="r"><code>mlb1_F_lst &lt;- RregressPkg::ols_F_calc(
+<p>The function <code>RregressPkg::ols_F_LM_calc()</code> provides a easy way to compute the <span class="math inline">\(F\)</span> value:</p>
+<pre class="r"><code>mlb1_F_LM_lst &lt;- RregressPkg::ols_F_LM_calc(
   df = mlb1,
   ur_formula_obj = ur_formula_obj,
-  r_formula_obj = r_formula_obj
+  r_formula_obj = r_formula_obj,
+  confid_level = 0.99
 )</code></pre>
 <p>Displaying the results:</p>
 <pre class="r"><code>RplotterPkg::create_table(
-  x = mlb1_F_lst$F_df,
-  caption = &quot;Null Hypothesis: bavg = hrunsyr = rbisyr = 0&quot;
+  x = mlb1_F_LM_lst$F_LM_df,
+  caption = &quot;Reject Null Hypothesis: bavg = hrunsyr = rbisyr = 0&quot;,
+  align_v = rep(&quot;c&quot;, 4),
+  full_width = T
 )</code></pre>
-<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
 <center>
 <div style="font-weight:bold;font-size:20px; color:black">
-Null Hypothesis: bavg = hrunsyr = rbisyr = 0
+Reject Null Hypothesis: bavg = hrunsyr = rbisyr = 0
 </div>
 </center>
 </caption>
 <thead>
 <tr>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-F_val
+<th style="text-align:center;font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Test
 </th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-crit
+<th style="text-align:center;font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Value
 </th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-p_val
+<th style="text-align:center;font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+Critical
 </th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-confid_level
-</th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-df_1
-</th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-df_2
-</th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-R2_ur
-</th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-R2_r
-</th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-SSR_ur
-</th>
-<th style="font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
-SSR_r
+<th style="text-align:center;font-weight: bold;color: black !important;background-color: white !important;font-size: 18px;-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg); -ms-transform: rotate(0deg); -o-transform: rotate(0deg); transform: rotate(0deg);border-bottom: 4px solid black;">
+P.value
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>
-9.5503
+<td style="text-align:center;">
+F
 </td>
-<td>
-2.6306
+<td style="text-align:center;">
+9.550254
 </td>
-<td>
-4.5e-06
+<td style="text-align:center;">
+3.83852
 </td>
-<td>
-0.95
+<td style="text-align:center;">
+4.473708e-06
 </td>
-<td>
-3
+</tr>
+<tr>
+<td style="text-align:center;">
+LM
 </td>
-<td>
-347
+<td style="text-align:center;">
+26.923194
 </td>
-<td>
-0.628
+<td style="text-align:center;">
+11.34487
 </td>
-<td>
-0.597
-</td>
-<td>
-183.19
-</td>
-<td>
-198.31
+<td style="text-align:center;">
+6.109719e-06
 </td>
 </tr>
 </tbody>

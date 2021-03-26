@@ -548,20 +548,23 @@ cr_val
 With *F_val* greater than *cr_val* we reject the above null hypothesis and believe that at least one of the performance has an influence on salary.
 From the equation for the $F$-statistic we see that it reflects the degree of residual increase in applying the restrictive model to the response.
 
-The function `RregressPkg::ols_F_calc()` provides a easy way to compute the $F$ value:
+The function `RregressPkg::ols_F_LM_calc()` provides a easy way to compute the $F$ value:
 ```{r}
-mlb1_F_lst <- RregressPkg::ols_F_calc(
+mlb1_F_LM_lst <- RregressPkg::ols_F_LM_calc(
   df = mlb1,
   ur_formula_obj = ur_formula_obj,
-  r_formula_obj = r_formula_obj
+  r_formula_obj = r_formula_obj,
+  confid_level = 0.99
 )
 ```
 
 Displaying the results:
 ```{r}
 RplotterPkg::create_table(
-  x = mlb1_F_lst$F_df,
-  caption = "Null Hypothesis: bavg = hrunsyr = rbisyr = 0"
+  x = mlb1_F_LM_lst$F_LM_df,
+  caption = "Reject Null Hypothesis: bavg = hrunsyr = rbisyr = 0",
+  align_v = rep("c", 4),
+  full_width = T
 )
 ```
 

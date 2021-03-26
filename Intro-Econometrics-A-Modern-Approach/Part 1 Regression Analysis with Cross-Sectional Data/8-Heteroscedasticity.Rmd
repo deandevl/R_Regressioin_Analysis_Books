@@ -23,16 +23,91 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
 The following notes and scripts are based on the following sources: [Introductory Econometrics - A Modern Approach](https://www.amazon.com/Introductory-Econometrics-Modern-Approach-Standalone/dp/130527010X/ref=sr_1_2?dchild=1&keywords=Introductory+Econometrics%3A+A+Modern+Approach&qid=1597005903&s=books&sr=1-2) by Jeffrey M. Wooldridge is the main text for the statistical content. This text will be referenced as `(Wooldridge)`.
 
 The companion text [Using R for Introductory Econometrics](http://www.urfie.net/index.html) by Florian Heiss provides specific R scripts in support of the main text and the inspiration for my scripts, notes and graphics. I will reference this document as `(Heiss)`. The following is from **Part 1 - Regression Analysis with Cross-Sectional Data, Chapter 8 Heteroscedasticity** of `(Heiss)`.    
-  
 </div>  
 
 ```{r, warning=FALSE, message=FALSE}
 library(knitr)
 library(kableExtra)
 library(data.table)
+library(RregressPkg)
+library(RplotterPkg)
+library(wooldridge)
 ```
 
 # 8 Heteroscedasticity
 
 ## 8.1 Heteroscedasticity-Robust inference
+
+## 8.2 Heteroscedasticity tests
+
+### Heteroskedasticity in Housing Price Equations
+1. Set up the data
+```{r}
+data("hprice1", package = "wooldridge")
+hprice1_dt <- data.table::setDT(hprice1)
+hprice1_dt <- hprice1[, .(price, lotsize, sqrft, bdrms)]
+```
+
+2. Define the model formula 
+```{r}
+formula_obj <- price ~ lotsize + sqrft + bdrms
+```
+
+3. Plot the model residuals 
+```{r, fig.width=12, fig.height=12}
+RregressPkg::plot_residuals_check(
+  df = hprice1_dt,
+  formula_obj = formula_obj,
+  residual_label_threshold = 150.0,
+  leverage_label_threshold = 30.0,
+  title = "Housing Price Model Residuals"
+)
+```
+
+4. Run Breusch-Pagan Test for Heteroskedasticity
+```{r}
+BP_test_df <- RregressPkg::ols_BP_test_calc(
+  df = hprice1_dt,
+  formula_obj = formula_obj
+)
+RplotterPkg::create_table(
+  x = BP_test_df,
+  caption = "BP Test Housing Price Residuals"
+)
+```
+
+<div class="takeaway">Take Away: The $p-values$ indicate strong evidence against the null hypothesis of homoskedasticity of variance. The square of the estimated error term is a function of the predictor coefficients.</div><br>
+
+### Logarithmic functional form of the formula object
+Chapter 6 of "Introductory Econometrics" suggest a reduction of heteroskedasticity by using the logarithmic functional form.
+
+1. Define the model formula 
+```{r}
+log_formula_obj <- log(price) ~ log(lotsize) + log(sqrft) + bdrms
+```
+
+2. Plot the model residuals 
+```{r, fig.width=12, fig.height=12}
+RregressPkg::plot_residuals_check(
+  df = hprice1_dt,
+  formula_obj = log_formula_obj,
+  residual_label_threshold = 0.4,
+  leverage_label_threshold = 0.15,
+  title = "Log Housing Price Model Residuals"
+)
+```
+
+3. Run Breusch-Pagan Test for Heteroskedasticity
+```{r}
+BP_test_df <- RregressPkg::ols_BP_test_calc(
+  df = hprice1_dt,
+  formula_obj = log_formula_obj
+)
+RplotterPkg::create_table(
+  x = BP_test_df,
+  caption = "BP Test Log Housing Price Residuals"
+)
+```
+
+<div class="takeaway">Take Away: Based on the $p-values$ we fail to reject the null hypothesis where the square of the estimated error term is not a function of the predictor coefficients.</div><br>
 

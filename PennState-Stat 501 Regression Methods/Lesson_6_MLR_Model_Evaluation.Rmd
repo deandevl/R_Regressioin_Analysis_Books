@@ -163,7 +163,7 @@ full_sse <- full_ols$sse
 ```
 
 3. Create the plot data frame and display the reduced and full models:
-```{r}
+```{r, fig.width=13, fig.height=8}
 plot_df <- data.frame(
   Alcohol = alchoholarm_dt$alcohol,
   Strength = alchoholarm_dt$strength,
@@ -263,7 +263,7 @@ SSTO(Brian,Height) = 18895 -- the same as above
 3. Sequential sum of the squares:
 Of adding Height where Brain is the only predictor SSR(Height|Brain)
 
-SSR(Height|Brain) = Reduction in error sum of the squares = SSE(Brain) - SSE(Brain,Height) =  = 16197 - 13322 = 2875
+SSR(Height|Brain) = Reduction in error sum of the squares = SSE(Brain) - SSE(Brain,Height) =  16197 - 13322 = 2875
 
 Or
 
