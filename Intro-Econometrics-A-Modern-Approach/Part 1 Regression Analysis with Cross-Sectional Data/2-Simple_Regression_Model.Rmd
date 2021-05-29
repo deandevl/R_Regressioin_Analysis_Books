@@ -38,7 +38,8 @@ library(RplotterPkg)
 
 ## 2.1 Simple OLS Regression
 We want to estimate the population parameters $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ of the simple regression model:
-<center>$y = \hat{\beta_{0}} + \hat{\beta_{1}}x + \mu$<span style="float:right;">[2.1 Heiss page 69]</span></center><br> 
+<center>$\hat{y_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}x_{i}$<span style="float:right;">[2.20 Wooldridge page 27]</span></center><br>
+where $\hat{y_{i}}$ is the **fitted value** for $y$ at observation $i$.
 
 According to `(Wooldridge, Section 2.2, Equations 2.17, 2.19, page 26)` we can estimate the OLS regression line with:
 <center>$\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}}\bar{x}$<span style="float:right;">[2.2 Heiss page 69]</span></center><br>
@@ -160,9 +161,28 @@ RplotterPkg::create_scatter_plot(
 ```
 
 ## 2.2 Coeffcients, Fitted Values, and Residuals 
+
+The **residual** for observation $i$ is the difference between the actual $y_{i}$ and its fitted value:
+<center>$\hat{\mu_{i}} = y_{i} - \hat{y_{i}} = y_{i} - \hat{\beta_{0}} + \hat{\beta_{1}}x_{i}$<span style="float:right;">[2.21 Wooldridge page 27]</span></center><br>
+
+or [Heiss] rearranges to give:
+<center>$y_{i} = \hat{\beta_{0}} + \hat{\beta_{1}}x + \hat{\mu_{i}}$<span style="float:right;">[2.1 Heiss page 69]</span></center><br> 
+
+We also have the population model for $y_{i}$:
+<center>$y_{i} = \beta_{0} + \beta_{1}x + \mu_{i}$<span style="float:right;">[2.48 Wooldridge page 41]</span></center><br>
+where $\mu_{i}$ are known as the **errors** for observation $i$ where the model does not account for other predictors that may be important.
+
+`(Wooldridge, Section 2-5c, page 48)` shows the distinction between **residual** and **errors** by deriving:
+<center>$\hat{\mu_{i}} = \mu_{i} - (\hat{\beta_{0}} - \beta{_{0}}) - (\hat{\beta_{1}} - \beta_{1})x_{i}$<span style="float:right;">[2.59 Wooldridge page 49]</span></center><br>
+Thus **residuals** $\hat{\mu_{i}}$ is not the same as $\mu_{i}$. Wooldridge goes on to say that the expected difference between **residuals** and **errors** is zero and the estimate of $\mu_{i}$ is the OLS residual values $\hat{\mu_{i}}$
+
+The population error $\mu$ and its estimate also have a variance known as the **error variance** $\sigma^{2}$ where its square root is the  standard deviation of the error.  `(Wooldridge, page 45)` notes that a larger $\sigma$ means that the distribution of the unobservables affecting $y$ is more spread out.
+
+`(Wooldridge Theorem 2.2 page 47)` derives the variance of the OLS estimator $VAR(\hat{\beta_{1}})$ where $\sigma^2$ plays a central role. See section 2.6 below.
+
 `(Wooldridge, Section 2-3b, page 32)` presents three properties of OLS statistics. The three properties `(Heiss, page 76)`are:
 
-1. Sum and sample mean of the residuals: 
+1. Sum and sample mean of the **residuals**: 
 
 <center>$\sum_{i=1}^n \hat{\mu_{i}} = 0 \Rightarrow \bar{\hat{\mu}}_{i} = 0$<span style="float:right;">[2.7 Heiss page 76]</span></center><br>
 
@@ -252,6 +272,7 @@ The `stats::summary()` function can also show us the $R^2$ value as "Multiple R-
 ```{r}
 stats::summary.lm(roe_salary_lm)
 ```
+
 ## 2.4 Nonlinearities
 According to `(Wooldridge, page 37)` "...it is rather easy to incorporate many non-linearities into simple regression analysis by appropriately defining the dependent and independent variables" (i.e. a variable transformation).
 

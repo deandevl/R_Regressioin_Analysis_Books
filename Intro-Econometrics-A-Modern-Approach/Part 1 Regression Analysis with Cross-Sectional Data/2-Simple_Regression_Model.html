@@ -220,7 +220,7 @@ summary {
 Author: Rick Dean
 </div>
 <div>
-Article date: 2021-02-22
+Article date: 2021-04-29
 </div>
 <div class="abstract">
 <p class="abstract">
@@ -241,9 +241,9 @@ library(RplotterPkg)</code></pre>
 <h2>2.1 Simple OLS Regression</h2>
 We want to estimate the population parameters <span class="math inline">\(\hat{\beta_{0}}\)</span> and <span class="math inline">\(\hat{\beta_{1}}\)</span> of the simple regression model:
 <center>
-<span class="math inline">\(y = \hat{\beta_{0}} + \hat{\beta_{1}}x + \mu\)</span><span style="float:right;">[2.1 Heiss page 69]</span>
+<span class="math inline">\(\hat{y_{i}} = \hat{\beta_{0}} + \hat{\beta_{1}}x_{i}\)</span><span style="float:right;">[2.20 Wooldridge page 27]</span>
 </center>
-<p><br></p>
+<p><br> where <span class="math inline">\(\hat{y_{i}}\)</span> is the <strong>fitted value</strong> for <span class="math inline">\(y\)</span> at observation <span class="math inline">\(i\)</span>.</p>
 According to <code>(Wooldridge, Section 2.2, Equations 2.17, 2.19, page 26)</code> we can estimate the OLS regression line with:
 <center>
 <span class="math inline">\(\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}}\bar{x}\)</span><span style="float:right;">[2.2 Heiss page 69]</span>
@@ -359,9 +359,31 @@ RplotterPkg::create_scatter_plot(
 </div>
 <div id="coeffcients-fitted-values-and-residuals" class="section level2">
 <h2>2.2 Coeffcients, Fitted Values, and Residuals</h2>
+The <strong>residual</strong> for observation <span class="math inline">\(i\)</span> is the difference between the actual <span class="math inline">\(y_{i}\)</span> and its fitted value:
+<center>
+<span class="math inline">\(\hat{\mu_{i}} = y_{i} - \hat{y_{i}} = y_{i} - \hat{\beta_{0}} + \hat{\beta_{1}}x_{i}\)</span><span style="float:right;">[2.21 Wooldridge page 27]</span>
+</center>
+<p><br></p>
+or [Heiss] rearranges to give:
+<center>
+<span class="math inline">\(y_{i} = \hat{\beta_{0}} + \hat{\beta_{1}}x + \hat{\mu_{i}}\)</span><span style="float:right;">[2.1 Heiss page 69]</span>
+</center>
+<p><br></p>
+We also have the population model for <span class="math inline">\(y_{i}\)</span>:
+<center>
+<span class="math inline">\(y_{i} = \beta_{0} + \beta_{1}x + \mu_{i}\)</span><span style="float:right;">[2.48 Wooldridge page 41]</span>
+</center>
+<p><br> where <span class="math inline">\(\mu_{i}\)</span> are known as the <strong>errors</strong> for observation <span class="math inline">\(i\)</span> where the model does not account for other predictors that may be important.</p>
+<code>(Wooldridge, Section 2-5c, page 48)</code> shows the distinction between <strong>residual</strong> and <strong>errors</strong> by deriving:
+<center>
+<span class="math inline">\(\hat{\mu_{i}} = \mu_{i} - (\hat{\beta_{0}} - \beta{_{0}}) - (\hat{\beta_{1}} - \beta_{1})x_{i}\)</span><span style="float:right;">[2.59 Wooldridge page 49]</span>
+</center>
+<p><br> Thus <strong>residuals</strong> <span class="math inline">\(\hat{\mu_{i}}\)</span> is not the same as <span class="math inline">\(\mu_{i}\)</span>. Wooldridge goes on to say that the expected difference between <strong>residuals</strong> and <strong>errors</strong> is zero and the estimate of <span class="math inline">\(\mu_{i}\)</span> is the OLS residual values <span class="math inline">\(\hat{\mu_{i}}\)</span></p>
+<p>The population error <span class="math inline">\(\mu\)</span> and its estimate also have a variance known as the <strong>error variance</strong> <span class="math inline">\(\sigma^{2}\)</span> where its square root is the standard deviation of the error. <code>(Wooldridge, page 45)</code> notes that a larger <span class="math inline">\(\sigma\)</span> means that the distribution of the unobservables affecting <span class="math inline">\(y\)</span> is more spread out.</p>
+<p><code>(Wooldridge Theorem 2.2 page 47)</code> derives the variance of the OLS estimator <span class="math inline">\(VAR(\hat{\beta_{1}})\)</span> where <span class="math inline">\(\sigma^2\)</span> plays a central role. See section 2.6 below.</p>
 <p><code>(Wooldridge, Section 2-3b, page 32)</code> presents three properties of OLS statistics. The three properties <code>(Heiss, page 76)</code>are:</p>
 <ol style="list-style-type: decimal">
-<li>Sum and sample mean of the residuals:</li>
+<li>Sum and sample mean of the <strong>residuals</strong>:</li>
 </ol>
 <center>
 <span class="math inline">\(\sum_{i=1}^n \hat{\mu_{i}} = 0 \Rightarrow \bar{\hat{\mu}}_{i} = 0\)</span><span style="float:right;">[2.7 Heiss page 76]</span>

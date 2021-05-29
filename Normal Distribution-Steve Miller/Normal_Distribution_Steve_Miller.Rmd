@@ -30,6 +30,7 @@ library(data.table)
 library(forcats)
 library(ggplot2)
 library(RplotterPkg)
+library(RregressPkg)
 library(here)
 ```
 
@@ -208,20 +209,34 @@ RplotterPkg::create_table(
 
 4. Create a simulated population of the above data with 250000 observations:
 ```{r}
-therms_pop <- RregressPkg::mom_beta(
+# therms_pop <- RregressPkg::mom_beta(
+#   n = 250000,
+#   mean = 40.01578,
+#   sd = 40.24403,
+#   min_val = 0,
+#   max_val = 100,
+#   digits = 3,
+#   seed = 8675309
+# )
+
+therms_beta_lst <- RregressPkg::plot_beta_distrib(
   n = 250000,
-  mean = 40.01578,
-  sd = 40.24403,
+  mean = mean(therms_dt$Rating),
+  sd = sd(therms_dt$Rating),
   min_val = 0,
   max_val = 100,
-  digits = 3,
-  seed = 8675309
+  seed = 8675309,
+  bins = 100,
+  title = "Simulated Thermometer Ratings",
+  x_title = "Rating",
+  bar_fill = "blue",
+  bar_alpha = 0.5
 )
 ```
 
 5. Show the descriptive statistics of the population:
 ```{r}
-pop_data <- therms_pop$df_scaled$data
+pop_data <- therms_beta_lst$scaled
 pop_stats_dt <- data.table(
   N = length(pop_data),
   Minimum = min(pop_data),
@@ -244,16 +259,7 @@ RplotterPkg::create_table(
 
 6. Plot a histogram of the population:
 ```{r}
-RplotterPkg::create_histogram_plot(
-  df = therms_pop$df_scaled,
-  aes_x = "data",
-  bins = 100,
-  title = "Simulated Thermometer Ratings",
-  x_title = "Rating",
-  rot_y_tic_label = T,
-  bar_fill = "blue",
-  bar_alpha = 0.5
-)
+therms_beta_lst$histo_plot
 ```
 
 7. Get a 100000 samples of size 10 from the above simulated population and compute their means:
@@ -266,7 +272,7 @@ get_sample_means <- function(samples, sample_size, data_pop){
   }
   return(means)
 }
-simulated_means <- get_sample_means(samples = 100000, sample_size = 10, data_pop = therms_pop$df_scaled$data)
+simulated_means <- get_sample_means(samples = 100000, sample_size = 10, data_pop = therms_beta_lst$scaled)
 ```
 
 8. Plot the density of the sample means:
@@ -301,7 +307,7 @@ for(samp_sz in samp_sizes) {
   samples_lst[[paste0("samp size ", samp_sz)]] = data.table(
     samp_num = as.factor(1:10),
     samp_sz = samp_sz, 
-    samp_means = unlist(lapply(1:10, function(i){x <- mean(sample(therms_pop$df_scaled$data, samp_sz, replace = F))}))
+    samp_means = unlist(lapply(1:10, function(i){x <- mean(sample(therms_beta_lst$scaled, samp_sz, replace = F))}))
   )
 }
 samples_dt <- data.table::rbindlist(samples_lst, use.names = T)
@@ -323,7 +329,7 @@ a_plot <- RplotterPkg::create_scatter_plot(
   pts_fill = "black",
   pts_size = 2.5,
   pts_line_alpha = 0.5
-) + ggplot2::geom_hline(yintercept = mean(therms_pop$df_scaled$data), linetype = "dashed")
+) + ggplot2::geom_hline(yintercept = mean(therms_beta_lst$scaled), linetype = "dashed")
 a_plot
 ```
 
@@ -339,7 +345,7 @@ Compute the 95% confidence intervals for the 10 replicated sample means of the 8
 
 1. Compute the standard error for each of the 8 sample sizes:
 ```{r}
-pop_sd <- sd(therms_pop$df_scaled$data)
+pop_sd <- sd(therms_beta_lst$scaled)
 samples_dt[, se := pop_sd/sqrt(samp_sz)]
 ```
 
@@ -351,7 +357,7 @@ samples_dt[, lb95 := fifelse(lb95 < 0.0, 0.0, lb95)]
 
 4. Plot the means and associated confidence ranges in a range plot for each of the 8 sample sizes:
 ```{r, fig.width=13, fig.height=14}
-add_ons <- c(ggplot2::geom_hline(yintercept = mean(therms_pop$df_scaled$data), linetype = "dashed"))
+add_ons <- c(ggplot2::geom_hline(yintercept = mean(therms_beta_lst$scaled), linetype = "dashed"))
 RplotterPkg::multi_range_plot(
   df = samples_dt,
   factor_var = "samp_sz_label",

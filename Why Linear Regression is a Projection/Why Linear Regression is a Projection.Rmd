@@ -1,0 +1,50 @@
+---
+title: "Why Linear Regression is a Projection"
+output: 
+   html_document:
+    toc: yes
+    toc_depth: 3
+    css: ../style.css
+params:
+  date: !r Sys.Date()    
+---
+
+```{r,setup, include=FALSE, eval=TRUE}
+options(knitr.table.format = "html", width = 140)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 10)
+```
+
+<div>Author: Rick Dean</div>
+<div>Article date: `r params$date`</div>
+
+<div class="abstract">
+  <p class="abstract">Abstract</p>
+The following graphics and scripts were inspired from [Why Linear Regression is a Projection](https://medium.com/@vladimirmikulik/why-linear-regression-is-a-projection-407d89fd9e3a) by Vladimir Mikulik
+</div>  
+
+```{r, warning=FALSE, message=FALSE}
+library(knitr)
+library(RmatrixPkg)
+```
+
+
+## What is a Projection
+
+1. Define a two dimensional vector $\textbf{v}$ on a coordinate plane:
+```{r}
+v <- c(5,5)
+to <- matrix(v, ncol = 2, byrow = T)
+RmatrixPkg::plot_vector_2d(to = to, vector_labels = c("v"), vector_colors = c("red"),  x_breaks = c(-1,6,1), y_breaks = c(-1,6,1))
+```
+
+2. Define a second vector $\textbf{x}$ along with $\textbf{v}$:
+```{r}
+v <- c(5,5)
+x <- c(2,5)
+
+to <- matrix(c(v,x), ncol = 2, byrow = T)
+RmatrixPkg::plot_vector_2d(to = to, vector_labels = c("v","x"), vector_colors = c("red","black"),  x_breaks = c(-1,6,1), y_breaks = c(-1,6,1))
+```
+
+
+

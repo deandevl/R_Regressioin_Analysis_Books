@@ -24,4 +24,6 @@ The repository contains notes/scripts/inspiration from the following articles/bo
 
 11. [How to Make the Most of Regression: Standardization and Post-Estimation Simulation](http://svmiller.com/blog/2020/04/post-estimation-simulation-trump-vote-midwest/) by Steve Miller
 
-      
+12. [Methods of Multivariate Analysis](https://www.wiley.com/en-us/Methods+of+Multivariate+Analysis%2C+2nd+Edition-p-9780471461722) 2nd Edition by Alvin C. Rencher
+
+    ​    
